@@ -26,6 +26,11 @@ class PublicContractTests(unittest.TestCase):
                     "https://json-schema.org/draft/2020-12/schema",
                 )
                 self.assertTrue(payload["$id"].endswith("/" + path.name))
+                self.assertTrue(
+                    payload["$id"].startswith(
+                        "https://raw.githubusercontent.com/soccz/EcoGuard/main/schemas/"
+                    )
+                )
                 self.assertEqual(payload["type"], "object")
 
     def test_manifest_contract_matches_committed_golden_shape(self):

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/soccz/EcoGuard/schemas/forest_case.schema.json",
+  "$id": "https://raw.githubusercontent.com/soccz/EcoGuard/main/schemas/forest_case.schema.json",
   "title": "EcoGuard synthetic forest reference case",
   "type": "object",
   "additionalProperties": false,

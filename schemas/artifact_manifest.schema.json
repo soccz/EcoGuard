@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/soccz/EcoGuard/schemas/artifact_manifest.schema.json",
+  "$id": "https://raw.githubusercontent.com/soccz/EcoGuard/main/schemas/artifact_manifest.schema.json",
   "title": "EcoGuard deterministic artifact manifest",
   "type": "object",
   "additionalProperties": false,
