@@ -1,308 +1,419 @@
 {
   "case_id": "ECO-FOREST-SYN-2026-001",
-  "classification": "reconstructed_public_baseline",
+  "classification": "synthetic_reference_mask_evaluation",
+  "evaluation": {
+    "confusion_matrix": {
+      "fn": 1,
+      "fp": 1,
+      "tn": 23,
+      "tp": 11
+    },
+    "evaluated_pixel_count": 36,
+    "metric_policy": {
+      "round_digits": 6,
+      "zero_denominator": "null"
+    },
+    "metrics": {
+      "f1": 0.916667,
+      "iou": 0.846154,
+      "precision": 0.916667,
+      "recall": 0.916667
+    },
+    "positive_class": "loss",
+    "predicted_positive_count": 12,
+    "reference_positive_count": 12,
+    "scope": "synthetic pixel-level reference-mask evaluation",
+    "undefined_metrics": []
+  },
+  "geojson_transform": {
+    "kind": "synthetic_wgs84",
+    "pixel_height_deg": 9e-05,
+    "pixel_width_deg": 9e-05,
+    "row_direction": "south",
+    "top_left_lat": 0.001,
+    "top_left_lon": 0.0
+  },
   "grid": {
+    "cell_height_m": 10.0,
+    "cell_width_m": 10.0,
     "cols": 6,
+    "connectivity": 4,
     "pixel_count": 36,
     "rows": 6
   },
-  "input": "synthetic red/NIR pixel grid",
+  "input": "synthetic red/NIR pixel grid + synthetic reference mask",
   "limitations": [
-    "합성 픽셀로 임계값과 산식의 재현성만 확인합니다.",
-    "운영용 위성 분류기, 현장 검증, EUDR 적합성 판정을 대체하지 않습니다.",
-    "대회 당시의 CNN/XAI 정확도를 재현하거나 주장하지 않습니다."
+    "합성 픽셀과 합성 reference mask로 코드 경로와 평가 산식만 확인합니다.",
+    "이 지표는 실제 위성 영상이나 운영 모델의 일반화 성능이 아닙니다.",
+    "운영용 위성 분류기, 현장 검증, EUDR 적합성 판정을 대체하지 않습니다."
   ],
   "method": "NDVI=(NIR−Red)/(NIR+Red); loss when baseline NDVI and decrease exceed explicit thresholds",
   "pixels": [
     {
       "col": 0,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.573,
       "ndvi_before": 0.6,
       "ndvi_change": -0.027,
+      "reference_loss": false,
       "row": 0
     },
     {
       "col": 1,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5862,
       "ndvi_before": 0.6092,
       "ndvi_change": -0.023,
+      "reference_loss": false,
       "row": 0
     },
     {
       "col": 2,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5632,
       "ndvi_before": 0.5955,
       "ndvi_change": -0.0323,
+      "reference_loss": false,
       "row": 0
     },
     {
       "col": 3,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5556,
       "ndvi_before": 0.587,
       "ndvi_change": -0.0314,
+      "reference_loss": false,
       "row": 0
     },
     {
       "col": 4,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5778,
       "ndvi_before": 0.6,
       "ndvi_change": -0.0222,
+      "reference_loss": false,
       "row": 0
     },
     {
       "col": 5,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5814,
       "ndvi_before": 0.6047,
       "ndvi_change": -0.0233,
+      "reference_loss": false,
       "row": 0
     },
     {
       "col": 0,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.573,
       "ndvi_before": 0.5955,
       "ndvi_change": -0.0225,
+      "reference_loss": false,
       "row": 1
     },
     {
       "col": 1,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5814,
       "ndvi_before": 0.618,
       "ndvi_change": -0.0366,
+      "reference_loss": false,
       "row": 1
     },
     {
       "col": 2,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": 0.04,
       "ndvi_before": 0.5909,
       "ndvi_change": -0.5509,
+      "reference_loss": true,
       "row": 1
     },
     {
       "col": 3,
+      "confusion_class": "fp",
       "loss_flag": true,
       "ndvi_after": -0.0133,
       "ndvi_before": 0.5914,
       "ndvi_change": -0.6047,
+      "reference_loss": false,
       "row": 1
     },
     {
       "col": 4,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5682,
       "ndvi_before": 0.6,
       "ndvi_change": -0.0318,
+      "reference_loss": false,
       "row": 1
     },
     {
       "col": 5,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5765,
       "ndvi_before": 0.6092,
       "ndvi_change": -0.0327,
+      "reference_loss": false,
       "row": 1
     },
     {
       "col": 0,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5682,
       "ndvi_before": 0.6044,
       "ndvi_change": -0.0362,
+      "reference_loss": false,
       "row": 2
     },
     {
       "col": 1,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": 0.0811,
       "ndvi_before": 0.6136,
       "ndvi_change": -0.5326,
+      "reference_loss": true,
       "row": 2
     },
     {
       "col": 2,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": -0.1389,
       "ndvi_before": 0.6,
       "ndvi_change": -0.7389,
+      "reference_loss": true,
       "row": 2
     },
     {
       "col": 3,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": -0.1944,
       "ndvi_before": 0.587,
       "ndvi_change": -0.7814,
+      "reference_loss": true,
       "row": 2
     },
     {
       "col": 4,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": 0.0411,
       "ndvi_before": 0.5909,
       "ndvi_change": -0.5498,
+      "reference_loss": true,
       "row": 2
     },
     {
       "col": 5,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5714,
       "ndvi_before": 0.6047,
       "ndvi_change": -0.0332,
+      "reference_loss": false,
       "row": 2
     },
     {
       "col": 0,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5506,
       "ndvi_before": 0.5824,
       "ndvi_change": -0.0319,
+      "reference_loss": false,
       "row": 3
     },
     {
       "col": 1,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": 0.0,
       "ndvi_before": 0.5955,
       "ndvi_change": -0.5955,
+      "reference_loss": true,
       "row": 3
     },
     {
       "col": 2,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": -0.2394,
       "ndvi_before": 0.6092,
       "ndvi_change": -0.8486,
+      "reference_loss": true,
       "row": 3
     },
     {
       "col": 3,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": -0.2676,
       "ndvi_before": 0.6044,
       "ndvi_change": -0.872,
+      "reference_loss": true,
       "row": 3
     },
     {
       "col": 4,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": -0.0278,
       "ndvi_before": 0.5824,
       "ndvi_change": -0.6102,
+      "reference_loss": true,
       "row": 3
     },
     {
       "col": 5,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5581,
       "ndvi_before": 0.5909,
       "ndvi_change": -0.0328,
+      "reference_loss": false,
       "row": 3
     },
     {
       "col": 0,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5632,
       "ndvi_before": 0.5955,
       "ndvi_change": -0.0323,
+      "reference_loss": false,
       "row": 4
     },
     {
       "col": 1,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5765,
       "ndvi_before": 0.6092,
       "ndvi_change": -0.0327,
+      "reference_loss": false,
       "row": 4
     },
     {
       "col": 2,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": 0.0541,
       "ndvi_before": 0.6,
       "ndvi_change": -0.5459,
+      "reference_loss": true,
       "row": 4
     },
     {
       "col": 3,
+      "confusion_class": "tp",
       "loss_flag": true,
       "ndvi_after": -0.0137,
       "ndvi_before": 0.587,
       "ndvi_change": -0.6007,
+      "reference_loss": true,
       "row": 4
     },
     {
       "col": 4,
+      "confusion_class": "fn",
       "loss_flag": false,
       "ndvi_after": 0.5632,
       "ndvi_before": 0.5955,
       "ndvi_change": -0.0323,
+      "reference_loss": true,
       "row": 4
     },
     {
       "col": 5,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5714,
       "ndvi_before": 0.6047,
       "ndvi_change": -0.0332,
+      "reference_loss": false,
       "row": 4
     },
     {
       "col": 0,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5632,
       "ndvi_before": 0.5909,
       "ndvi_change": -0.0277,
+      "reference_loss": false,
       "row": 5
     },
     {
       "col": 1,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5862,
       "ndvi_before": 0.6136,
       "ndvi_change": -0.0274,
+      "reference_loss": false,
       "row": 5
     },
     {
       "col": 2,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.573,
       "ndvi_before": 0.6,
       "ndvi_change": -0.027,
+      "reference_loss": false,
       "row": 5
     },
     {
       "col": 3,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5604,
       "ndvi_before": 0.587,
       "ndvi_change": -0.0265,
+      "reference_loss": false,
       "row": 5
     },
     {
       "col": 4,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5632,
       "ndvi_before": 0.5909,
       "ndvi_change": -0.0277,
+      "reference_loss": false,
       "row": 5
     },
     {
       "col": 5,
+      "confusion_class": "tn",
       "loss_flag": false,
       "ndvi_after": 0.5765,
       "ndvi_before": 0.6047,
       "ndvi_change": -0.0282,
+      "reference_loss": false,
       "row": 5
     }
   ],
+  "reference": {
+    "label": "synthetic reference mask",
+    "provenance": "Team-authored synthetic mask for metric-code verification; not a real-world annotation."
+  },
   "regions": [
     {
       "area_m2": 1200.0,
@@ -362,34 +473,55 @@
   ],
   "relation_to_trade_case": "independent synthetic technical baseline",
   "reproduction": {
+    "determinism": {
+      "json_allow_nan": false,
+      "json_keys": "sorted",
+      "record_order": "document/page/line and row-major",
+      "timestamps_in_artifacts": false
+    },
     "input_subset": [
-      "forest_pixels"
+      "forest_case",
+      "forest_pixels",
+      "forest_reference_mask"
     ],
     "inputs": {
+      "forest_case": {
+        "bytes": 910,
+        "sha256": "bbfbd997d1e5e9b6a22a327425ff5db4ede6deb204a24d282389f2c0935832be"
+      },
       "forest_pixels": {
         "bytes": 914,
         "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
       },
+      "forest_reference_mask": {
+        "bytes": 239,
+        "sha256": "dccbb35d095902e04198f24d9573de51af9678c735e7f9429463b96ef6de74f4"
+      },
       "legal_corpus": {
-        "bytes": 5908,
-        "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+        "bytes": 10364,
+        "sha256": "8830e3d79d7698dfe3c24833f94395b1626cabf6377ac32a3a27aa42f2e9c374"
       },
       "legal_eval": {
-        "bytes": 665,
-        "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+        "bytes": 11754,
+        "sha256": "6e7a1a9665aa3e42dae01e38096464440a184fe81124f1c2ce24b637364cd3b0"
       },
       "legal_source_manifest": {
-        "bytes": 1055,
-        "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+        "bytes": 1914,
+        "sha256": "4f6742db459e0003f85f928ee40ff4c005f6d6dab217ebd074f203bbe64d0f5d"
       },
-      "ocr_records": {
-        "bytes": 3255,
-        "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+      "normalization_policy": {
+        "bytes": 836,
+        "sha256": "d9f52ac2b6272686ccb9741a053ee2c98f6c1f4d196bc7c0169485e4bb71383a"
+      },
+      "trade_case_documents": {
+        "bytes": 5383,
+        "sha256": "be5b3def3d0cd3d617201aa9f93fa318277c7d5f32ae12d6888529f7a06e140e"
       }
     },
-    "pipeline_version": "0.1.0",
-    "schema_version": "1.0.0"
+    "pipeline_version": "0.2.0",
+    "schema_version": "2.0.0"
   },
+  "schema_version": "2.0.0",
   "summary": {
     "contiguous_region_count": 1,
     "largest_region_pixel_count": 12,

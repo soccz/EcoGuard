@@ -1,0 +1,32 @@
+{
+  "policy_id": "ecoguard-normalization-v2",
+  "selection_strategy": "validity > document authority > confidence > stable input order",
+  "default_source_authority": 10,
+  "source_authority": {
+    "scenario_assumptions": 100,
+    "cbam_product_sheet": 95,
+    "commercial_invoice": 90,
+    "packing_list": 85,
+    "supplier_declaration": 85,
+    "energy_memo": 45,
+    "operator_memo": 20,
+    "unknown": 10
+  },
+  "field_overrides": {
+    "shipment_mass_t": {
+      "absolute_conflict_tolerance": "0.1",
+      "source_authority": {
+        "commercial_invoice": 100,
+        "packing_list": 90,
+        "operator_memo": 20
+      }
+    },
+    "actual_intensity_tco2e_per_t": {
+      "absolute_conflict_tolerance": "0.001",
+      "source_authority": {
+        "cbam_product_sheet": 100,
+        "operator_memo": 20
+      }
+    }
+  }
+}

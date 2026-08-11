@@ -1,0 +1,133 @@
+{
+  "schema_version": "ocr-document-bundle/1.0",
+  "case_id": "ECO-SYN-2026-001",
+  "notice": "All document text, identifiers and values are synthetic. The bundle intentionally contains one material mass conflict, one rounded-equivalent intensity and one blank verification reference.",
+  "documents": [
+    {
+      "document_id": "commercial_invoice",
+      "document_type": "commercial_invoice",
+      "language": "ko-en",
+      "pages": [
+        {
+          "page": 1,
+          "lines": [
+            {"line": 1, "text": "COMMERCIAL INVOICE · SYNTHETIC TRAINING RECORD", "confidence": 0.99},
+            {"line": 2, "text": "Invoice No. SYN-INV-2026-001", "confidence": 0.99},
+            {"line": 3, "text": "CN code : 7318.15.52", "confidence": 0.99},
+            {"line": 4, "text": "총 출하 중량 : 190,000 kg", "confidence": 0.98}
+          ]
+        }
+      ]
+    },
+    {
+      "document_id": "packing_list",
+      "document_type": "packing_list",
+      "language": "en",
+      "pages": [
+        {
+          "page": 1,
+          "lines": [
+            {"line": 1, "text": "PACKING LIST · SYNTHETIC", "confidence": 0.99},
+            {"line": 2, "text": "NET WT | 190 MT", "confidence": 0.96}
+          ]
+        }
+      ]
+    },
+    {
+      "document_id": "operator_memo",
+      "document_type": "operator_memo",
+      "language": "ko",
+      "pages": [
+        {
+          "page": 1,
+          "lines": [
+            {"line": 1, "text": "현장 메모 — 숫자는 확정 문서와 다시 대조할 것", "confidence": 0.74},
+            {"line": 2, "text": "출하량 = 약 191톤? 최종 인보이스 재확인 필요", "confidence": 0.55},
+            {"line": 3, "text": "배출계수 : 5.85 tCO2/t 정도, 아직 검증 전", "confidence": 0.68}
+          ]
+        }
+      ]
+    },
+    {
+      "document_id": "cbam_product_sheet",
+      "document_type": "cbam_product_sheet",
+      "language": "ko-en",
+      "pages": [
+        {
+          "page": 1,
+          "lines": [
+            {"line": 1, "text": "CBAM PRODUCT DATA SHEET · SYNTHETIC", "confidence": 0.99},
+            {"line": 2, "text": "M5 설비 ID : SYN-INSTALLATION-A", "confidence": 0.99},
+            {"line": 3, "text": "M5 생산공정 : SYN-PROCESS-M5", "confidence": 0.99},
+            {"line": 4, "text": "M5 순중량 : 90 MT", "confidence": 0.98},
+            {"line": 5, "text": "M5 공정 직접배출 : 3.200 tCO2e/t", "confidence": 0.97},
+            {"line": 6, "text": "M5 공정 간접배출 : 0.384 tCO2e/t", "confidence": 0.97},
+            {"line": 7, "text": "M5 전구물질 직접배출 : 1.750 tCO2e/t", "confidence": 0.97},
+            {"line": 8, "text": "M5 전구물질 간접배출 : 0.250 tCO2e/t", "confidence": 0.97},
+            {"line": 9, "text": "M5 SEE : 5.584 tCO2e/t", "confidence": 0.98},
+            {"line": 10, "text": "M12 설비 ID : SYN-INSTALLATION-B", "confidence": 0.99},
+            {"line": 11, "text": "M12 생산공정 : SYN-PROCESS-M12", "confidence": 0.99},
+            {"line": 12, "text": "M12 순중량 : 100,000 kg", "confidence": 0.98},
+            {"line": 13, "text": "M12 공정 직접배출 : 3.500 tCO2e/t", "confidence": 0.97},
+            {"line": 14, "text": "M12 공정 간접배출 : 0.588 tCO2e/t", "confidence": 0.97},
+            {"line": 15, "text": "M12 전구물질 직접배출 : 1.750 tCO2e/t", "confidence": 0.97},
+            {"line": 16, "text": "M12 전구물질 간접배출 : 0.250 tCO2e/t", "confidence": 0.97},
+            {"line": 17, "text": "M12 SEE : 6.088 tCO2e/t", "confidence": 0.98}
+          ]
+        },
+        {
+          "page": 2,
+          "lines": [
+            {"line": 1, "text": "실측 배출계수 : 5.849263 tCO2e/t", "confidence": 0.94},
+            {"line": 2, "text": "EU 기본값 : 7.311579 tCO2e/t", "confidence": 0.94},
+            {"line": 3, "text": "검증서 번호 : [blank]", "confidence": 1.0}
+          ]
+        }
+      ]
+    },
+    {
+      "document_id": "scenario_assumptions",
+      "document_type": "scenario_assumptions",
+      "language": "ko-en",
+      "pages": [
+        {
+          "page": 1,
+          "lines": [
+            {"line": 1, "text": "SCENARIO ASSUMPTIONS · NOT REGULATORY CONSTANTS", "confidence": 1.0},
+            {"line": 2, "text": "CBAM 인증서 가격 : EUR 87.50 / tCO2e", "confidence": 1.0},
+            {"line": 3, "text": "시나리오 노출계수 : 100%", "confidence": 1.0}
+          ]
+        }
+      ]
+    },
+    {
+      "document_id": "supplier_declaration",
+      "document_type": "supplier_declaration",
+      "language": "ko-en",
+      "pages": [
+        {
+          "page": 1,
+          "lines": [
+            {"line": 1, "text": "SUPPLIER DECLARATION · SYNTHETIC", "confidence": 0.99},
+            {"line": 2, "text": "원산지 탄소가격 : EUR 0 / tCO2e", "confidence": 0.90}
+          ]
+        }
+      ]
+    },
+    {
+      "document_id": "energy_memo",
+      "document_type": "energy_memo",
+      "language": "ko",
+      "pages": [
+        {
+          "page": 1,
+          "lines": [
+            {"line": 1, "text": "설비 에너지 메모 — 배출계수와 배분근거 미첨부", "confidence": 0.73},
+            {"line": 2, "text": "전기사용량 : 970,000 kWh", "confidence": 0.72},
+            {"line": 3, "text": "LNG 사용량 : 39,300 Nm3", "confidence": 0.70}
+          ]
+        }
+      ]
+    }
+  ]
+}

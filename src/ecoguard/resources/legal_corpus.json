@@ -1,6 +1,7 @@
 [
   {
     "id": "CBAM-ART6",
+    "instrument": "CBAM",
     "celex": "32023R0956",
     "source_checked_on": "2026-08-11",
     "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
@@ -9,11 +10,36 @@
     "paragraph": "2",
     "title": "CBAM declaration content",
     "summary_ko": "CBAM 신고에는 수입 물품의 수량, 내재배출량, 제출할 인증서 수량과 관련 근거가 포함되어야 한다.",
-    "keywords": ["CBAM 신고", "수량", "내재배출량", "인증서", "declaration"],
+    "keywords": [
+      "CBAM 신고",
+      "수량",
+      "내재배출량",
+      "인증서",
+      "declaration"
+    ],
+    "concepts": {
+      "declaration_content": [
+        "CBAM 신고",
+        "CBAM 신고서",
+        "신고 내용",
+        "declaration"
+      ],
+      "goods_quantity": [
+        "수입 물품 수량",
+        "물품 수량",
+        "신고 수량",
+        "출하량"
+      ],
+      "certificate_quantity": [
+        "제출할 인증서",
+        "인증서 수량"
+      ]
+    },
     "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
   },
   {
     "id": "CBAM-ART7",
+    "instrument": "CBAM",
     "celex": "32023R0956",
     "source_checked_on": "2026-08-11",
     "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
@@ -22,11 +48,39 @@
     "paragraph": "1-7",
     "title": "Calculation of embedded emissions",
     "summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
-    "keywords": ["내재배출량", "실제 배출량", "기본값", "배출계수", "계산", "embedded emissions"],
+    "keywords": [
+      "내재배출량",
+      "실제 배출량",
+      "기본값",
+      "배출계수",
+      "계산",
+      "embedded emissions"
+    ],
+    "concepts": {
+      "embedded_emissions": [
+        "내재배출량",
+        "내재 배출량",
+        "embedded emissions",
+        "배출집약도"
+      ],
+      "calculation_method": [
+        "산정 방법",
+        "계산 방법",
+        "계산 근거",
+        "배출계수",
+        "Annex IV"
+      ],
+      "default_value": [
+        "기본값",
+        "보수적 기본값",
+        "default value"
+      ]
+    },
     "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
   },
   {
     "id": "CBAM-ART8",
+    "instrument": "CBAM",
     "celex": "32023R0956",
     "source_checked_on": "2026-08-11",
     "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
@@ -35,11 +89,44 @@
     "paragraph": "1",
     "title": "Verification of embedded emissions",
     "summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
-    "keywords": ["검증", "검증서", "검증인", "공인", "제3자", "확인", "실제 배출량", "verification"],
+    "keywords": [
+      "검증",
+      "검증서",
+      "검증인",
+      "공인",
+      "제3자",
+      "확인",
+      "실제 배출량",
+      "verification"
+    ],
+    "concepts": {
+      "actual_emissions": [
+        "실제 배출량",
+        "실제 내재배출량",
+        "실제 탄소 수치",
+        "실제 수치"
+      ],
+      "third_party_verification": [
+        "공인 검증인",
+        "검증인",
+        "검증서",
+        "제3자 확인",
+        "독립기관 확인",
+        "공인된 제3자",
+        "verification"
+      ],
+      "verification_requirement": [
+        "검증을 받아",
+        "검증 필요",
+        "검증이 없다",
+        "확인 없이"
+      ]
+    },
     "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
   },
   {
     "id": "CBAM-ART9",
+    "instrument": "CBAM",
     "celex": "32023R0956",
     "source_checked_on": "2026-08-11",
     "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
@@ -48,11 +135,43 @@
     "paragraph": "1-5",
     "title": "Carbon price paid in a third country",
     "summary_ko": "실제 배출량 기준에서는 제3국에서 탄소가격을 실제 지불했다는 기록과 독립 확인 증빙을 바탕으로 인증서 수 감축을 청구할 수 있다. 기본값 배출량에는 연간 기본 탄소가격 관련 조건이 적용된다.",
-    "keywords": ["원산지", "탄소가격", "공제", "지불", "증빙", "third country"],
+    "keywords": [
+      "원산지",
+      "탄소가격",
+      "공제",
+      "지불",
+      "증빙",
+      "third country"
+    ],
+    "concepts": {
+      "third_country_carbon_price": [
+        "원산지 탄소가격",
+        "제3국 탄소가격",
+        "제3국 탄소세",
+        "탄소세",
+        "carbon price",
+        "third country"
+      ],
+      "payment_evidence": [
+        "지불 증빙",
+        "납부 증빙",
+        "이미 낸",
+        "지불한",
+        "납부한"
+      ],
+      "certificate_reduction": [
+        "인증서 감축",
+        "인증서 수 감축",
+        "인증서 수를 줄",
+        "공제",
+        "차감"
+      ]
+    },
     "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
   },
   {
     "id": "EUDR-ART4",
+    "instrument": "EUDR",
     "celex": "32023R1115",
     "source_checked_on": "2026-08-11",
     "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
@@ -61,11 +180,40 @@
     "paragraph": "1-3",
     "title": "Obligations of operators",
     "summary_ko": "일반 사업자는 관련 제품을 시장에 출시하거나 수출하기 전에 실사와 실사 선언 의무를 이행한다. micro 또는 small primary operator에는 Article 4a의 단순화 체계가 별도로 적용될 수 있다.",
-    "keywords": ["EUDR", "실사", "실사 선언서", "사업자", "due diligence"],
+    "keywords": [
+      "EUDR",
+      "실사",
+      "실사 선언서",
+      "사업자",
+      "due diligence"
+    ],
+    "concepts": {
+      "due_diligence": [
+        "실사",
+        "due diligence"
+      ],
+      "due_diligence_statement": [
+        "실사 선언",
+        "실사 선언서"
+      ],
+      "before_market_or_export": [
+        "시장에 출시",
+        "시장에 내기",
+        "출시하기 전",
+        "수출하기 전",
+        "출시 전"
+      ],
+      "operator_obligation": [
+        "사업자 의무",
+        "운영자 의무",
+        "의무 이행"
+      ]
+    },
     "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
   },
   {
     "id": "EUDR-ART9",
+    "instrument": "EUDR",
     "celex": "32023R1115",
     "source_checked_on": "2026-08-11",
     "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
@@ -74,11 +222,45 @@
     "paragraph": "1",
     "title": "Information requirement",
     "summary_ko": "실사 정보에는 제품 설명·수량·생산국과 함께 관련 원자재가 생산된 토지의 지리적 위치와 생산일 또는 기간이 포함된다. 다만 Article 4a(5)의 micro 또는 small primary operator에는 우편주소 대체 예외가 적용될 수 있다.",
-    "keywords": ["생산지", "농장", "좌표", "위경도", "지리적 위치", "geolocation", "생산일", "생산 시기", "정보 요구"],
+    "keywords": [
+      "생산지",
+      "농장",
+      "좌표",
+      "위경도",
+      "지리적 위치",
+      "geolocation",
+      "생산일",
+      "생산 시기",
+      "정보 요구"
+    ],
+    "concepts": {
+      "geolocation": [
+        "생산지 좌표",
+        "농장 좌표",
+        "위경도",
+        "지리적 위치",
+        "geolocation",
+        "농장 위치",
+        "농장이 어디인지"
+      ],
+      "production_period": [
+        "생산일",
+        "생산 기간",
+        "생산 시기",
+        "수확기간",
+        "수확 기간"
+      ],
+      "information_requirement": [
+        "정보 요구",
+        "자료 누락",
+        "정보 누락"
+      ]
+    },
     "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
   },
   {
     "id": "EUDR-ART10",
+    "instrument": "EUDR",
     "celex": "32023R1115",
     "source_checked_on": "2026-08-11",
     "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
@@ -87,11 +269,41 @@
     "paragraph": "1-2",
     "title": "Risk assessment",
     "summary_ko": "사업자는 Article 9의 정보와 기타 문서를 검증·분석해 제품의 비준수 위험이 없거나 무시할 수준인지 평가해야 한다.",
-    "keywords": ["위험 평가", "산림", "비준수", "검증", "분석", "risk assessment"],
+    "keywords": [
+      "위험 평가",
+      "산림",
+      "비준수",
+      "검증",
+      "분석",
+      "risk assessment"
+    ],
+    "concepts": {
+      "risk_assessment": [
+        "위험 평가",
+        "risk assessment",
+        "비준수 위험",
+        "위험이 없",
+        "위험이 무시할"
+      ],
+      "evidence_analysis": [
+        "정보를 검증",
+        "문서를 검증",
+        "검증 분석",
+        "수집 정보",
+        "정보와 문서",
+        "분석해"
+      ],
+      "deforestation_risk": [
+        "산림 훼손",
+        "deforestation",
+        "산림 비준수"
+      ]
+    },
     "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
   },
   {
     "id": "EUDR-ART11",
+    "instrument": "EUDR",
     "celex": "32023R1115",
     "source_checked_on": "2026-08-11",
     "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
@@ -100,7 +312,33 @@
     "paragraph": "1",
     "title": "Risk mitigation",
     "summary_ko": "위험이 무시할 수준이 아니면 추가 정보·조사·독립 감사 등 적절한 완화 절차를 적용해야 한다.",
-    "keywords": ["위험 완화", "추가 정보", "조사", "독립 감사", "risk mitigation"],
+    "keywords": [
+      "위험 완화",
+      "추가 정보",
+      "조사",
+      "독립 감사",
+      "risk mitigation"
+    ],
+    "concepts": {
+      "risk_mitigation": [
+        "위험 완화",
+        "risk mitigation",
+        "완화 절차",
+        "위험이 무시할 수준이 아니",
+        "위험이 높"
+      ],
+      "additional_evidence": [
+        "추가 정보",
+        "추가 자료",
+        "추가 조사",
+        "조사"
+      ],
+      "independent_audit": [
+        "독립 감사",
+        "현장 점검",
+        "감사"
+      ]
+    },
     "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
   }
 ]

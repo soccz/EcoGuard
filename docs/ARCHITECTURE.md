@@ -1,31 +1,139 @@
 # Architecture
 
-    OCR / table extraction / manual entry adapter
+EcoGuard v0.2는 결과값보다 **evidence lineage와 계산 trace**를 먼저 설계합니다. 모든 운영 시스템 연동은 바깥 adapter로 두고, 공개 패키지는 합성 입력에서 시작하는 결정론적 core만 포함합니다.
+
+```text
+synthetic OCR document bundle
+  document / page / line / confidence / raw text
                         │
                         ▼
-            raw record boundary (synthetic JSON)
+              ingestion.extract_document_bundle
+  candidate / character span / line SHA / document SHA
                         │
                         ▼
-          normalize aliases, units and candidates
-              │              │
-              │              └── provenance + review issues
-              ▼
-          typed regulatory evidence
-              ├──────── legal article retriever + citation eval
-              ├──────── CBAM exposure scenarios
-              └──────── independent synthetic NDVI change baseline
-                                  │
-                                  ▼
-                     JSON + human-review HTML report
+                  preprocessing.normalize_records
+  field / unit / transformation / selection rank / provenance
+                        │
+             ┌──────────┴───────────┐
+             │                      │
+             ▼                      ▼
+  validation ledger          rule-mapped case issue
+  conflict / missing               │
+             │                      ▼
+             │            legal BM25F citation retrieval
+             │            score trace / abstain / eval
+             │
+             ▼
+  CBAM technical inventory
+  item × component DAG / reconciliation / sensitivity
 
-## Module contracts
+  independent synthetic forest case
+  red/NIR + reference mask
+             │
+             ▼
+  NDVI mask / confusion metrics / regions / GeoJSON / SVG
 
-| Module | Input | Output |
-|---|---|---|
-| preprocessing | OCR-like records | normalized fields, all candidates, source location, issues |
-| legal | query and article metadata | ranked citations and evaluation metrics |
-| cbam | typed normalized fields | actual/default exposure scenarios and assumptions |
-| forest | red/NIR pixels | NDVI deltas, loss flags and SVG |
-| report | four module results | scoped evidence packet for human review |
+             all stage outputs
+                    │
+                    ▼
+  human-review JSON + HTML + artifact SHA-256 manifest
+```
 
-The runtime uses only the Python standard library. The release verification runs the full unit-test suite, reproduction command, wheel installation, and golden-output diff.
+## Stage contracts
+
+| Stage | Input contract | Output contract | Main invariant |
+|---|---|---|---|
+| ingestion | document bundle v1 | extracted records v1 | input order does not change records; every candidate has a source span and hash |
+| preprocessing | extracted records + normalization policy | normalized evidence v2 | no candidate is silently discarded; selection is reproducible |
+| legal | 8 article records + 34 eval cases | retrieval decision and citation trace | explicit instrument cannot leak to the other regulation |
+| CBAM | normalized typed fields | cbam-scenario/2.0 | component, direct/indirect, process/precursor and shipment totals reconcile |
+| forest | forest case v2 + band/reference CSV | mask evaluation + GeoJSON/SVG | grid and reference universe match exactly; output is row-major |
+| pipeline | all versioned fixtures | 11 public artifacts | two executions and wheel-installed execution are byte-identical |
+
+## Evidence identity
+
+Ingestion assigns a deterministic evidence ID such as:
+
+```text
+ev-commercial-invoice-p01-l004
+```
+
+The candidate also contains:
+
+```json
+{
+  "document": "commercial_invoice",
+  "page": 1,
+  "line": 4,
+  "source_span": {
+    "alias_start": 0,
+    "alias_end": 8,
+    "value_start": 11,
+    "value_end": 21
+  },
+  "line_sha256": "...",
+  "document_sha256": "..."
+}
+```
+
+Normalization copies this identity into `selected_from`. CBAM leaf operands reference the same evidence ID and source hash. A reviewer can therefore walk backward from exposure → formula step → normalized field → OCR line without relying on an opaque database key.
+
+## Candidate selection
+
+Selection is data-driven by `normalization_policy.json`:
+
+```text
+parseable > document authority > extraction confidence > stable order
+```
+
+Confidence is only a tie-breaker after document authority. A high-confidence value from a memo cannot automatically override a lower-confidence value from an authoritative sheet. Material conflicts and within-tolerance differences are different output types.
+
+## CBAM calculation DAG
+
+Every technical-inventory multiplication is a node:
+
+```text
+m5.process_direct
+  = shipment mass evidence × process-direct intensity evidence
+
+m5.component_sum
+  = Σ(m5.* component nodes)
+
+shipment.component_sum
+  = m5.component_sum + m12.component_sum
+```
+
+Leaf nodes require an `evidence_ref`. Analyst-defined sensitivity leaves require an `assumption_ref`. Derived operands require a `derived_from` step ID. Tests evaluate the arithmetic and topological order rather than only comparing the final number.
+
+## Legal retrieval boundary
+
+The retriever is not an LLM. It separates regulation aliases, article, title, keywords, concepts and team-authored summary, applies field-weighted BM25F, and returns:
+
+- normalized query and detected instrument/intent/concepts
+- supported/review/abstained decision and reason code
+- ranked citation with Article/paragraph metadata and EUR-Lex URL
+- word, character, phrase, article and field score trace
+- corpus and entry SHA-256
+
+Evaluation reports positive coverage and negative abstention separately so a system cannot inflate apparent accuracy by refusing every query.
+
+## Forest evaluation boundary
+
+`forest_case.json` fixes grid dimensions, thresholds, connectivity, cell size and a synthetic WGS84 transform. Band and reference-mask files must cover the exact same 36-cell universe. Prediction is computed at full `Decimal` precision; rounding occurs only when serializing.
+
+GeoJSON uses one RFC 7946 Polygon Feature per cell. This avoids claiming a geometrically valid dissolved boundary when no GIS union library is present. `region_id` still groups connected predicted cells.
+
+## Deterministic build
+
+Golden output excludes timestamps, random IDs, absolute paths and host-specific Python versions. JSON uses sorted keys and rejects NaN. Documents and pixels are sorted by stable identifiers.
+
+`scripts/verify_release.sh` proves the package boundary:
+
+1. test source code
+2. compile source and tests
+3. build wheel without runtime dependencies
+4. install into a fresh venv
+5. run from outside the repository using packaged fixtures
+6. diff every generated byte against `artifacts/examples`
+
+`artifact_manifest.json` independently records every input and non-manifest output hash.

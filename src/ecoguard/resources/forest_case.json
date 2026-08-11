@@ -1,0 +1,33 @@
+{
+  "schema_version": "2.0.0",
+  "case_id": "ECO-FOREST-SYN-2026-001",
+  "classification": "synthetic_reference_mask_evaluation",
+  "relation_to_trade_case": "independent synthetic technical baseline",
+  "files": {
+    "pixels": "forest_pixels.csv",
+    "reference_mask": "forest_reference_mask.csv"
+  },
+  "grid": {
+    "rows": 6,
+    "cols": 6,
+    "connectivity": 4,
+    "cell_width_m": "10",
+    "cell_height_m": "10"
+  },
+  "thresholds": {
+    "forest_ndvi_min": "0.45",
+    "ndvi_decrease_min": "0.25"
+  },
+  "geojson_transform": {
+    "kind": "synthetic_wgs84",
+    "top_left_lon": "0.000000",
+    "top_left_lat": "0.001000",
+    "pixel_width_deg": "0.000090",
+    "pixel_height_deg": "0.000090",
+    "row_direction": "south"
+  },
+  "reference": {
+    "label": "synthetic reference mask",
+    "provenance": "Team-authored synthetic mask for metric-code verification; not a real-world annotation."
+  }
+}

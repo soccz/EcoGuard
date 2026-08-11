@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/soccz/EcoGuard/schemas/forest_case.schema.json",
+  "title": "EcoGuard synthetic forest reference case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "case_id",
+    "classification",
+    "relation_to_trade_case",
+    "files",
+    "grid",
+    "thresholds",
+    "geojson_transform",
+    "reference"
+  ],
+  "properties": {
+    "schema_version": {"const": "2.0.0"},
+    "case_id": {"type": "string", "minLength": 1},
+    "classification": {"const": "synthetic_reference_mask_evaluation"},
+    "relation_to_trade_case": {"type": "string", "minLength": 1},
+    "files": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pixels", "reference_mask"],
+      "properties": {
+        "pixels": {"type": "string", "pattern": "^[^/]+\\.csv$"},
+        "reference_mask": {"type": "string", "pattern": "^[^/]+\\.csv$"}
+      }
+    },
+    "grid": {
+      "type": "object",
+      "required": ["rows", "cols", "connectivity", "cell_width_m", "cell_height_m"],
+      "properties": {
+        "rows": {"type": "integer", "minimum": 1},
+        "cols": {"type": "integer", "minimum": 1},
+        "connectivity": {"enum": [4, 8]},
+        "cell_width_m": {"type": "string"},
+        "cell_height_m": {"type": "string"}
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "required": ["forest_ndvi_min", "ndvi_decrease_min"],
+      "properties": {
+        "forest_ndvi_min": {"type": "string"},
+        "ndvi_decrease_min": {"type": "string"}
+      }
+    },
+    "geojson_transform": {"type": "object"},
+    "reference": {"type": "object"}
+  }
+}

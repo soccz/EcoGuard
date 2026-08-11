@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/soccz/EcoGuard/schemas/normalization_policy.schema.json",
+  "title": "EcoGuard normalization selection policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "policy_id",
+    "selection_strategy",
+    "default_source_authority",
+    "source_authority",
+    "field_overrides"
+  ],
+  "properties": {
+    "policy_id": {"type": "string", "minLength": 1},
+    "selection_strategy": {"type": "string", "minLength": 1},
+    "default_source_authority": {"type": "integer", "minimum": 0},
+    "source_authority": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "field_overrides": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "absolute_conflict_tolerance": {
+            "type": "string",
+            "pattern": "^[0-9]+(?:\\.[0-9]+)?$"
+          },
+          "source_authority": {
+            "type": "object",
+            "additionalProperties": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    }
+  }
+}

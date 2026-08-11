@@ -1,0 +1,1650 @@
+{
+  "bbox": [
+    0.0,
+    0.00046,
+    0.00054,
+    0.001
+  ],
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.0,
+              0.001
+            ],
+            [
+              0.0,
+              0.00091
+            ],
+            [
+              9e-05,
+              0.00091
+            ],
+            [
+              9e-05,
+              0.001
+            ],
+            [
+              0.0,
+              0.001
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c000",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 0,
+        "confusion_class": "tn",
+        "ndvi_after": 0.573,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.027,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 0,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              9e-05,
+              0.001
+            ],
+            [
+              9e-05,
+              0.00091
+            ],
+            [
+              0.00018,
+              0.00091
+            ],
+            [
+              0.00018,
+              0.001
+            ],
+            [
+              9e-05,
+              0.001
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c001",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 1,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5862,
+        "ndvi_before": 0.6092,
+        "ndvi_change": -0.023,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 0,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00018,
+              0.001
+            ],
+            [
+              0.00018,
+              0.00091
+            ],
+            [
+              0.00027,
+              0.00091
+            ],
+            [
+              0.00027,
+              0.001
+            ],
+            [
+              0.00018,
+              0.001
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c002",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 2,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.0323,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 0,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00027,
+              0.001
+            ],
+            [
+              0.00027,
+              0.00091
+            ],
+            [
+              0.00036,
+              0.00091
+            ],
+            [
+              0.00036,
+              0.001
+            ],
+            [
+              0.00027,
+              0.001
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c003",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 3,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5556,
+        "ndvi_before": 0.587,
+        "ndvi_change": -0.0314,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 0,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00036,
+              0.001
+            ],
+            [
+              0.00036,
+              0.00091
+            ],
+            [
+              0.00045,
+              0.00091
+            ],
+            [
+              0.00045,
+              0.001
+            ],
+            [
+              0.00036,
+              0.001
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c004",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 4,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5778,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.0222,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 0,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00045,
+              0.001
+            ],
+            [
+              0.00045,
+              0.00091
+            ],
+            [
+              0.00054,
+              0.00091
+            ],
+            [
+              0.00054,
+              0.001
+            ],
+            [
+              0.00045,
+              0.001
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c005",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 5,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5814,
+        "ndvi_before": 0.6047,
+        "ndvi_change": -0.0233,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 0,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.0,
+              0.00091
+            ],
+            [
+              0.0,
+              0.00082
+            ],
+            [
+              9e-05,
+              0.00082
+            ],
+            [
+              9e-05,
+              0.00091
+            ],
+            [
+              0.0,
+              0.00091
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c000",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 0,
+        "confusion_class": "tn",
+        "ndvi_after": 0.573,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.0225,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 1,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              9e-05,
+              0.00091
+            ],
+            [
+              9e-05,
+              0.00082
+            ],
+            [
+              0.00018,
+              0.00082
+            ],
+            [
+              0.00018,
+              0.00091
+            ],
+            [
+              9e-05,
+              0.00091
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c001",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 1,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5814,
+        "ndvi_before": 0.618,
+        "ndvi_change": -0.0366,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 1,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00018,
+              0.00091
+            ],
+            [
+              0.00018,
+              0.00082
+            ],
+            [
+              0.00027,
+              0.00082
+            ],
+            [
+              0.00027,
+              0.00091
+            ],
+            [
+              0.00018,
+              0.00091
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c002",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 2,
+        "confusion_class": "tp",
+        "ndvi_after": 0.04,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.5509,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 1,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00027,
+              0.00091
+            ],
+            [
+              0.00027,
+              0.00082
+            ],
+            [
+              0.00036,
+              0.00082
+            ],
+            [
+              0.00036,
+              0.00091
+            ],
+            [
+              0.00027,
+              0.00091
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c003",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 3,
+        "confusion_class": "fp",
+        "ndvi_after": -0.0133,
+        "ndvi_before": 0.5914,
+        "ndvi_change": -0.6047,
+        "predicted_loss": true,
+        "reference_loss": false,
+        "region_id": 1,
+        "row": 1,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00036,
+              0.00091
+            ],
+            [
+              0.00036,
+              0.00082
+            ],
+            [
+              0.00045,
+              0.00082
+            ],
+            [
+              0.00045,
+              0.00091
+            ],
+            [
+              0.00036,
+              0.00091
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c004",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 4,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5682,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.0318,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 1,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00045,
+              0.00091
+            ],
+            [
+              0.00045,
+              0.00082
+            ],
+            [
+              0.00054,
+              0.00082
+            ],
+            [
+              0.00054,
+              0.00091
+            ],
+            [
+              0.00045,
+              0.00091
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c005",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 5,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5765,
+        "ndvi_before": 0.6092,
+        "ndvi_change": -0.0327,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 1,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.0,
+              0.00082
+            ],
+            [
+              0.0,
+              0.00073
+            ],
+            [
+              9e-05,
+              0.00073
+            ],
+            [
+              9e-05,
+              0.00082
+            ],
+            [
+              0.0,
+              0.00082
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c000",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 0,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5682,
+        "ndvi_before": 0.6044,
+        "ndvi_change": -0.0362,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 2,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              9e-05,
+              0.00082
+            ],
+            [
+              9e-05,
+              0.00073
+            ],
+            [
+              0.00018,
+              0.00073
+            ],
+            [
+              0.00018,
+              0.00082
+            ],
+            [
+              9e-05,
+              0.00082
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c001",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 1,
+        "confusion_class": "tp",
+        "ndvi_after": 0.0811,
+        "ndvi_before": 0.6136,
+        "ndvi_change": -0.5326,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 2,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00018,
+              0.00082
+            ],
+            [
+              0.00018,
+              0.00073
+            ],
+            [
+              0.00027,
+              0.00073
+            ],
+            [
+              0.00027,
+              0.00082
+            ],
+            [
+              0.00018,
+              0.00082
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c002",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 2,
+        "confusion_class": "tp",
+        "ndvi_after": -0.1389,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.7389,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 2,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00027,
+              0.00082
+            ],
+            [
+              0.00027,
+              0.00073
+            ],
+            [
+              0.00036,
+              0.00073
+            ],
+            [
+              0.00036,
+              0.00082
+            ],
+            [
+              0.00027,
+              0.00082
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c003",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 3,
+        "confusion_class": "tp",
+        "ndvi_after": -0.1944,
+        "ndvi_before": 0.587,
+        "ndvi_change": -0.7814,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 2,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00036,
+              0.00082
+            ],
+            [
+              0.00036,
+              0.00073
+            ],
+            [
+              0.00045,
+              0.00073
+            ],
+            [
+              0.00045,
+              0.00082
+            ],
+            [
+              0.00036,
+              0.00082
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c004",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 4,
+        "confusion_class": "tp",
+        "ndvi_after": 0.0411,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.5498,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 2,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00045,
+              0.00082
+            ],
+            [
+              0.00045,
+              0.00073
+            ],
+            [
+              0.00054,
+              0.00073
+            ],
+            [
+              0.00054,
+              0.00082
+            ],
+            [
+              0.00045,
+              0.00082
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c005",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 5,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5714,
+        "ndvi_before": 0.6047,
+        "ndvi_change": -0.0332,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 2,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.0,
+              0.00073
+            ],
+            [
+              0.0,
+              0.00064
+            ],
+            [
+              9e-05,
+              0.00064
+            ],
+            [
+              9e-05,
+              0.00073
+            ],
+            [
+              0.0,
+              0.00073
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c000",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 0,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5506,
+        "ndvi_before": 0.5824,
+        "ndvi_change": -0.0319,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 3,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              9e-05,
+              0.00073
+            ],
+            [
+              9e-05,
+              0.00064
+            ],
+            [
+              0.00018,
+              0.00064
+            ],
+            [
+              0.00018,
+              0.00073
+            ],
+            [
+              9e-05,
+              0.00073
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c001",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 1,
+        "confusion_class": "tp",
+        "ndvi_after": 0.0,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.5955,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 3,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00018,
+              0.00073
+            ],
+            [
+              0.00018,
+              0.00064
+            ],
+            [
+              0.00027,
+              0.00064
+            ],
+            [
+              0.00027,
+              0.00073
+            ],
+            [
+              0.00018,
+              0.00073
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c002",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 2,
+        "confusion_class": "tp",
+        "ndvi_after": -0.2394,
+        "ndvi_before": 0.6092,
+        "ndvi_change": -0.8486,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 3,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00027,
+              0.00073
+            ],
+            [
+              0.00027,
+              0.00064
+            ],
+            [
+              0.00036,
+              0.00064
+            ],
+            [
+              0.00036,
+              0.00073
+            ],
+            [
+              0.00027,
+              0.00073
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c003",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 3,
+        "confusion_class": "tp",
+        "ndvi_after": -0.2676,
+        "ndvi_before": 0.6044,
+        "ndvi_change": -0.872,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 3,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00036,
+              0.00073
+            ],
+            [
+              0.00036,
+              0.00064
+            ],
+            [
+              0.00045,
+              0.00064
+            ],
+            [
+              0.00045,
+              0.00073
+            ],
+            [
+              0.00036,
+              0.00073
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c004",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 4,
+        "confusion_class": "tp",
+        "ndvi_after": -0.0278,
+        "ndvi_before": 0.5824,
+        "ndvi_change": -0.6102,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 3,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00045,
+              0.00073
+            ],
+            [
+              0.00045,
+              0.00064
+            ],
+            [
+              0.00054,
+              0.00064
+            ],
+            [
+              0.00054,
+              0.00073
+            ],
+            [
+              0.00045,
+              0.00073
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c005",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 5,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5581,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.0328,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 3,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.0,
+              0.00064
+            ],
+            [
+              0.0,
+              0.00055
+            ],
+            [
+              9e-05,
+              0.00055
+            ],
+            [
+              9e-05,
+              0.00064
+            ],
+            [
+              0.0,
+              0.00064
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r004-c000",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 0,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.0323,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 4,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              9e-05,
+              0.00064
+            ],
+            [
+              9e-05,
+              0.00055
+            ],
+            [
+              0.00018,
+              0.00055
+            ],
+            [
+              0.00018,
+              0.00064
+            ],
+            [
+              9e-05,
+              0.00064
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r004-c001",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 1,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5765,
+        "ndvi_before": 0.6092,
+        "ndvi_change": -0.0327,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 4,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00018,
+              0.00064
+            ],
+            [
+              0.00018,
+              0.00055
+            ],
+            [
+              0.00027,
+              0.00055
+            ],
+            [
+              0.00027,
+              0.00064
+            ],
+            [
+              0.00018,
+              0.00064
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r004-c002",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 2,
+        "confusion_class": "tp",
+        "ndvi_after": 0.0541,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.5459,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 4,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00027,
+              0.00064
+            ],
+            [
+              0.00027,
+              0.00055
+            ],
+            [
+              0.00036,
+              0.00055
+            ],
+            [
+              0.00036,
+              0.00064
+            ],
+            [
+              0.00027,
+              0.00064
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r004-c003",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 3,
+        "confusion_class": "tp",
+        "ndvi_after": -0.0137,
+        "ndvi_before": 0.587,
+        "ndvi_change": -0.6007,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "region_id": 1,
+        "row": 4,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00036,
+              0.00064
+            ],
+            [
+              0.00036,
+              0.00055
+            ],
+            [
+              0.00045,
+              0.00055
+            ],
+            [
+              0.00045,
+              0.00064
+            ],
+            [
+              0.00036,
+              0.00064
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r004-c004",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 4,
+        "confusion_class": "fn",
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.0323,
+        "predicted_loss": false,
+        "reference_loss": true,
+        "region_id": null,
+        "row": 4,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00045,
+              0.00064
+            ],
+            [
+              0.00045,
+              0.00055
+            ],
+            [
+              0.00054,
+              0.00055
+            ],
+            [
+              0.00054,
+              0.00064
+            ],
+            [
+              0.00045,
+              0.00064
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r004-c005",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 5,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5714,
+        "ndvi_before": 0.6047,
+        "ndvi_change": -0.0332,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 4,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.0,
+              0.00055
+            ],
+            [
+              0.0,
+              0.00046
+            ],
+            [
+              9e-05,
+              0.00046
+            ],
+            [
+              9e-05,
+              0.00055
+            ],
+            [
+              0.0,
+              0.00055
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r005-c000",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 0,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.0277,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 5,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              9e-05,
+              0.00055
+            ],
+            [
+              9e-05,
+              0.00046
+            ],
+            [
+              0.00018,
+              0.00046
+            ],
+            [
+              0.00018,
+              0.00055
+            ],
+            [
+              9e-05,
+              0.00055
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r005-c001",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 1,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5862,
+        "ndvi_before": 0.6136,
+        "ndvi_change": -0.0274,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 5,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00018,
+              0.00055
+            ],
+            [
+              0.00018,
+              0.00046
+            ],
+            [
+              0.00027,
+              0.00046
+            ],
+            [
+              0.00027,
+              0.00055
+            ],
+            [
+              0.00018,
+              0.00055
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r005-c002",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 2,
+        "confusion_class": "tn",
+        "ndvi_after": 0.573,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.027,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 5,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00027,
+              0.00055
+            ],
+            [
+              0.00027,
+              0.00046
+            ],
+            [
+              0.00036,
+              0.00046
+            ],
+            [
+              0.00036,
+              0.00055
+            ],
+            [
+              0.00027,
+              0.00055
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r005-c003",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 3,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5604,
+        "ndvi_before": 0.587,
+        "ndvi_change": -0.0265,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 5,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00036,
+              0.00055
+            ],
+            [
+              0.00036,
+              0.00046
+            ],
+            [
+              0.00045,
+              0.00046
+            ],
+            [
+              0.00045,
+              0.00055
+            ],
+            [
+              0.00036,
+              0.00055
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r005-c004",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 4,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.0277,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 5,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              0.00045,
+              0.00055
+            ],
+            [
+              0.00045,
+              0.00046
+            ],
+            [
+              0.00054,
+              0.00046
+            ],
+            [
+              0.00054,
+              0.00055
+            ],
+            [
+              0.00045,
+              0.00055
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r005-c005",
+      "properties": {
+        "case_id": "ECO-FOREST-SYN-2026-001",
+        "cell_area_m2": 100.0,
+        "col": 5,
+        "confusion_class": "tn",
+        "ndvi_after": 0.5765,
+        "ndvi_before": 0.6047,
+        "ndvi_change": -0.0282,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "region_id": null,
+        "row": 5,
+        "synthetic_geometry": true
+      },
+      "type": "Feature"
+    }
+  ],
+  "metadata": {
+    "case_id": "ECO-FOREST-SYN-2026-001",
+    "confusion_matrix": {
+      "fn": 1,
+      "fp": 1,
+      "tn": 23,
+      "tp": 11
+    },
+    "connectivity": 4,
+    "metrics": {
+      "f1": 0.916667,
+      "iou": 0.846154,
+      "precision": 0.916667,
+      "recall": 0.916667
+    },
+    "scope": "synthetic pixel-level reference-mask evaluation",
+    "synthetic_geometry": true
+  },
+  "name": "ecoguard_synthetic_forest_mask_evaluation",
+  "type": "FeatureCollection"
+}

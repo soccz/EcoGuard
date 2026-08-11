@@ -1,10 +1,16 @@
-"""Deterministic CBAM exposure scenarios from normalized evidence."""
+"""Traceable CBAM technical-inventory and price-sensitivity calculations.
+
+This module does not calculate a statutory CBAM certificate obligation.  It
+reconstructs the educational scenario used by EcoGuard and makes every leaf
+operand, reconciliation check, and arithmetic step inspectable.
+"""
 
 from __future__ import annotations
 
-import re
 from decimal import Decimal, ROUND_HALF_UP
 from typing import Any
+
+from .preprocessing import ITEM_COMPONENTS, ITEM_IDS
 
 
 MONEY = Decimal("0.01")
@@ -13,8 +19,24 @@ INTENSITY = Decimal("0.000001")
 INTENSITY_DELTA = Decimal("0.000000001")
 INTENSITY_TOLERANCE = Decimal("0.000001")
 
+COMPONENT_LABELS = {
+    "process_direct": "process direct",
+    "process_indirect": "process indirect",
+    "precursor_direct": "precursor direct",
+    "precursor_indirect": "precursor indirect",
+}
+
+
+def _plain(value: Decimal) -> str:
+    text = format(value, "f")
+    if "." in text:
+        text = text.rstrip("0").rstrip(".")
+    return text or "0"
+
 
 def _decimal(fields: dict[str, Any], name: str) -> Decimal:
+    if name not in fields:
+        raise ValueError(f"required normalized field is missing: {name}")
     value = fields[name]["value"]
     if value is None:
         raise ValueError(f"required normalized field is missing: {name}")
@@ -24,203 +46,539 @@ def _decimal(fields: dict[str, Any], name: str) -> Decimal:
     return parsed
 
 
+def _text(fields: dict[str, Any], name: str) -> str:
+    if name not in fields or fields[name]["value"] is None:
+        raise ValueError(f"required normalized field is missing: {name}")
+    return str(fields[name]["value"])
+
+
+def _source(fields: dict[str, Any], name: str) -> dict[str, Any]:
+    source = fields[name].get("selected_from")
+    if not isinstance(source, dict) or not source.get("record_id"):
+        raise ValueError(f"normalized field has no evidence reference: {name}")
+    return source
+
+
+def _operand(
+    fields: dict[str, Any],
+    name: str,
+    value: Decimal,
+    unit: str,
+) -> dict[str, Any]:
+    source = _source(fields, name)
+    return {
+        "input_path": f"normalized_evidence.fields.{name}",
+        "exact": _plain(value),
+        "unit": unit,
+        "evidence_ref": source["record_id"],
+        "document": source["document"],
+        "location": source["location"],
+        "line_sha256": source.get("line_sha256"),
+    }
+
+
+def _step(
+    step_id: str,
+    operation: str,
+    expression: str,
+    operands: list[dict[str, Any]],
+    result: Decimal,
+    unit: str,
+    *,
+    display_quantum: Decimal | None = None,
+) -> dict[str, Any]:
+    display = (
+        result.quantize(display_quantum, rounding=ROUND_HALF_UP)
+        if display_quantum is not None
+        else result
+    )
+    return {
+        "step_id": step_id,
+        "operation": operation,
+        "expression": expression,
+        "operands": operands,
+        "result_exact": _plain(result),
+        "display_value": format(display, "f"),
+        "unit": unit,
+        "source_refs": sorted(
+            {
+                operand["evidence_ref"]
+                for operand in operands
+                if operand.get("evidence_ref")
+            }
+        ),
+    }
+
+
 def _money(value: Decimal) -> str:
-    return str(value.quantize(MONEY, rounding=ROUND_HALF_UP))
+    return format(value.quantize(MONEY, rounding=ROUND_HALF_UP), "f")
 
 
 def _emissions(value: Decimal) -> str:
-    return str(value.quantize(EMISSIONS, rounding=ROUND_HALF_UP))
+    return format(value.quantize(EMISSIONS, rounding=ROUND_HALF_UP), "f")
 
 
 def _intensity(value: Decimal) -> str:
-    return str(value.quantize(INTENSITY, rounding=ROUND_HALF_UP))
+    return format(value.quantize(INTENSITY, rounding=ROUND_HALF_UP), "f")
 
 
 def _intensity_delta(value: Decimal) -> str:
-    return format(
-        value.quantize(INTENSITY_DELTA, rounding=ROUND_HALF_UP),
-        "f",
-    )
+    return format(value.quantize(INTENSITY_DELTA, rounding=ROUND_HALF_UP), "f")
 
 
-def _line_sort_key(prefix: str) -> tuple[str, int]:
-    match = re.fullmatch(r"(.*?)(\d+)", prefix)
-    if match:
-        return match.group(1), int(match.group(2))
-    return prefix, -1
+def _price_scenario(
+    *,
+    scenario_id: str,
+    embedded_emissions: Decimal,
+    certificate_price: Decimal,
+    third_country_price: Decimal,
+    exposure_factor: Decimal,
+    input_sources: dict[str, dict[str, Any]],
+    classification: str,
+) -> dict[str, Any]:
+    if certificate_price < 0 or third_country_price < 0:
+        raise ValueError("carbon prices must be non-negative")
+    if not Decimal("0") <= exposure_factor <= Decimal("1"):
+        raise ValueError("scenario exposure factor must be within [0, 1]")
+    effective_price = max(certificate_price - third_country_price, Decimal("0"))
+    adjusted_emissions = embedded_emissions * exposure_factor
+    exposure = adjusted_emissions * effective_price
+    return {
+        "scenario_id": scenario_id,
+        "classification": classification,
+        "inputs": {
+            "embedded_emissions_tco2e": _plain(embedded_emissions),
+            "scenario_exposure_factor": _plain(exposure_factor),
+            "certificate_price_eur_per_tco2e": _plain(certificate_price),
+            "third_country_price_eur_per_tco2e": _plain(third_country_price),
+        },
+        "calculation_trace": [
+            {
+                "step_id": f"{scenario_id}.effective_price",
+                "operation": "subtract_with_zero_floor",
+                "expression": "max(certificate price − third-country price, 0)",
+                "operands": [
+                    {
+                        "name": "certificate_price",
+                        "exact": _plain(certificate_price),
+                        "unit": "EUR/tCO2e",
+                        **input_sources.get("certificate_price", {}),
+                    },
+                    {
+                        "name": "third_country_price",
+                        "exact": _plain(third_country_price),
+                        "unit": "EUR/tCO2e",
+                        **input_sources.get("third_country_price", {}),
+                    },
+                ],
+                "result_exact": _plain(effective_price),
+                "unit": "EUR/tCO2e",
+            },
+            {
+                "step_id": f"{scenario_id}.adjusted_emissions",
+                "operation": "multiply",
+                "expression": "technical inventory × scenario exposure factor",
+                "operands": [
+                    {
+                        "name": "embedded_emissions",
+                        "exact": _plain(embedded_emissions),
+                        "unit": "tCO2e",
+                        "derived_from": "shipment.component_sum",
+                    },
+                    {
+                        "name": "scenario_exposure_factor",
+                        "exact": _plain(exposure_factor),
+                        "unit": "ratio",
+                        **input_sources.get("exposure_factor", {}),
+                    },
+                ],
+                "result_exact": _plain(adjusted_emissions),
+                "unit": "tCO2e",
+            },
+            {
+                "step_id": f"{scenario_id}.gross_exposure",
+                "operation": "multiply",
+                "expression": "adjusted emissions × effective price",
+                "operands": [
+                    {
+                        "name": "adjusted_emissions",
+                        "exact": _plain(adjusted_emissions),
+                        "unit": "tCO2e",
+                        "derived_from": f"{scenario_id}.adjusted_emissions",
+                    },
+                    {
+                        "name": "effective_price",
+                        "exact": _plain(effective_price),
+                        "unit": "EUR/tCO2e",
+                        "derived_from": f"{scenario_id}.effective_price",
+                    },
+                ],
+                "result_exact": _plain(exposure),
+                "display_value": _money(exposure),
+                "unit": "EUR",
+            },
+        ],
+        "effective_price_eur_per_tco2e": _plain(effective_price),
+        "adjusted_emissions_tco2e": _plain(adjusted_emissions),
+        "exposure_eur": _money(exposure),
+        "statutory_obligation": False,
+    }
 
 
 def calculate_exposure(normalized: dict[str, Any]) -> dict[str, Any]:
-    """Calculate two transparent exposure scenarios.
-
-    This is an educational comparison, not a statutory CBAM obligation
-    calculator. Prices, intensities and the phase-in factor are supplied by
-    the synthetic case rather than embedded as changing regulatory constants.
-    """
+    """Build a nested technical inventory and transparent sensitivity scenarios."""
     fields = normalized["fields"]
-    mass = _decimal(fields, "shipment_mass_t")
+    shipment_mass = _decimal(fields, "shipment_mass_t")
     sheet_actual_intensity = _decimal(fields, "actual_intensity_tco2e_per_t")
     default_intensity = _decimal(fields, "default_intensity_tco2e_per_t")
-    price = _decimal(fields, "certificate_price_eur_per_tco2e")
-    phase_in = _decimal(fields, "phase_in_factor")
-    origin_price = _decimal(fields, "carbon_price_paid_eur_per_tco2e")
+    certificate_price = _decimal(fields, "certificate_price_eur_per_tco2e")
+    exposure_factor = _decimal(fields, "scenario_exposure_factor")
+    third_country_price = _decimal(fields, "carbon_price_paid_eur_per_tco2e")
 
-    if mass <= 0:
+    if shipment_mass <= 0:
         raise ValueError("shipment mass must be positive")
     if sheet_actual_intensity < 0 or default_intensity < 0:
         raise ValueError("emission intensities must be non-negative")
-    if price < 0 or origin_price < 0:
-        raise ValueError("carbon prices must be non-negative")
-    if not Decimal("0") <= phase_in <= Decimal("1"):
-        raise ValueError("phase-in factor must be between 0 and 1")
 
-    mass_suffix = "_mass_t"
-    intensity_suffix = "_intensity_tco2e_per_t"
-    mass_prefixes = {
-        field[: -len(mass_suffix)]
-        for field in fields
-        if field.endswith(mass_suffix) and field != "shipment_mass_t"
+    items: list[dict[str, Any]] = []
+    calculation_trace: list[dict[str, Any]] = []
+    installation_ids: set[str] = set()
+    mass_total = Decimal("0")
+    emissions_total = Decimal("0")
+    axis_totals = {
+        "direct": Decimal("0"),
+        "indirect": Decimal("0"),
+        "process": Decimal("0"),
+        "precursor": Decimal("0"),
     }
-    intensity_prefixes = {
-        field[: -len(intensity_suffix)]
-        for field in fields
-        if field.endswith(intensity_suffix)
-        and field
-        not in {
-            "actual_intensity_tco2e_per_t",
-            "default_intensity_tco2e_per_t",
-        }
-    }
-    if mass_prefixes != intensity_prefixes:
-        missing_mass = sorted(intensity_prefixes - mass_prefixes)
-        missing_intensity = sorted(mass_prefixes - intensity_prefixes)
-        details = []
-        if missing_mass:
-            details.append("mass for " + ", ".join(missing_mass))
-        if missing_intensity:
-            details.append("intensity for " + ", ".join(missing_intensity))
-        raise ValueError("partial line-item evidence; missing " + "; ".join(details))
-    line_definitions = [
-        (
-            prefix.upper(),
-            prefix + mass_suffix,
-            prefix + intensity_suffix,
-        )
-        for prefix in sorted(mass_prefixes, key=_line_sort_key)
-    ]
-    line_items: list[dict[str, str]] = []
-    line_mass = Decimal("0")
-    actual_emissions = Decimal("0")
-    if line_definitions:
-        for name, mass_field, intensity_field in line_definitions:
-            item_mass = _decimal(fields, mass_field)
-            item_intensity = _decimal(fields, intensity_field)
-            if item_mass < 0 or item_intensity < 0:
-                raise ValueError("line-item mass and intensity must be non-negative")
-            emissions = item_mass * item_intensity
-            line_mass += item_mass
-            actual_emissions += emissions
-            line_items.append(
+
+    for item_id in ITEM_IDS:
+        item_name = item_id.upper()
+        mass_field = f"{item_id}_mass_t"
+        see_field = f"{item_id}_intensity_tco2e_per_t"
+        installation_field = f"{item_id}_installation_id"
+        process_field = f"{item_id}_production_process"
+        mass = _decimal(fields, mass_field)
+        supplied_see = _decimal(fields, see_field)
+        installation_id = _text(fields, installation_field)
+        production_process = _text(fields, process_field)
+        if mass <= 0:
+            raise ValueError(f"item mass must be positive: {item_name}")
+        if installation_id in installation_ids:
+            raise ValueError(
+                "synthetic items with different supplied SEE must use distinct "
+                f"installation evidence: {installation_id}"
+            )
+        installation_ids.add(installation_id)
+
+        component_rows: list[dict[str, Any]] = []
+        component_intensity_total = Decimal("0")
+        component_emissions_total = Decimal("0")
+        for component in ITEM_COMPONENTS:
+            field = f"{item_id}_{component}_intensity_tco2e_per_t"
+            intensity = _decimal(fields, field)
+            if intensity < 0:
+                raise ValueError(f"component intensity must be non-negative: {field}")
+            emissions = mass * intensity
+            component_intensity_total += intensity
+            component_emissions_total += emissions
+            if component in {"process_direct", "precursor_direct"}:
+                axis_totals["direct"] += emissions
+            else:
+                axis_totals["indirect"] += emissions
+            if component.startswith("process"):
+                axis_totals["process"] += emissions
+            else:
+                axis_totals["precursor"] += emissions
+            step = _step(
+                f"{item_id}.{component}",
+                "multiply",
+                "shipment mass × component intensity",
+                [
+                    _operand(fields, mass_field, mass, "t"),
+                    _operand(fields, field, intensity, "tCO2e/t"),
+                ],
+                emissions,
+                "tCO2e",
+                display_quantum=EMISSIONS,
+            )
+            calculation_trace.append(step)
+            component_rows.append(
                 {
-                    "item": name,
-                    "mass_t": str(item_mass),
-                    "intensity_tco2e_per_t": str(item_intensity),
+                    "component": component,
+                    "label": COMPONENT_LABELS[component],
+                    "intensity_tco2e_per_t": _plain(intensity),
+                    "embedded_emissions_exact_tco2e": _plain(emissions),
                     "embedded_emissions_tco2e": _emissions(emissions),
-                    "mass_source": fields[mass_field]["selected_from"],
-                    "intensity_source": fields[intensity_field]["selected_from"],
+                    "scope_decision": (
+                        "included in technical inventory; statutory CBAM scope not evaluated"
+                    ),
+                    "intensity_source": _source(fields, field),
+                    "calculation_step_id": step["step_id"],
                 }
             )
-        if line_mass != mass:
-            raise ValueError(
-                f"line-item mass {line_mass} t does not match shipment mass {mass} t"
-            )
-        calculation_basis = "sum of normalized line-item mass × intensity"
-    else:
-        line_mass = mass
-        actual_emissions = mass * sheet_actual_intensity
-        calculation_basis = "shipment mass × supplied weighted intensity"
 
-    derived_actual_intensity = actual_emissions / mass
-    intensity_difference = abs(
-        derived_actual_intensity - sheet_actual_intensity
-    )
-    intensity_matches = intensity_difference <= INTENSITY_TOLERANCE
-    if not intensity_matches:
+        see_difference = abs(component_intensity_total - supplied_see)
+        if see_difference > INTENSITY_TOLERANCE:
+            raise ValueError(
+                f"{item_name} component intensity does not reconcile with supplied SEE"
+            )
+        item_step = _step(
+            f"{item_id}.component_sum",
+            "sum",
+            "Σ(component embedded emissions)",
+            [
+                {
+                    "derived_from": row["calculation_step_id"],
+                    "exact": row["embedded_emissions_exact_tco2e"],
+                    "unit": "tCO2e",
+                }
+                for row in component_rows
+            ],
+            component_emissions_total,
+            "tCO2e",
+            display_quantum=EMISSIONS,
+        )
+        calculation_trace.append(item_step)
+        items.append(
+            {
+                "item_id": item_name,
+                "cn_code": fields["cn_code"]["value"],
+                "installation_id": installation_id,
+                "installation_source": _source(fields, installation_field),
+                "production_process": production_process,
+                "production_process_source": _source(fields, process_field),
+                "mass_t": _plain(mass),
+                "mass_source": _source(fields, mass_field),
+                "supplied_see_tco2e_per_t": _plain(supplied_see),
+                "supplied_see_source": _source(fields, see_field),
+                "derived_component_see_tco2e_per_t": _intensity(
+                    component_intensity_total
+                ),
+                "see_absolute_difference": _intensity_delta(see_difference),
+                "see_matches": True,
+                "components": component_rows,
+                "embedded_emissions_exact_tco2e": _plain(component_emissions_total),
+                "embedded_emissions_tco2e": _emissions(component_emissions_total),
+                "calculation_step_id": item_step["step_id"],
+            }
+        )
+        mass_total += mass
+        emissions_total += component_emissions_total
+
+    if mass_total != shipment_mass:
+        raise ValueError(
+            f"item mass {mass_total} t does not match shipment mass {shipment_mass} t"
+        )
+    derived_weighted_intensity = emissions_total / shipment_mass
+    intensity_difference = abs(derived_weighted_intensity - sheet_actual_intensity)
+    if intensity_difference > INTENSITY_TOLERANCE:
         raise ValueError(
             "derived weighted intensity does not reconcile with the sheet value"
         )
-    effective_price = max(price - origin_price, Decimal("0"))
-    default_emissions = mass * default_intensity
-    actual_exposure = actual_emissions * phase_in * effective_price
-    default_exposure = default_emissions * phase_in * effective_price
+    if axis_totals["direct"] + axis_totals["indirect"] != emissions_total:
+        raise AssertionError("direct/indirect axis does not reconcile")
+    if axis_totals["process"] + axis_totals["precursor"] != emissions_total:
+        raise AssertionError("process/precursor axis does not reconcile")
 
-    inputs = {
-        "shipment_mass_t": str(mass),
-        "sheet_actual_intensity_tco2e_per_t": str(sheet_actual_intensity),
-        "default_intensity_tco2e_per_t": str(default_intensity),
-        "certificate_price_eur_per_tco2e": str(price),
-        "carbon_price_paid_eur_per_tco2e": str(origin_price),
-        "phase_in_factor": str(phase_in),
+    shipment_step = _step(
+        "shipment.component_sum",
+        "sum",
+        "Σ(item component emissions)",
+        [
+            {
+                "derived_from": item["calculation_step_id"],
+                "exact": item["embedded_emissions_exact_tco2e"],
+                "unit": "tCO2e",
+            }
+            for item in items
+        ],
+        emissions_total,
+        "tCO2e",
+        display_quantum=EMISSIONS,
+    )
+    calculation_trace.append(shipment_step)
+
+    price_sources = {
+        "certificate_price": {
+            "evidence_ref": _source(fields, "certificate_price_eur_per_tco2e")[
+                "record_id"
+            ],
+            "input_path": "normalized_evidence.fields.certificate_price_eur_per_tco2e",
+        },
+        "third_country_price": {
+            "evidence_ref": _source(fields, "carbon_price_paid_eur_per_tco2e")[
+                "record_id"
+            ],
+            "input_path": "normalized_evidence.fields.carbon_price_paid_eur_per_tco2e",
+        },
+        "exposure_factor": {
+            "evidence_ref": _source(fields, "scenario_exposure_factor")["record_id"],
+            "input_path": "normalized_evidence.fields.scenario_exposure_factor",
+        },
     }
-    input_provenance = {
-        name: fields[name]["selected_from"]
-        for name in (
-            "shipment_mass_t",
-            "actual_intensity_tco2e_per_t",
-            "default_intensity_tco2e_per_t",
-            "certificate_price_eur_per_tco2e",
-            "carbon_price_paid_eur_per_tco2e",
-            "phase_in_factor",
-        )
-    }
-    return {
-        "case_id": normalized["case_id"],
-        "method": (
-            calculation_basis
-            + " × phase-in × max(certificate price − origin carbon price, 0)"
+    published_scenario = _price_scenario(
+        scenario_id="published_fixture",
+        embedded_emissions=emissions_total,
+        certificate_price=certificate_price,
+        third_country_price=third_country_price,
+        exposure_factor=exposure_factor,
+        input_sources=price_sources,
+        classification="gross_price_sensitivity_scenario",
+    )
+    sensitivity_scenarios = [
+        published_scenario,
+        _price_scenario(
+            scenario_id="factor_0_80",
+            embedded_emissions=emissions_total,
+            certificate_price=certificate_price,
+            third_country_price=Decimal("0"),
+            exposure_factor=Decimal("0.8"),
+            input_sources={
+                "certificate_price": price_sources["certificate_price"],
+                "third_country_price": {
+                    "assumption_ref": "analyst-assumption:third-country-price-0",
+                    "source_type": "analyst_defined_sensitivity",
+                },
+                "exposure_factor": {
+                    "assumption_ref": "analyst-assumption:exposure-factor-0.80",
+                    "source_type": "analyst_defined_sensitivity",
+                },
+            },
+            classification="analyst_defined_sensitivity",
         ),
+        _price_scenario(
+            scenario_id="factor_0_80_with_12_50_third_country_price",
+            embedded_emissions=emissions_total,
+            certificate_price=certificate_price,
+            third_country_price=Decimal("12.5"),
+            exposure_factor=Decimal("0.8"),
+            input_sources={
+                "certificate_price": price_sources["certificate_price"],
+                "third_country_price": {
+                    "assumption_ref": "analyst-assumption:third-country-price-12.50",
+                    "source_type": "analyst_defined_sensitivity",
+                },
+                "exposure_factor": {
+                    "assumption_ref": "analyst-assumption:exposure-factor-0.80",
+                    "source_type": "analyst_defined_sensitivity",
+                },
+            },
+            classification="analyst_defined_sensitivity",
+        ),
+    ]
+
+    default_emissions = shipment_mass * default_intensity
+    default_scenario = _price_scenario(
+        scenario_id="default_value_fixture",
+        embedded_emissions=default_emissions,
+        certificate_price=certificate_price,
+        third_country_price=third_country_price,
+        exposure_factor=exposure_factor,
+        input_sources=price_sources,
+        classification="gross_price_sensitivity_scenario",
+    )
+    difference_emissions = default_emissions - emissions_total
+    difference_exposure = Decimal(default_scenario["exposure_eur"]) - Decimal(
+        published_scenario["exposure_eur"]
+    )
+
+    return {
+        "schema_version": "cbam-scenario/2.0",
+        "case_id": normalized["case_id"],
         "classification": "gross_price_sensitivity_scenario",
-        "inputs": inputs,
-        "input_provenance": input_provenance,
-        "actual_data_scenario": {
-            "calculation_basis": calculation_basis,
-            "line_items": line_items,
-            "weighted_intensity_tco2e_per_t": _intensity(
-                derived_actual_intensity
+        "statutory_calculator": False,
+        "method": (
+            "Σ(item mass × component intensity) × scenario exposure factor × "
+            "max(certificate price − third-country price, 0)"
+        ),
+        "technical_inventory": {
+            "scope": (
+                "synthetic direct, indirect and precursor components; regulatory "
+                "inclusion eligibility is not evaluated"
             ),
-            "embedded_emissions_tco2e": _emissions(actual_emissions),
-            "exposure_eur": _money(actual_exposure),
+            "items": items,
+            "component_axes": {
+                "direct_tco2e": _emissions(axis_totals["direct"]),
+                "indirect_tco2e": _emissions(axis_totals["indirect"]),
+                "process_tco2e": _emissions(axis_totals["process"]),
+                "precursor_tco2e": _emissions(axis_totals["precursor"]),
+            },
+            "embedded_emissions_exact_tco2e": _plain(emissions_total),
+            "embedded_emissions_tco2e": _emissions(emissions_total),
+            "weighted_intensity_tco2e_per_t": _intensity(derived_weighted_intensity),
+            "calculation_trace": calculation_trace,
+        },
+        "inputs": {
+            "shipment_mass_t": _plain(shipment_mass),
+            "sheet_actual_intensity_tco2e_per_t": _plain(sheet_actual_intensity),
+            "default_intensity_tco2e_per_t": _plain(default_intensity),
+            "certificate_price_eur_per_tco2e": _plain(certificate_price),
+            "third_country_price_eur_per_tco2e": _plain(third_country_price),
+            "scenario_exposure_factor": _plain(exposure_factor),
+        },
+        "input_provenance": {
+            name: _source(fields, name)
+            for name in (
+                "shipment_mass_t",
+                "actual_intensity_tco2e_per_t",
+                "default_intensity_tco2e_per_t",
+                "certificate_price_eur_per_tco2e",
+                "carbon_price_paid_eur_per_tco2e",
+                "scenario_exposure_factor",
+            )
+        },
+        "actual_data_scenario": {
+            "calculation_basis": "sum of item component emissions",
+            "line_items": items,
+            "weighted_intensity_tco2e_per_t": _intensity(derived_weighted_intensity),
+            "embedded_emissions_tco2e": _emissions(emissions_total),
+            "exposure_eur": published_scenario["exposure_eur"],
+            "pricing_trace": published_scenario["calculation_trace"],
         },
         "default_value_scenario": {
             "embedded_emissions_tco2e": _emissions(default_emissions),
-            "exposure_eur": _money(default_exposure),
+            "exposure_eur": default_scenario["exposure_eur"],
+            "pricing_trace": default_scenario["calculation_trace"],
         },
         "difference": {
-            "embedded_emissions_tco2e": _emissions(default_emissions - actual_emissions),
-            "exposure_eur": _money(default_exposure - actual_exposure),
+            "embedded_emissions_tco2e": _emissions(difference_emissions),
+            "exposure_eur": _money(difference_exposure),
         },
+        "sensitivity_scenarios": sensitivity_scenarios,
         "reconciliation": {
-            "line_item_mass_total_t": str(line_mass),
-            "shipment_mass_t": str(mass),
-            "mass_matches": line_mass == mass,
+            "item_mass_total_t": _plain(mass_total),
+            "shipment_mass_t": _plain(shipment_mass),
+            "mass_matches": mass_total == shipment_mass,
             "derived_weighted_intensity_tco2e_per_t": _intensity(
-                derived_actual_intensity
+                derived_weighted_intensity
             ),
-            "sheet_weighted_intensity_tco2e_per_t": str(
-                sheet_actual_intensity
+            "sheet_weighted_intensity_tco2e_per_t": _plain(sheet_actual_intensity),
+            "absolute_intensity_difference": _intensity_delta(intensity_difference),
+            "intensity_tolerance": _plain(INTENSITY_TOLERANCE),
+            "intensity_matches": True,
+            "direct_plus_indirect_matches_total": (
+                axis_totals["direct"] + axis_totals["indirect"] == emissions_total
             ),
-            "absolute_intensity_difference": _intensity_delta(
-                intensity_difference
+            "process_plus_precursor_matches_total": (
+                axis_totals["process"] + axis_totals["precursor"] == emissions_total
             ),
-            "intensity_tolerance": str(INTENSITY_TOLERANCE),
-            "intensity_matches": intensity_matches,
         },
+        "unused_evidence": [
+            {
+                "fields": ["electricity_kwh", "lng_nm3"],
+                "reason": (
+                    "Energy quantities are retained as evidence but are not converted "
+                    "without source emission factors and an allocation method."
+                ),
+            }
+        ],
         "assumptions": [
-            "가격·집약도·적용계수는 합성 사례의 입력값이며 규제 상수가 아닙니다.",
-            "원산지 탄소가격은 입력된 증빙 금액만큼 단순 차감한 비교 시나리오입니다.",
-            "Article 31 무상할당 조정과 Article 9의 법정 변환 방법을 구현하지 않습니다.",
-            "기본값 시나리오의 탄소가격 처리는 현행 법정 의무액이 아닌 단순 민감도 비교입니다.",
-            "인증서 가격은 합성 fixture이며 실제 분기·주간 가격 산식이 아닙니다.",
-            "결과는 공식 신고액이나 인증서 의무량을 대체하지 않습니다.",
+            "모든 수치와 생산공정은 합성 사례 입력이며 규제 상수가 아닙니다.",
+            "직접·간접·전구물질 구성요소는 기술 인벤토리로 합산하며 법정 포함범위는 판정하지 않습니다.",
+            "시나리오 노출계수는 공식 CBAM factor가 아닌 분석용 민감도 입력입니다.",
+            "제3국 탄소가격은 단순 단가 차감이며 Article 9 적격성·환산·환급을 평가하지 않습니다.",
+            "무상할당 조정, 실제 인증서 의무량과 분기별 가격 산식을 구현하지 않습니다.",
+            "결과는 공식 신고액, 지급액 또는 법적 의무액이 아닙니다.",
         ],
     }

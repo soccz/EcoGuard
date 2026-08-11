@@ -56,11 +56,26 @@ EcoGuard는 Team UniHana 3명이 2026 하나 청년 금융인재 양성 프로�
 1. 문서 간 값이 일관되게 이어지는 합성 무역 사례
 2. 의도적으로 빠진 검증서와 서로 다른 메모 값
 3. 실측값과 기본값의 계산이 같은 입력에서 반복되는지 확인하는 golden test
-4. 질문별 기대 법 조항과 citation 회수 평가
-5. 산림 변화 수치의 입력 픽셀, 산식, 임계값 공개
+4. 질문별 기대 법 조항, hard-negative와 citation 회수·기권 평가
+5. 산림 변화 수치의 입력 픽셀, 별도 reference mask, 산식, 임계값과 오차 공개
 6. 자동 판단 대신 보완 요청과 인간 검토 상태 표시
 
 이 과정을 거치고 나니 전처리는 보조 기능이 아니었습니다. 법률 검색, CBAM 계산, 환경 변화 분석이 의미를 갖게 하는 공통 기반이었습니다.
+
+## 공개 v0.2에서 증명을 코드로 바꾼 방식
+
+첫 공개본도 테스트는 통과했지만 이미 정리된 단일 record JSON에서 시작했습니다. 결과의 재현성은 있었지만 “지저분한 문서가 어떻게 계산 입력이 됐는가”를 충분히 보여주지 못했습니다. v0.2에서는 증명의 시작점을 한 단계 앞으로 옮겼습니다.
+
+- 7개 문서의 37개 OCR line과 confidence를 document bundle로 공개
+- 30개 candidate마다 character span과 source hash 생성
+- document authority·confidence·tolerance 정책을 데이터 파일로 분리
+- 선택하지 않은 메모값, alias parse failure, blank evidence까지 보존
+- CBAM 11-step 기술 인벤토리 DAG의 leaf를 원문 evidence ID에 연결하고 가격 민감도 가정은 별도 assumption ID로 분리
+- Legal retrieval을 34개 positive/negative/distractor 회귀셋으로 확장
+- Forest prediction을 별도 reference mask와 비교해 FP·FN도 공개
+- wheel 설치 후 저장소 밖에서 실행하고 golden artifact와 byte diff
+
+이 변경은 기능을 더 많이 보이게 하기 위한 것이 아니라, “왜 이 숫자를 믿어도 되는가”라는 질문에 source line부터 답하기 위한 것입니다.
 
 ## 3인 팀이 함께 다룬 작업 축
 
@@ -88,8 +103,8 @@ EcoGuard는 Team UniHana 3명이 2026 하나 청년 금융인재 양성 프로�
 - 개인·기업 정보 대신 합성 입력만 사용
 - OCR은 외부 어댑터 경계로 두고 후처리를 코드화
 - Legal RAG 전체를 주장하지 않고 retrieval·citation 평가를 공개
-- CBAM은 입력 가정이 드러나는 결정론적 노출도 시나리오로 구현
-- 산림은 새로 만든 합성 NDVI 베이스라인으로 제한
+- CBAM은 component별 evidence와 산식 trace가 드러나는 비법정 가격 민감도로 구현
+- 산림은 별도 합성 reference mask로 평가하는 NDVI 베이스라인으로 제한
 - 구현, 시뮬레이션, 제안 단계를 명확히 구분
 
 이 공개본은 과거 화면을 포장한 결과물이 아니라, 당시 가장 어려웠던 “증명”을 뒤늦게라도 실행 가능한 형태로 정리한 기록입니다.

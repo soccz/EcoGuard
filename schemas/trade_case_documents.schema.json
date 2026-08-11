@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/soccz/EcoGuard/schemas/trade_case_documents.schema.json",
+  "title": "EcoGuard synthetic OCR document bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "case_id", "notice", "documents"],
+  "properties": {
+    "schema_version": {"const": "ocr-document-bundle/1.0"},
+    "case_id": {"type": "string", "minLength": 1},
+    "notice": {"type": "string", "minLength": 1},
+    "documents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/document"}
+    }
+  },
+  "$defs": {
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["document_id", "document_type", "language", "pages"],
+      "properties": {
+        "document_id": {"type": "string", "minLength": 1},
+        "document_type": {"type": "string", "minLength": 1},
+        "language": {"type": "string", "minLength": 1},
+        "pages": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/page"}
+        }
+      }
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["page", "lines"],
+      "properties": {
+        "page": {"type": "integer", "minimum": 1},
+        "lines": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/line"}
+        }
+      }
+    },
+    "line": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["line", "text", "confidence"],
+      "properties": {
+        "line": {"type": "integer", "minimum": 1},
+        "text": {"type": "string"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    }
+  }
+}

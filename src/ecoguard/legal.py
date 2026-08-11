@@ -1,104 +1,680 @@
-"""Small, auditable article-level legal retriever and citation evaluation."""
+"""Auditable article-level legal citation retrieval and evaluation.
+
+This module is a deterministic lexical retrieval baseline.  It does not call
+an LLM, generate legal advice, or claim paragraph-level legal correctness.
+"""
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import re
-from collections import Counter
+import unicodedata
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any, Iterable
 
 
-# Character n-grams alone can make an unrelated sentence look similar to a
-# legal summary. Require at least one explicit CBAM/EUDR cue before ranking.
-STRONG_DOMAIN_ANCHORS = (
-    "cbam",
-    "eudr",
-    "내재배출량",
-    "실제 배출량",
-    "배출계수",
-    "탄소가격",
-    "탄소 가격",
-    "탄소배출",
-    "탄소 배출",
-    "실사 선언서",
-    "위험 평가",
-    "위험 완화",
-    "산림 훼손",
-    "embedded emissions",
-    "carbon price",
-    "geolocation",
-    "deforestation",
-    "due diligence",
+RETRIEVER_VERSION = "legal-bm25f-v2"
+BM25_K1 = 1.2
+NGRAM_WEIGHT = 0.18
+DEFAULT_MIN_SCORE = 2.0
+DEFAULT_MIN_MARGIN = 0.35
+ARTICLE_MATCH_BONUS = 12.0
+CONCEPT_PHRASE_BONUS = 4.0
+
+FIELD_WEIGHTS = {
+    "regulation": 5.0,
+    "article": 8.0,
+    "title": 4.0,
+    "keywords": 3.0,
+    "concepts": 4.0,
+    "summary_ko": 1.0,
+}
+
+FIELD_LENGTH_NORMALIZATION = {
+    "regulation": 0.0,
+    "article": 0.0,
+    "title": 0.2,
+    "keywords": 0.2,
+    "concepts": 0.2,
+    "summary_ko": 0.75,
+}
+
+INSTRUMENT_ALIASES = {
+    "CBAM": (
+        "cbam",
+        "탄소국경조정제도",
+        "regulation eu 2023 956",
+        "regulation 2023 956",
+        "2023 956",
+        "32023r0956",
+    ),
+    "EUDR": (
+        "eudr",
+        "산림전용방지규정",
+        "산림 전용 방지 규정",
+        "eu 산림 규정",
+        "regulation eu 2023 1115",
+        "regulation 2023 1115",
+        "2023 1115",
+        "32023r1115",
+    ),
+}
+
+# These cues identify a legal/compliance question.  Generic words such as
+# "방법" and "기준" are intentionally excluded because they caused hard
+# negatives about maps, sensors and model performance to look in-domain.
+LEGAL_INTENT_CUES = (
+    "어떤 조항",
+    "몇 조",
+    "몇조",
+    "의무",
+    "제출",
+    "누락",
+    "빠졌",
+    "빠졌다",
+    "없으면",
+    "없다",
+    "없이",
+    "신고",
+    "증빙",
+    "공제",
+    "차감",
+    "감축",
+    "줄일 수",
+    "검증",
+    "확인 없이",
+    "근거",
+    "산정",
+    "계산",
+    "해야",
+    "필요",
+    "할 수 있",
+    "인정",
+    "비준수",
+    "적합",
+    "위반",
+    "완화",
+    "before placing",
+    "must",
+    "required",
+    "evidence",
+    "comply",
 )
 
-WEAK_DOMAIN_ANCHORS = (
-    "탄소",
-    "배출",
-    "인증서",
-    "신고",
-    "검증서",
-    "검증인",
-    "제3자",
-    "제3국",
-    "원산지",
-    "생산지",
-    "농장",
-    "위경도",
-    "좌표",
-    "지리적 위치",
-    "산림",
-    "실사",
-    "비준수",
-    "certificate",
-    "declaration",
-    "verifier",
-    "third country",
+ARTICLE_REFERENCE = re.compile(
+    r"(?:article|art\.?|제)\s*(\d+[a-z]?)\s*(?:조)?",
+    re.IGNORECASE,
 )
+
+REQUIRED_ENTRY_FIELDS = {
+    "id",
+    "instrument",
+    "celex",
+    "source_checked_on",
+    "source_status",
+    "regulation",
+    "article",
+    "paragraph",
+    "title",
+    "summary_ko",
+    "keywords",
+    "concepts",
+    "url",
+}
+
+
+def _normalize_text(text: str) -> str:
+    normalized = unicodedata.normalize("NFKC", str(text)).casefold()
+    normalized = re.sub(r"[^0-9a-z가-힣]+", " ", normalized)
+    return " ".join(normalized.split())
 
 
 def _words(text: str) -> list[str]:
-    return re.findall(r"[0-9a-zA-Z가-힣]+", text.lower())
+    return re.findall(r"[0-9a-z가-힣]+", _normalize_text(text))
 
 
-def _features(text: str) -> Counter[str]:
-    features: Counter[str] = Counter()
+def _ngrams(text: str) -> list[str]:
+    grams: list[str] = []
     for word in _words(text):
-        features["w:" + word] += 3
-        if len(word) >= 2:
-            for size in (2, 3):
-                for index in range(max(0, len(word) - size + 1)):
-                    features["g:" + word[index : index + size]] += 1
-    return features
+        for size in (2, 3):
+            if len(word) < size:
+                continue
+            grams.extend(
+                word[index : index + size] for index in range(len(word) - size + 1)
+            )
+    return grams
 
 
-def _entry_text(entry: dict[str, Any]) -> str:
-    return " ".join(
-        [
-            entry["regulation"],
-            entry["article"],
-            entry.get("paragraph", ""),
-            entry["title"],
-            entry["summary_ko"],
-            *entry.get("keywords", []),
-        ]
-    )
+def _canonical_json(value: Any) -> bytes:
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+
+
+def _sha256(value: Any) -> str:
+    return hashlib.sha256(_canonical_json(value)).hexdigest()
+
+
+def _article_number(value: str) -> str | None:
+    match = re.search(r"\b(\d+[a-z]?)\b", value.casefold())
+    return match.group(1) if match else None
+
+
+def _concept_aliases(entry: dict[str, Any]) -> list[str]:
+    return [
+        alias for aliases in entry.get("concepts", {}).values() for alias in aliases
+    ]
+
+
+def _entry_fields(entry: dict[str, Any]) -> dict[str, str]:
+    article_number = _article_number(entry["article"]) or ""
+    return {
+        "regulation": " ".join(
+            [entry["instrument"], entry["regulation"], entry["celex"]]
+        ),
+        "article": " ".join(
+            [
+                entry["article"],
+                entry["paragraph"],
+                f"제{article_number}조" if article_number else "",
+                f"{article_number}조" if article_number else "",
+            ]
+        ),
+        "title": entry["title"],
+        "keywords": " ".join(entry.get("keywords", [])),
+        "concepts": " ".join(
+            [*entry.get("concepts", {}).keys(), *_concept_aliases(entry)]
+        ),
+        "summary_ko": entry["summary_ko"],
+    }
+
+
+def _validate_corpus(entries: list[dict[str, Any]]) -> None:
+    if not entries:
+        raise ValueError("legal corpus must not be empty")
+    identifiers: set[str] = set()
+    for entry in entries:
+        missing = sorted(REQUIRED_ENTRY_FIELDS - entry.keys())
+        if missing:
+            raise ValueError(
+                f"legal corpus entry is missing fields: {entry.get('id', '?')}: "
+                + ", ".join(missing)
+            )
+        identifier = entry["id"]
+        if identifier in identifiers:
+            raise ValueError(f"duplicate legal corpus id: {identifier}")
+        identifiers.add(identifier)
+        instrument = entry["instrument"]
+        if instrument not in INSTRUMENT_ALIASES:
+            raise ValueError(f"unsupported legal instrument: {instrument}")
+        if not identifier.startswith(instrument + "-"):
+            raise ValueError(f"entry id and instrument disagree: {identifier}")
+        if not entry["url"].startswith("https://eur-lex.europa.eu/eli/reg/"):
+            raise ValueError(f"legal source must be an EUR-Lex ELI URL: {identifier}")
+        if "non-authoritative" not in entry["source_status"]:
+            raise ValueError(
+                f"team summary must be marked non-authoritative: {identifier}"
+            )
+        if not isinstance(entry["keywords"], list) or not entry["keywords"]:
+            raise ValueError(f"keywords must be a non-empty list: {identifier}")
+        concepts = entry["concepts"]
+        if not isinstance(concepts, dict) or not concepts:
+            raise ValueError(f"concepts must be a non-empty object: {identifier}")
+        for concept, aliases in concepts.items():
+            if not concept or not isinstance(aliases, list) or not aliases:
+                raise ValueError(f"invalid concept aliases: {identifier}: {concept}")
+            if any(
+                not isinstance(alias, str) or not alias.strip() for alias in aliases
+            ):
+                raise ValueError(f"blank concept alias: {identifier}: {concept}")
+
+
+def _document_frequency(
+    vectors: list[dict[str, Counter[str]]],
+) -> dict[str, int]:
+    frequency: Counter[str] = Counter()
+    for vector in vectors:
+        present = {term for field_vector in vector.values() for term in field_vector}
+        frequency.update(present)
+    return dict(frequency)
+
+
+def _idf(total: int, frequency: dict[str, int]) -> dict[str, float]:
+    return {
+        term: math.log(1 + (total - count + 0.5) / (count + 0.5))
+        for term, count in frequency.items()
+    }
+
+
+def _average_lengths(
+    vectors: list[dict[str, Counter[str]]],
+) -> dict[str, float]:
+    return {
+        field: (sum(sum(vector[field].values()) for vector in vectors) / len(vectors))
+        for field in FIELD_WEIGHTS
+    }
+
+
+def _instrument_from_id(identifier: str) -> str | None:
+    prefix = identifier.split("-", 1)[0]
+    return prefix if prefix in INSTRUMENT_ALIASES else None
 
 
 class LegalRetriever:
-    """Lexical baseline whose scores and source URLs remain inspectable."""
+    """Dependency-free BM25F citation retriever with explicit abstention."""
 
     def __init__(self, corpus: Iterable[dict[str, Any]]):
-        self.entries = list(corpus)
-        self._vectors = [_features(_entry_text(entry)) for entry in self.entries]
-        document_frequency: Counter[str] = Counter()
-        for vector in self._vectors:
-            document_frequency.update(vector.keys())
+        incoming = [dict(entry) for entry in corpus]
+        _validate_corpus(incoming)
+        self.entries = sorted(incoming, key=lambda entry: entry["id"])
+        self.corpus_hash = _sha256(self.entries)
+        self.entry_hashes = {entry["id"]: _sha256(entry) for entry in self.entries}
+        self._fields = [_entry_fields(entry) for entry in self.entries]
+        self._word_vectors = [
+            {field: Counter(_words(text)) for field, text in fields.items()}
+            for fields in self._fields
+        ]
+        self._ngram_vectors = [
+            {field: Counter(_ngrams(text)) for field, text in fields.items()}
+            for fields in self._fields
+        ]
         total = len(self.entries)
-        self._idf = {
-            token: math.log((total + 1) / (frequency + 1)) + 1
-            for token, frequency in document_frequency.items()
+        self._word_idf = _idf(total, _document_frequency(self._word_vectors))
+        self._ngram_idf = _idf(total, _document_frequency(self._ngram_vectors))
+        self._word_average_lengths = _average_lengths(self._word_vectors)
+        self._ngram_average_lengths = _average_lengths(self._ngram_vectors)
+
+    @property
+    def config(self) -> dict[str, Any]:
+        return {
+            "version": RETRIEVER_VERSION,
+            "bm25_k1": BM25_K1,
+            "ngram_weight": NGRAM_WEIGHT,
+            "field_weights": dict(FIELD_WEIGHTS),
+            "field_length_normalization": dict(FIELD_LENGTH_NORMALIZATION),
+            "article_match_bonus": ARTICLE_MATCH_BONUS,
+            "concept_phrase_bonus": CONCEPT_PHRASE_BONUS,
+        }
+
+    def _analyze_query(self, query: str) -> dict[str, Any]:
+        normalized = _normalize_text(query)
+        explicit_instruments: dict[str, list[str]] = {}
+        for instrument, aliases in INSTRUMENT_ALIASES.items():
+            matches = [
+                alias for alias in aliases if _normalize_text(alias) in normalized
+            ]
+            if matches:
+                explicit_instruments[instrument] = sorted(set(matches))
+
+        intent_matches = sorted(
+            {cue for cue in LEGAL_INTENT_CUES if _normalize_text(cue) in normalized}
+        )
+        concept_hits: list[dict[str, str]] = []
+        concepts_by_instrument: dict[str, set[str]] = defaultdict(set)
+        for entry in self.entries:
+            for concept, aliases in entry["concepts"].items():
+                matches = sorted(
+                    {alias for alias in aliases if _normalize_text(alias) in normalized}
+                )
+                if not matches:
+                    continue
+                concepts_by_instrument[entry["instrument"]].add(concept)
+                concept_hits.append(
+                    {
+                        "entry_id": entry["id"],
+                        "instrument": entry["instrument"],
+                        "concept": concept,
+                        "matched_phrase": matches[0],
+                    }
+                )
+
+        article_references = sorted(set(ARTICLE_REFERENCE.findall(normalized)))
+        instrument: str | None = None
+        instrument_source: str | None = None
+        gate_passed = False
+        reason_code = "out_of_domain"
+
+        if len(explicit_instruments) > 1:
+            reason_code = "ambiguous_instrument"
+        elif explicit_instruments:
+            instrument = next(iter(explicit_instruments))
+            instrument_source = "explicit"
+            relevant_concepts = concepts_by_instrument.get(instrument, set())
+            if article_references or (
+                relevant_concepts and (intent_matches or len(relevant_concepts) >= 2)
+            ):
+                gate_passed = True
+                reason_code = "domain_supported"
+            else:
+                reason_code = "underspecified"
+        elif article_references:
+            reason_code = "ambiguous_instrument"
+        elif not intent_matches:
+            reason_code = "out_of_domain"
+        else:
+            ranked_instruments = sorted(
+                (
+                    (len(concepts), name)
+                    for name, concepts in concepts_by_instrument.items()
+                ),
+                reverse=True,
+            )
+            if ranked_instruments and ranked_instruments[0][0] >= 2:
+                best_count, best_instrument = ranked_instruments[0]
+                tied = [
+                    name for count, name in ranked_instruments if count == best_count
+                ]
+                if len(tied) == 1:
+                    instrument = best_instrument
+                    instrument_source = "inferred_from_concepts"
+                    gate_passed = True
+                    reason_code = "domain_supported"
+                else:
+                    reason_code = "ambiguous_instrument"
+
+        matched_domain_anchors = sorted(
+            {
+                *(
+                    alias
+                    for matches in explicit_instruments.values()
+                    for alias in matches
+                ),
+                *intent_matches,
+                *(hit["matched_phrase"] for hit in concept_hits),
+            }
+        )
+        return {
+            "raw": query,
+            "normalized": normalized,
+            "query_sha256": hashlib.sha256(query.encode("utf-8")).hexdigest(),
+            "tokens": _words(query),
+            "instrument": instrument,
+            "instrument_source": instrument_source,
+            "explicit_instruments": explicit_instruments,
+            "article_references": article_references,
+            "legal_intent_cues": intent_matches,
+            "concept_hits": concept_hits,
+            "concept_counts": {
+                name: len(concepts)
+                for name, concepts in sorted(concepts_by_instrument.items())
+            },
+            "matched_domain_anchors": matched_domain_anchors,
+            "gate_passed": gate_passed,
+            "reason_code": reason_code,
+        }
+
+    def _bm25_channel(
+        self,
+        query_counts: Counter[str],
+        document: dict[str, Counter[str]],
+        *,
+        idf: dict[str, float],
+        average_lengths: dict[str, float],
+        channel: str,
+        channel_weight: float,
+    ) -> tuple[float, dict[str, float], list[dict[str, Any]]]:
+        total_score = 0.0
+        field_scores = {field: 0.0 for field in FIELD_WEIGHTS}
+        term_trace: list[dict[str, Any]] = []
+        for term, query_frequency in query_counts.items():
+            if term not in idf:
+                continue
+            field_tf: dict[str, float] = {}
+            for field, weight in FIELD_WEIGHTS.items():
+                term_frequency = document[field].get(term, 0)
+                if not term_frequency:
+                    continue
+                length = sum(document[field].values())
+                average = average_lengths[field] or 1.0
+                b = FIELD_LENGTH_NORMALIZATION[field]
+                normalized_tf = term_frequency / (1 - b + b * length / average)
+                field_tf[field] = weight * normalized_tf
+            weighted_tf = sum(field_tf.values())
+            if not weighted_tf:
+                continue
+            query_factor = 1.0 + 0.1 * (min(query_frequency, 2) - 1)
+            score = (
+                idf[term]
+                * ((BM25_K1 + 1) * weighted_tf)
+                / (BM25_K1 + weighted_tf)
+                * query_factor
+                * channel_weight
+            )
+            total_score += score
+            contributions: dict[str, float] = {}
+            for field, value in field_tf.items():
+                contribution = score * value / weighted_tf
+                field_scores[field] += contribution
+                contributions[field] = round(contribution, 6)
+            term_trace.append(
+                {
+                    "channel": channel,
+                    "term": term,
+                    "score": round(score, 6),
+                    "fields": contributions,
+                }
+            )
+        term_trace.sort(key=lambda row: (-row["score"], row["term"]))
+        return (
+            total_score,
+            {field: round(score, 6) for field, score in field_scores.items()},
+            term_trace,
+        )
+
+    def _score_entry(
+        self,
+        query_trace: dict[str, Any],
+        index: int,
+    ) -> dict[str, Any]:
+        entry = self.entries[index]
+        word_score, word_fields, word_terms = self._bm25_channel(
+            Counter(_words(query_trace["normalized"])),
+            self._word_vectors[index],
+            idf=self._word_idf,
+            average_lengths=self._word_average_lengths,
+            channel="word",
+            channel_weight=1.0,
+        )
+        ngram_score, ngram_fields, ngram_terms = self._bm25_channel(
+            Counter(_ngrams(query_trace["normalized"])),
+            self._ngram_vectors[index],
+            idf=self._ngram_idf,
+            average_lengths=self._ngram_average_lengths,
+            channel="character_ngram",
+            channel_weight=NGRAM_WEIGHT,
+        )
+
+        matched_concepts: list[dict[str, str]] = []
+        normalized_query = query_trace["normalized"]
+        for concept, aliases in entry["concepts"].items():
+            matches = sorted(
+                {
+                    alias
+                    for alias in aliases
+                    if _normalize_text(alias) in normalized_query
+                }
+            )
+            if matches:
+                matched_concepts.append({"concept": concept, "phrase": matches[0]})
+        phrase_bonus = CONCEPT_PHRASE_BONUS * len(matched_concepts)
+        entry_article = _article_number(entry["article"])
+        article_bonus = (
+            ARTICLE_MATCH_BONUS
+            if entry_article in query_trace["article_references"]
+            else 0.0
+        )
+        total = word_score + ngram_score + phrase_bonus + article_bonus
+        matched_keywords = [
+            keyword
+            for keyword in entry.get("keywords", [])
+            if _normalize_text(keyword) in normalized_query
+        ]
+        field_scores = {
+            field: round(word_fields[field] + ngram_fields[field], 6)
+            for field in FIELD_WEIGHTS
+        }
+        matched_terms = sorted(
+            word_terms + ngram_terms,
+            key=lambda row: (-row["score"], row["channel"], row["term"]),
+        )
+        return {
+            "entry": entry,
+            "score": total,
+            "matched_keywords": matched_keywords,
+            "score_trace": {
+                "bm25_word": round(word_score, 6),
+                "bm25_character_ngram": round(ngram_score, 6),
+                "concept_phrase_bonus": round(phrase_bonus, 6),
+                "article_match_bonus": round(article_bonus, 6),
+                "field_scores": field_scores,
+                "matched_concepts": matched_concepts,
+                "matched_terms": matched_terms,
+                "total_score": round(total, 6),
+            },
+        }
+
+    def _public_result(
+        self,
+        row: dict[str, Any],
+        *,
+        rank: int,
+        query_trace: dict[str, Any],
+    ) -> dict[str, Any]:
+        entry = row["entry"]
+        citation = {
+            "id": entry["id"],
+            "instrument": entry["instrument"],
+            "regulation": entry["regulation"],
+            "celex": entry["celex"],
+            "article": entry["article"],
+            "paragraph": entry["paragraph"],
+            "url": entry["url"],
+            "source_checked_on": entry["source_checked_on"],
+            "source_status": entry["source_status"],
+            "corpus_entry_sha256": self.entry_hashes[entry["id"]],
+        }
+        return {
+            "rank": rank,
+            "id": entry["id"],
+            "score": round(row["score"], 6),
+            "regulation": entry["regulation"],
+            "article": entry["article"],
+            "paragraph": entry["paragraph"],
+            "title": entry["title"],
+            "summary_ko": entry["summary_ko"],
+            "team_summary_ko": entry["summary_ko"],
+            "url": entry["url"],
+            "celex": entry["celex"],
+            "source_checked_on": entry["source_checked_on"],
+            "source_status": entry["source_status"],
+            "matched_keywords": row["matched_keywords"],
+            "matched_domain_anchors": query_trace["matched_domain_anchors"],
+            "citation": citation,
+            "score_trace": row["score_trace"],
+        }
+
+    def retrieve(
+        self,
+        query: str,
+        limit: int = 3,
+        *,
+        min_score: float = DEFAULT_MIN_SCORE,
+        min_margin: float = DEFAULT_MIN_MARGIN,
+    ) -> dict[str, Any]:
+        """Return ranked citations plus an explicit support/abstention trace."""
+        if limit < 1:
+            raise ValueError("limit must be at least 1")
+        if not query.strip():
+            raise ValueError("query must not be blank")
+        if not math.isfinite(min_score) or min_score < 0:
+            raise ValueError("min_score must be a non-negative finite number")
+        if not math.isfinite(min_margin) or min_margin < 0:
+            raise ValueError("min_margin must be a non-negative finite number")
+
+        query_trace = self._analyze_query(query)
+        base = {
+            "retriever": {
+                **self.config,
+                "corpus_sha256": self.corpus_hash,
+                "corpus_entry_count": len(self.entries),
+            },
+            "query_trace": query_trace,
+        }
+        if not query_trace["gate_passed"]:
+            return {
+                **base,
+                "decision": {
+                    "status": "abstained",
+                    "reason_code": query_trace["reason_code"],
+                    "instrument": query_trace["instrument"],
+                    "instrument_source": query_trace["instrument_source"],
+                    "min_score": min_score,
+                    "min_margin": min_margin,
+                    "top_score": None,
+                    "ranking_margin": None,
+                },
+                "results": [],
+            }
+
+        instrument = query_trace["instrument"]
+        scored = [
+            self._score_entry(query_trace, index)
+            for index, entry in enumerate(self.entries)
+            if entry["instrument"] == instrument
+        ]
+        scored.sort(key=lambda row: (-row["score"], row["entry"]["id"]))
+        top_score = scored[0]["score"] if scored else 0.0
+        second_score = scored[1]["score"] if len(scored) > 1 else 0.0
+        margin = top_score - second_score
+        eligible = [row for row in scored if row["score"] >= min_score]
+        if not eligible:
+            return {
+                **base,
+                "decision": {
+                    "status": "abstained",
+                    "reason_code": "low_score",
+                    "instrument": instrument,
+                    "instrument_source": query_trace["instrument_source"],
+                    "min_score": min_score,
+                    "min_margin": min_margin,
+                    "top_score": round(top_score, 6),
+                    "ranking_margin": round(margin, 6),
+                },
+                "results": [],
+            }
+
+        has_exact_article = bool(query_trace["article_references"])
+        status = (
+            "review"
+            if len(eligible) > 1 and margin < min_margin and not has_exact_article
+            else "supported"
+        )
+        reason_code = (
+            "low_ranking_margin" if status == "review" else "citation_supported"
+        )
+        results = [
+            self._public_result(row, rank=rank, query_trace=query_trace)
+            for rank, row in enumerate(eligible[:limit], start=1)
+        ]
+        return {
+            **base,
+            "decision": {
+                "status": status,
+                "reason_code": reason_code,
+                "instrument": instrument,
+                "instrument_source": query_trace["instrument_source"],
+                "min_score": min_score,
+                "min_margin": min_margin,
+                "top_score": round(top_score, 6),
+                "ranking_margin": round(margin, 6),
+            },
+            "results": results,
         }
 
     def search(
@@ -106,70 +682,52 @@ class LegalRetriever:
         query: str,
         limit: int = 3,
         *,
-        min_score: float = 4.0,
+        min_score: float = DEFAULT_MIN_SCORE,
     ) -> list[dict[str, Any]]:
-        if limit < 1:
-            raise ValueError("limit must be at least 1")
-        if not query.strip():
-            raise ValueError("query must not be blank")
-        query_vector = _features(query)
-        scored: list[tuple[float, dict[str, Any], list[str]]] = []
-        lowered_query = query.lower()
-        matched_strong = [
-            anchor for anchor in STRONG_DOMAIN_ANCHORS if anchor in lowered_query
-        ]
-        matched_weak = [
-            anchor for anchor in WEAK_DOMAIN_ANCHORS if anchor in lowered_query
-        ]
-        if not matched_strong and len(matched_weak) < 2:
-            return []
-        matched_domain_anchors = matched_strong + matched_weak
-        for entry, vector in zip(self.entries, self._vectors, strict=True):
-            score = 0.0
-            matched: list[str] = []
-            for token, count in query_vector.items():
-                if token in vector:
-                    score += min(count, vector[token]) * self._idf.get(token, 1.0)
-            for keyword in entry.get("keywords", []):
-                if keyword.lower() in lowered_query:
-                    score += 12.0
-                    matched.append(keyword)
-            scored.append((score, entry, matched))
-
-        scored.sort(key=lambda row: (-row[0], row[1]["id"]))
-        supported = [
-            row
-            for row in scored
-            if row[0] >= min_score
-            and (matched_strong or len(row[2]) >= 2)
-        ]
-        return [
-            {
-                "rank": rank,
-                "id": entry["id"],
-                "score": round(score, 6),
-                "regulation": entry["regulation"],
-                "article": entry["article"],
-                "paragraph": entry.get("paragraph"),
-                "title": entry["title"],
-                "summary_ko": entry["summary_ko"],
-                "url": entry["url"],
-                "celex": entry.get("celex"),
-                "source_checked_on": entry.get("source_checked_on"),
-                "source_status": entry.get("source_status"),
-                "matched_keywords": matched,
-                "matched_domain_anchors": matched_domain_anchors,
-            }
-            for rank, (score, entry, matched) in enumerate(
-                supported[:limit],
-                start=1,
-            )
-        ]
+        """Compatibility wrapper returning only supported/review citations."""
+        return self.retrieve(
+            query,
+            limit=limit,
+            min_score=min_score,
+        )["results"]
 
 
 def load_json(path: str | Path) -> Any:
     with Path(path).open(encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def _rate(numerator: int | float, denominator: int) -> float:
+    return round(numerator / denominator, 4) if denominator else 0.0
+
+
+def _trace_complete(result: dict[str, Any]) -> bool:
+    citation = result.get("citation", {})
+    score_trace = result.get("score_trace", {})
+    return all(
+        citation.get(key)
+        for key in (
+            "id",
+            "regulation",
+            "celex",
+            "article",
+            "paragraph",
+            "url",
+            "source_checked_on",
+            "source_status",
+            "corpus_entry_sha256",
+        )
+    ) and all(
+        key in score_trace
+        for key in (
+            "bm25_word",
+            "bm25_character_ngram",
+            "concept_phrase_bonus",
+            "article_match_bonus",
+            "field_scores",
+            "total_score",
+        )
+    )
 
 
 def evaluate(
@@ -178,41 +736,149 @@ def evaluate(
     *,
     k: int = 3,
 ) -> dict[str, Any]:
+    """Evaluate positive, negative and contrastive citation cases."""
+    if k < 1:
+        raise ValueError("k must be at least 1")
     retriever = LegalRetriever(corpus)
     rows: list[dict[str, Any]] = []
+    positive_count = 0
+    retrieval_case_count = 0
+    negative_count = 0
+    distractor_count = 0
     hit_count = 0
+    recall_total = 0.0
     reciprocal_rank_total = 0.0
+    positive_covered = 0
+    negative_abstained = 0
+    false_support = 0
+    distractor_rejected = 0
+    instrument_case_count = 0
+    instrument_leakage_count = 0
+    traced_results = 0
+    result_count = 0
+
     for case in cases:
-        results = retriever.search(case["query"], limit=k)
+        case_type = case["type"]
+        if case_type not in {"positive", "negative", "distractor"}:
+            raise ValueError(f"unsupported legal evaluation case type: {case_type}")
+        expected = set(case.get("expected_ids", []))
+        forbidden = set(case.get("forbidden_ids", []))
+        response = retriever.retrieve(case["query"], limit=k)
+        results = response["results"]
         ids = [result["id"] for result in results]
-        expected = set(case["expected_ids"])
-        matching_ranks = [
-            index + 1 for index, identifier in enumerate(ids) if identifier in expected
-        ]
-        hit = bool(matching_ranks)
-        hit_count += int(hit)
-        if matching_ranks:
-            reciprocal_rank_total += 1 / min(matching_ranks)
+        status = response["decision"]["status"]
+        result_count += len(results)
+        traced_results += sum(_trace_complete(result) for result in results)
+
+        recall: float | None = None
+        reciprocal_rank: float | None = None
+        hit: bool | None = None
+        if case_type in {"positive", "distractor"}:
+            retrieval_case_count += 1
+            if case_type == "positive":
+                positive_count += 1
+            else:
+                distractor_count += 1
+            if not expected:
+                raise ValueError(f"positive case has no expected ids: {case['id']}")
+            matching_ranks = [
+                index + 1
+                for index, identifier in enumerate(ids)
+                if identifier in expected
+            ]
+            hit = bool(matching_ranks)
+            recall = len(expected.intersection(ids)) / len(expected)
+            reciprocal_rank = 1 / min(matching_ranks) if matching_ranks else 0.0
+            hit_count += int(hit)
+            recall_total += recall
+            reciprocal_rank_total += reciprocal_rank
+            if case_type == "positive":
+                positive_covered += int(status != "abstained")
+            else:
+                distractor_rejected += int(not ids or ids[0] not in forbidden)
+        else:
+            negative_count += 1
+            abstained = status == "abstained"
+            negative_abstained += int(abstained)
+            false_support += int(not abstained)
+
+        expected_instrument = case.get("expected_instrument")
+        if expected_instrument:
+            instrument_case_count += 1
+            if any(
+                _instrument_from_id(identifier) != expected_instrument
+                for identifier in ids
+            ):
+                instrument_leakage_count += 1
+
         rows.append(
             {
+                "id": case["id"],
+                "type": case_type,
+                "tags": case.get("tags", []),
                 "query": case["query"],
-                "expected_ids": case["expected_ids"],
+                "expected_status": case.get("expected_status"),
+                "actual_status": status,
+                "reason_code": response["decision"]["reason_code"],
+                "expected_ids": case.get("expected_ids", []),
+                "forbidden_ids": case.get("forbidden_ids", []),
                 "retrieved_ids": ids,
                 "hit_at_k": hit,
+                "recall_at_k": round(recall, 4) if recall is not None else None,
+                "reciprocal_rank": (
+                    round(reciprocal_rank, 4) if reciprocal_rank is not None else None
+                ),
+                "decision": response["decision"],
+                "query_trace": response["query_trace"],
                 "results": results,
             }
         )
 
-    count = len(cases)
     return {
-        "evaluation": "article-level citation retrieval",
+        "evaluation": "article-level deterministic citation retrieval",
+        "retriever_version": RETRIEVER_VERSION,
+        "corpus_sha256": retriever.corpus_hash,
         "k": k,
-        "case_count": count,
-        "hit_rate_at_k": round(hit_count / count, 4) if count else 0.0,
-        "mean_reciprocal_rank": (
-            round(reciprocal_rank_total / count, 4) if count else 0.0
+        "case_count": len(cases),
+        "positive_case_count": positive_count,
+        "retrieval_case_count": retrieval_case_count,
+        "negative_case_count": negative_count,
+        "distractor_case_count": distractor_count,
+        # Compatibility name retained for prior report consumers.
+        "hit_rate_at_k": _rate(hit_count, retrieval_case_count),
+        "recall_at_k": _rate(recall_total, retrieval_case_count),
+        "mean_reciprocal_rank": _rate(
+            reciprocal_rank_total,
+            retrieval_case_count,
         ),
-        "scope": "curated CBAM/EUDR article metadata; not legal advice",
+        "positive_coverage": _rate(positive_covered, positive_count),
+        "negative_abstention_rate": _rate(
+            negative_abstained,
+            negative_count,
+        ),
+        "false_support_rate": _rate(false_support, negative_count),
+        "distractor_rejection_at_1": _rate(
+            distractor_rejected,
+            distractor_count,
+        ),
+        "instrument_leakage_at_k": _rate(
+            instrument_leakage_count,
+            instrument_case_count,
+        ),
+        "trace_coverage": _rate(traced_results, result_count),
+        "counts": {
+            "positive_covered": positive_covered,
+            "negative_abstained": negative_abstained,
+            "false_support": false_support,
+            "distractor_rejected": distractor_rejected,
+            "instrument_leakage": instrument_leakage_count,
+            "traced_results": traced_results,
+            "retrieved_results": result_count,
+        },
+        "scope": (
+            "curated CBAM/EUDR article metadata; deterministic retrieval "
+            "baseline; not an LLM and not legal advice"
+        ),
         "cases": rows,
     }
 
@@ -239,15 +905,23 @@ def retrieve_issue_citations(
     *,
     limit: int = 3,
 ) -> dict[str, Any]:
-    """Link known data-quality issues to ranked legal citations."""
+    """Link known data-quality issues to auditable citation candidates."""
     retriever = LegalRetriever(corpus)
     items: list[dict[str, Any]] = []
+    unmapped: list[dict[str, Any]] = []
     for issue in normalized["issues"]:
         key = (issue["code"], issue.get("field"))
         query = ISSUE_QUERIES.get(key)
         if not query:
+            unmapped.append(
+                {
+                    "code": issue["code"],
+                    "field": issue.get("field"),
+                    "message": issue["message"],
+                }
+            )
             continue
-        results = retriever.search(query, limit=limit)
+        response = retriever.retrieve(query, limit=limit)
         items.append(
             {
                 "issue": {
@@ -256,17 +930,29 @@ def retrieve_issue_citations(
                     "message": issue["message"],
                 },
                 "query": query,
-                "status": "supported" if results else "abstained",
-                "results": results,
+                "status": response["decision"]["status"],
+                "reason_code": response["decision"]["reason_code"],
+                "query_trace": response["query_trace"],
+                "results": response["results"],
             }
         )
     return {
         "case_id": normalized["case_id"],
-        "method": "rule-mapped issue query + article-level lexical retrieval",
-        "linked_issue_count": len(items),
-        "supported_issue_count": sum(
-            item["status"] == "supported" for item in items
+        "method": (
+            "rule-mapped issue query + field-weighted BM25F article "
+            "citation retrieval"
         ),
+        "retriever_version": RETRIEVER_VERSION,
+        "corpus_sha256": retriever.corpus_hash,
+        "linked_issue_count": len(items),
+        "supported_issue_count": sum(item["status"] == "supported" for item in items),
+        "review_issue_count": sum(item["status"] == "review" for item in items),
+        "abstained_issue_count": sum(item["status"] == "abstained" for item in items),
+        "unmapped_issue_count": len(unmapped),
+        "unmapped_issues": unmapped,
         "items": items,
-        "scope": "decision support over a curated article metadata set; not legal advice",
+        "scope": (
+            "decision support over curated article metadata; not an LLM "
+            "and not legal advice"
+        ),
     }

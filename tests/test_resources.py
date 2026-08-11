@@ -8,8 +8,14 @@ ROOT = Path(__file__).resolve().parents[1]
 class PackagedResourceTests(unittest.TestCase):
     def test_packaged_resources_match_public_fixtures(self):
         pairs = {
-            "ocr_records.json": ROOT / "data/synthetic/ocr_records.json",
+            "trade_case_documents.json": ROOT
+            / "data/synthetic/trade_case_documents.json",
+            "normalization_policy.json": ROOT
+            / "data/reference/normalization_policy.json",
+            "forest_case.json": ROOT / "data/synthetic/forest_case.json",
             "forest_pixels.csv": ROOT / "data/synthetic/forest_pixels.csv",
+            "forest_reference_mask.csv": ROOT
+            / "data/synthetic/forest_reference_mask.csv",
             "legal_corpus.json": ROOT / "data/reference/legal_corpus.json",
             "legal_eval.json": ROOT / "data/reference/legal_eval.json",
             "source_manifest.json": ROOT / "data/reference/source_manifest.json",

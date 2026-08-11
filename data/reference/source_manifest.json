@@ -12,6 +12,22 @@
       "scope_note": "Current consolidated text pinned for article metadata. The educational exposure formula does not implement the full statutory certificate obligation."
     },
     {
+      "name": "Commission Implementing Regulation (EU) 2025/2547",
+      "celex": "32025R2547",
+      "eli": "https://eur-lex.europa.eu/eli/reg_impl/2025/2547/oj/eng",
+      "adopted_on": "2025-12-10",
+      "official_journal_published_on": "2025-12-22",
+      "scope_note": "Pinned to document the production-process and embedded-emissions methodology boundary. EcoGuard v0.2 does not claim full implementation of this act."
+    },
+    {
+      "name": "Commission Implementing Regulation (EU) 2025/2620",
+      "celex": "32025R2620",
+      "eli": "https://eur-lex.europa.eu/eli/reg_impl/2025/2620/oj/eng",
+      "adopted_on": "2025-12-16",
+      "official_journal_published_on": "2025-12-22",
+      "scope_note": "Pinned to distinguish the official free-allocation adjustment framework from EcoGuard's analyst-defined scenario exposure factor."
+    },
+    {
       "name": "EUDR Regulation (EU) 2023/1115",
       "celex": "32023R1115",
       "eli": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng",

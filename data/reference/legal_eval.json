@@ -1,22 +1,332 @@
 [
   {
-    "query": "실제 배출량을 쓰려는데 검증서가 없으면 어떤 조항을 확인해야 하나",
-    "expected_ids": ["CBAM-ART8"]
+    "id": "positive-cbam-art6-01",
+    "type": "positive",
+    "query": "CBAM 신고 수량이 문서마다 다르면 신고 내용과 수량 근거는 어떤 조항을 확인해야 하나",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART6"],
+    "forbidden_ids": [],
+    "tags": ["positive", "quantity", "issue-mapped"]
   },
   {
+    "id": "positive-cbam-art6-02",
+    "type": "positive",
+    "query": "CBAM 신고서에서 수입 물품 수량과 인증서 수량 근거가 누락됐다",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART6"],
+    "forbidden_ids": [],
+    "tags": ["positive", "paraphrase", "declaration"]
+  },
+  {
+    "id": "positive-cbam-art7-01",
+    "type": "positive",
     "query": "제품의 내재배출량과 EU 기본값 계산 근거",
-    "expected_ids": ["CBAM-ART7"]
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART7"],
+    "forbidden_ids": [],
+    "tags": ["positive", "calculation", "implicit-instrument"]
   },
   {
+    "id": "positive-cbam-art7-02",
+    "type": "positive",
+    "query": "CBAM 내재 배출량을 실제 수치나 기본값으로 산정하는 방법과 배출계수 근거",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART7"],
+    "forbidden_ids": [],
+    "tags": ["positive", "paraphrase", "calculation"]
+  },
+  {
+    "id": "positive-cbam-art8-01",
+    "type": "positive",
+    "query": "실제 배출량을 쓰려는데 검증서가 없으면 어떤 조항을 확인해야 하나",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART8"],
+    "forbidden_ids": [],
+    "tags": ["positive", "verification", "issue-mapped"]
+  },
+  {
+    "id": "positive-cbam-art8-02",
+    "type": "positive",
+    "query": "공인된 제3자의 확인 없이 실제 탄소 수치를 CBAM 신고에 사용할 수 있나",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART8"],
+    "forbidden_ids": [],
+    "tags": ["positive", "paraphrase", "verification"]
+  },
+  {
+    "id": "positive-cbam-art9-01",
+    "type": "positive",
     "query": "원산지에서 이미 낸 탄소가격을 공제하려면 어떤 증빙이 필요한가",
-    "expected_ids": ["CBAM-ART9"]
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART9"],
+    "forbidden_ids": [],
+    "tags": ["positive", "origin-carbon-price", "implicit-instrument"]
   },
   {
+    "id": "positive-cbam-art9-02",
+    "type": "positive",
+    "query": "제3국에서 탄소세를 이미 냈다면 CBAM 인증서 수를 줄이기 위해 어떤 납부 증빙이 필요한가",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART9"],
+    "forbidden_ids": [],
+    "tags": ["positive", "paraphrase", "origin-carbon-price"]
+  },
+  {
+    "id": "positive-eudr-art4-01",
+    "type": "positive",
+    "query": "EUDR 제품을 시장에 출시하기 전에 사업자가 이행할 실사와 실사 선언서 의무",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART4"],
+    "forbidden_ids": [],
+    "tags": ["positive", "operator-obligation", "due-diligence"]
+  },
+  {
+    "id": "positive-eudr-art4-02",
+    "type": "positive",
+    "query": "EUDR 관련 제품을 수출하기 전 운영자는 언제 실사 선언을 해야 하나",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART4"],
+    "forbidden_ids": [],
+    "tags": ["positive", "paraphrase", "due-diligence"]
+  },
+  {
+    "id": "positive-eudr-art9-01",
+    "type": "positive",
     "query": "EUDR 자료에서 생산지 좌표와 생산일이 빠졌다",
-    "expected_ids": ["EUDR-ART9"]
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART9"],
+    "forbidden_ids": [],
+    "tags": ["positive", "geolocation", "information"]
   },
   {
+    "id": "positive-eudr-art9-02",
+    "type": "positive",
+    "query": "EUDR 농장이 어디인지 위경도와 생산 시기를 제출해야 하나",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART9"],
+    "forbidden_ids": [],
+    "tags": ["positive", "paraphrase", "geolocation"]
+  },
+  {
+    "id": "positive-eudr-art10-01",
+    "type": "positive",
     "query": "산림 훼손 가능성을 어떻게 위험 평가해야 하는가",
-    "expected_ids": ["EUDR-ART10"]
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART10"],
+    "forbidden_ids": [],
+    "tags": ["positive", "risk-assessment", "implicit-instrument"]
+  },
+  {
+    "id": "positive-eudr-art10-02",
+    "type": "positive",
+    "query": "EUDR Article 9 정보와 문서를 검증 분석해 비준수 위험을 확인하는 단계",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART10", "EUDR-ART9"],
+    "forbidden_ids": [],
+    "tags": ["positive", "paraphrase", "risk-assessment"]
+  },
+  {
+    "id": "positive-eudr-art11-01",
+    "type": "positive",
+    "query": "EUDR 위험이 무시할 수준이 아니면 추가 정보와 독립 감사를 해야 하나",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART11"],
+    "forbidden_ids": [],
+    "tags": ["positive", "risk-mitigation", "audit"]
+  },
+  {
+    "id": "positive-eudr-art11-02",
+    "type": "positive",
+    "query": "산림 훼손 위험이 높아 EUDR 위험 완화를 위해 추가 조사와 현장 점검이 필요하다",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART11"],
+    "forbidden_ids": [],
+    "tags": ["positive", "paraphrase", "risk-mitigation"]
+  },
+  {
+    "id": "negative-certificate-01",
+    "type": "negative",
+    "query": "공동인증서 갱신 방법",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": ["CBAM-ART6", "CBAM-ART8"],
+    "tags": ["hard-negative", "lexical-overlap", "certificate"]
+  },
+  {
+    "id": "negative-origin-label-01",
+    "type": "negative",
+    "query": "제품 원산지 표시 기준",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": ["CBAM-ART9"],
+    "tags": ["hard-negative", "lexical-overlap", "origin"]
+  },
+  {
+    "id": "negative-map-01",
+    "type": "negative",
+    "query": "농장 좌표를 지도에 표시하는 방법",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": ["EUDR-ART9"],
+    "tags": ["hard-negative", "lexical-overlap", "geolocation"]
+  },
+  {
+    "id": "negative-model-risk-01",
+    "type": "negative",
+    "query": "위험 평가 모델 성능을 높이는 방법",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": ["EUDR-ART10", "EUDR-ART11"],
+    "tags": ["hard-negative", "lexical-overlap", "risk"]
+  },
+  {
+    "id": "negative-esg-report-01",
+    "type": "negative",
+    "query": "회사 내부 탄소 배출 보고서 디자인을 검토해줘",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": ["CBAM-ART7", "CBAM-ART9"],
+    "tags": ["hard-negative", "lexical-overlap", "carbon"]
+  },
+  {
+    "id": "negative-sensor-01",
+    "type": "negative",
+    "query": "실제 배출량 측정 센서를 추천해줘",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": ["CBAM-ART7", "CBAM-ART8"],
+    "tags": ["hard-negative", "lexical-overlap", "emissions"]
+  },
+  {
+    "id": "negative-underspecified-cbam-01",
+    "type": "negative",
+    "query": "CBAM",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": ["CBAM-ART6", "CBAM-ART7", "CBAM-ART8", "CBAM-ART9"],
+    "tags": ["hard-negative", "underspecified", "instrument-only"]
+  },
+  {
+    "id": "negative-underspecified-eudr-01",
+    "type": "negative",
+    "query": "EUDR",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": ["EUDR-ART4", "EUDR-ART9", "EUDR-ART10", "EUDR-ART11"],
+    "tags": ["hard-negative", "underspecified", "instrument-only"]
+  },
+  {
+    "id": "negative-out-domain-01",
+    "type": "negative",
+    "query": "오늘 점심 메뉴와 축구 결과",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": [],
+    "tags": ["hard-negative", "out-of-domain"]
+  },
+  {
+    "id": "negative-forest-travel-01",
+    "type": "negative",
+    "query": "산림 여행지와 농장 체험을 추천해줘",
+    "expected_status": "abstained",
+    "expected_ids": [],
+    "forbidden_ids": ["EUDR-ART9", "EUDR-ART10"],
+    "tags": ["hard-negative", "lexical-overlap", "forest"]
+  },
+  {
+    "id": "distractor-cbam-art7-v-art8",
+    "type": "distractor",
+    "query": "CBAM 내재배출량을 기본값으로 계산하는 산정 근거는 무엇인가",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART7"],
+    "forbidden_ids": ["CBAM-ART8"],
+    "tags": ["distractor", "calculation-vs-verification"]
+  },
+  {
+    "id": "distractor-cbam-art8-v-art7",
+    "type": "distractor",
+    "query": "CBAM 계산된 실제 배출량에 공인 검증인의 검증서가 없다",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART8"],
+    "forbidden_ids": ["CBAM-ART7"],
+    "tags": ["distractor", "verification-vs-calculation"]
+  },
+  {
+    "id": "distractor-eudr-art10-v-art11",
+    "type": "distractor",
+    "query": "EUDR 정보와 문서를 분석해 비준수 위험이 무시 가능한지 평가한다",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART10"],
+    "forbidden_ids": ["EUDR-ART11"],
+    "tags": ["distractor", "assessment-vs-mitigation"]
+  },
+  {
+    "id": "distractor-eudr-art11-v-art10",
+    "type": "distractor",
+    "query": "EUDR 위험이 무시할 수준이 아니어서 추가 조사와 독립 감사를 적용한다",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART11"],
+    "forbidden_ids": ["EUDR-ART10"],
+    "tags": ["distractor", "mitigation-vs-assessment"]
+  },
+  {
+    "id": "distractor-eudr-art9-v-art10",
+    "type": "distractor",
+    "query": "EUDR 생산지 좌표와 생산 기간 정보가 누락됐다",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART9"],
+    "forbidden_ids": ["EUDR-ART10"],
+    "tags": ["distractor", "information-vs-assessment"]
+  },
+  {
+    "id": "distractor-eudr-art4-v-art9",
+    "type": "distractor",
+    "query": "EUDR 관련 제품을 시장에 출시하기 전 실사 선언서를 제출해야 한다",
+    "expected_status": "supported",
+    "expected_instrument": "EUDR",
+    "expected_ids": ["EUDR-ART4"],
+    "forbidden_ids": ["EUDR-ART9"],
+    "tags": ["distractor", "obligation-vs-information"]
+  },
+  {
+    "id": "distractor-cbam-art6-v-art7",
+    "type": "distractor",
+    "query": "CBAM 신고서의 물품 수량과 인증서 수량이 빠졌다",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART6"],
+    "forbidden_ids": ["CBAM-ART7"],
+    "tags": ["distractor", "declaration-vs-calculation"]
+  },
+  {
+    "id": "distractor-cbam-art9-v-art6",
+    "type": "distractor",
+    "query": "CBAM 원산지에서 이미 낸 탄소가격을 인증서 수에서 공제하려 한다",
+    "expected_status": "supported",
+    "expected_instrument": "CBAM",
+    "expected_ids": ["CBAM-ART9"],
+    "forbidden_ids": ["CBAM-ART6"],
+    "tags": ["distractor", "carbon-price-vs-declaration"]
   }
 ]

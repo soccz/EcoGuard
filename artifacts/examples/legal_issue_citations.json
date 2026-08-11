@@ -1,21 +1,103 @@
 {
+  "abstained_issue_count": 0,
   "case_id": "ECO-SYN-2026-001",
+  "corpus_sha256": "0b8a6936f9f53f0e3e7f2e36188bd3e6dd335a162d89ba3c825e8cabff18691e",
   "items": [
     {
       "issue": {
         "code": "cross_document_conflict",
         "field": "shipment_mass_t",
-        "message": "문서 간 값이 달라 원본 확인이 필요합니다."
+        "message": "허용오차를 넘는 문서 간 값 차이가 있어 원본 확인이 필요합니다."
       },
       "query": "CBAM 신고 수량이 문서마다 다르면 신고 내용과 수량 근거는 어떤 조항을 확인해야 하나",
+      "query_trace": {
+        "article_references": [],
+        "concept_counts": {
+          "CBAM": 2
+        },
+        "concept_hits": [
+          {
+            "concept": "declaration_content",
+            "entry_id": "CBAM-ART6",
+            "instrument": "CBAM",
+            "matched_phrase": "CBAM 신고"
+          },
+          {
+            "concept": "goods_quantity",
+            "entry_id": "CBAM-ART6",
+            "instrument": "CBAM",
+            "matched_phrase": "신고 수량"
+          }
+        ],
+        "explicit_instruments": {
+          "CBAM": [
+            "cbam"
+          ]
+        },
+        "gate_passed": true,
+        "instrument": "CBAM",
+        "instrument_source": "explicit",
+        "legal_intent_cues": [
+          "근거",
+          "신고",
+          "어떤 조항",
+          "해야"
+        ],
+        "matched_domain_anchors": [
+          "CBAM 신고",
+          "cbam",
+          "근거",
+          "신고",
+          "신고 수량",
+          "어떤 조항",
+          "해야"
+        ],
+        "normalized": "cbam 신고 수량이 문서마다 다르면 신고 내용과 수량 근거는 어떤 조항을 확인해야 하나",
+        "query_sha256": "3dc0314d78e6988a66067a1e55a20a467899ac784234bcd349413425ed65279c",
+        "raw": "CBAM 신고 수량이 문서마다 다르면 신고 내용과 수량 근거는 어떤 조항을 확인해야 하나",
+        "reason_code": "domain_supported",
+        "tokens": [
+          "cbam",
+          "신고",
+          "수량이",
+          "문서마다",
+          "다르면",
+          "신고",
+          "내용과",
+          "수량",
+          "근거는",
+          "어떤",
+          "조항을",
+          "확인해야",
+          "하나"
+        ]
+      },
+      "reason_code": "citation_supported",
       "results": [
         {
           "article": "Article 6",
           "celex": "32023R0956",
+          "citation": {
+            "article": "Article 6",
+            "celex": "32023R0956",
+            "corpus_entry_sha256": "fd91732808317420055bbf3f14cd35dca362cc708403919f29e408e17e89f4d0",
+            "id": "CBAM-ART6",
+            "instrument": "CBAM",
+            "paragraph": "2",
+            "regulation": "Regulation (EU) 2023/956",
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
           "id": "CBAM-ART6",
           "matched_domain_anchors": [
+            "CBAM 신고",
             "cbam",
-            "신고"
+            "근거",
+            "신고",
+            "신고 수량",
+            "어떤 조항",
+            "해야"
           ],
           "matched_keywords": [
             "CBAM 신고",
@@ -24,20 +106,192 @@
           "paragraph": "2",
           "rank": 1,
           "regulation": "Regulation (EU) 2023/956",
-          "score": 68.739215,
+          "score": 19.312077,
+          "score_trace": {
+            "article_match_bonus": 0.0,
+            "bm25_character_ngram": 3.171854,
+            "bm25_word": 8.140223,
+            "concept_phrase_bonus": 8.0,
+            "field_scores": {
+              "article": 0.0,
+              "concepts": 7.718909,
+              "keywords": 1.751887,
+              "regulation": 0.631681,
+              "summary_ko": 0.696582,
+              "title": 0.513019
+            },
+            "matched_concepts": [
+              {
+                "concept": "declaration_content",
+                "phrase": "CBAM 신고"
+              },
+              {
+                "concept": "goods_quantity",
+                "phrase": "신고 수량"
+              }
+            ],
+            "matched_terms": [
+              {
+                "channel": "word",
+                "fields": {
+                  "concepts": 3.212261,
+                  "keywords": 0.81542
+                },
+                "score": 4.027681,
+                "term": "신고"
+              },
+              {
+                "channel": "word",
+                "fields": {
+                  "concepts": 2.100905,
+                  "keywords": 0.39998,
+                  "summary_ko": 0.165904
+                },
+                "score": 2.666789,
+                "term": "수량"
+              },
+              {
+                "channel": "word",
+                "fields": {
+                  "concepts": 0.549797,
+                  "keywords": 0.209346,
+                  "regulation": 0.329878,
+                  "summary_ko": 0.086832,
+                  "title": 0.2699
+                },
+                "score": 1.445753,
+                "term": "cbam"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.548954
+                },
+                "score": 0.548954,
+                "term": "내용"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.39396,
+                  "keywords": 0.071512,
+                  "summary_ko": 0.063692
+                },
+                "score": 0.529164,
+                "term": "수량"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.417806,
+                  "keywords": 0.075841,
+                  "summary_ko": 0.033774
+                },
+                "score": 0.52742,
+                "term": "신고"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "summary_ko": 0.266317
+                },
+                "score": 0.266317,
+                "term": "근거"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.099045,
+                  "keywords": 0.035958,
+                  "regulation": 0.060361,
+                  "summary_ko": 0.016013,
+                  "title": 0.048624
+                },
+                "score": 0.26,
+                "term": "am"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.099045,
+                  "keywords": 0.035958,
+                  "regulation": 0.060361,
+                  "summary_ko": 0.016013,
+                  "title": 0.048624
+                },
+                "score": 0.26,
+                "term": "ba"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.099045,
+                  "keywords": 0.035958,
+                  "regulation": 0.060361,
+                  "summary_ko": 0.016013,
+                  "title": 0.048624
+                },
+                "score": 0.26,
+                "term": "bam"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.099045,
+                  "keywords": 0.035958,
+                  "regulation": 0.060361,
+                  "summary_ko": 0.016013,
+                  "title": 0.048624
+                },
+                "score": 0.26,
+                "term": "cb"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.099045,
+                  "keywords": 0.035958,
+                  "regulation": 0.060361,
+                  "summary_ko": 0.016013,
+                  "title": 0.048624
+                },
+                "score": 0.26,
+                "term": "cba"
+              }
+            ],
+            "total_score": 19.312077
+          },
           "source_checked_on": "2026-08-11",
           "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
           "summary_ko": "CBAM 신고에는 수입 물품의 수량, 내재배출량, 제출할 인증서 수량과 관련 근거가 포함되어야 한다.",
+          "team_summary_ko": "CBAM 신고에는 수입 물품의 수량, 내재배출량, 제출할 인증서 수량과 관련 근거가 포함되어야 한다.",
           "title": "CBAM declaration content",
           "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
         },
         {
           "article": "Article 8",
           "celex": "32023R0956",
+          "citation": {
+            "article": "Article 8",
+            "celex": "32023R0956",
+            "corpus_entry_sha256": "8402f9b4656d5d16944963e046613af4f0a2811786e94093c5dddacf0adeb978",
+            "id": "CBAM-ART8",
+            "instrument": "CBAM",
+            "paragraph": "1",
+            "regulation": "Regulation (EU) 2023/956",
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
           "id": "CBAM-ART8",
           "matched_domain_anchors": [
+            "CBAM 신고",
             "cbam",
-            "신고"
+            "근거",
+            "신고",
+            "신고 수량",
+            "어떤 조항",
+            "해야"
           ],
           "matched_keywords": [
             "확인"
@@ -45,106 +299,206 @@
           "paragraph": "1",
           "rank": 2,
           "regulation": "Regulation (EU) 2023/956",
-          "score": 16.197225,
+          "score": 3.121807,
+          "score_trace": {
+            "article_match_bonus": 0.0,
+            "bm25_character_ngram": 1.89203,
+            "bm25_word": 1.229777,
+            "concept_phrase_bonus": 0.0,
+            "field_scores": {
+              "article": 0.0,
+              "concepts": 0.374353,
+              "keywords": 0.094576,
+              "regulation": 2.336577,
+              "summary_ko": 0.316301,
+              "title": 0.0
+            },
+            "matched_concepts": [],
+            "matched_terms": [
+              {
+                "channel": "word",
+                "fields": {
+                  "regulation": 1.229777
+                },
+                "score": 1.229777,
+                "term": "cbam"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.374353,
+                  "keywords": 0.094576
+                },
+                "score": 0.468929,
+                "term": "확인"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "summary_ko": 0.316301
+                },
+                "score": 0.316301,
+                "term": "신고"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "am"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "ba"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "bam"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "cb"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "cba"
+              }
+            ],
+            "total_score": 3.121807
+          },
           "source_checked_on": "2026-08-11",
           "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
           "summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
+          "team_summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
           "title": "Verification of embedded emissions",
           "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
         },
-        {
-          "article": "Article 9",
-          "celex": "32023R1115",
-          "id": "EUDR-ART9",
-          "matched_domain_anchors": [
-            "cbam",
-            "신고"
-          ],
-          "matched_keywords": [],
-          "paragraph": "1",
-          "rank": 3,
-          "regulation": "Regulation (EU) 2023/1115",
-          "score": 8.394449,
-          "source_checked_on": "2026-08-11",
-          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
-          "summary_ko": "실사 정보에는 제품 설명·수량·생산국과 함께 관련 원자재가 생산된 토지의 지리적 위치와 생산일 또는 기간이 포함된다. 다만 Article 4a(5)의 micro 또는 small primary operator에는 우편주소 대체 예외가 적용될 수 있다.",
-          "title": "Information requirement",
-          "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
-        }
-      ],
-      "status": "supported"
-    },
-    {
-      "issue": {
-        "code": "cross_document_conflict",
-        "field": "actual_intensity_tco2e_per_t",
-        "message": "문서 간 값이 달라 원본 확인이 필요합니다."
-      },
-      "query": "실제 내재배출량과 기본값 계산 근거가 충돌하면 어떤 조항을 확인해야 하나",
-      "results": [
         {
           "article": "Article 7",
           "celex": "32023R0956",
+          "citation": {
+            "article": "Article 7",
+            "celex": "32023R0956",
+            "corpus_entry_sha256": "59e3bb749a83ac4fd08f3b847ef0a1579fc78e5cd0ea6be829932c9e00076f1e",
+            "id": "CBAM-ART7",
+            "instrument": "CBAM",
+            "paragraph": "1-7",
+            "regulation": "Regulation (EU) 2023/956",
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
           "id": "CBAM-ART7",
           "matched_domain_anchors": [
-            "내재배출량",
-            "배출"
+            "CBAM 신고",
+            "cbam",
+            "근거",
+            "신고",
+            "신고 수량",
+            "어떤 조항",
+            "해야"
           ],
-          "matched_keywords": [
-            "내재배출량",
-            "기본값",
-            "계산"
-          ],
+          "matched_keywords": [],
           "paragraph": "1-7",
-          "rank": 1,
+          "rank": 3,
           "regulation": "Regulation (EU) 2023/956",
-          "score": 77.858785,
+          "score": 2.725679,
+          "score_trace": {
+            "article_match_bonus": 0.0,
+            "bm25_character_ngram": 1.495902,
+            "bm25_word": 1.229777,
+            "concept_phrase_bonus": 0.0,
+            "field_scores": {
+              "article": 0.0,
+              "concepts": 0.389102,
+              "keywords": 0.0,
+              "regulation": 2.336577,
+              "summary_ko": 0.0,
+              "title": 0.0
+            },
+            "matched_concepts": [],
+            "matched_terms": [
+              {
+                "channel": "word",
+                "fields": {
+                  "regulation": 1.229777
+                },
+                "score": 1.229777,
+                "term": "cbam"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.389102
+                },
+                "score": 0.389102,
+                "term": "근거"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "am"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "ba"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "bam"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "cb"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "regulation": 0.22136
+                },
+                "score": 0.22136,
+                "term": "cba"
+              }
+            ],
+            "total_score": 2.725679
+          },
           "source_checked_on": "2026-08-11",
           "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
           "summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
+          "team_summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
           "title": "Calculation of embedded emissions",
-          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
-        },
-        {
-          "article": "Article 6",
-          "celex": "32023R0956",
-          "id": "CBAM-ART6",
-          "matched_domain_anchors": [
-            "내재배출량",
-            "배출"
-          ],
-          "matched_keywords": [
-            "내재배출량"
-          ],
-          "paragraph": "2",
-          "rank": 2,
-          "regulation": "Regulation (EU) 2023/956",
-          "score": 41.535623,
-          "source_checked_on": "2026-08-11",
-          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
-          "summary_ko": "CBAM 신고에는 수입 물품의 수량, 내재배출량, 제출할 인증서 수량과 관련 근거가 포함되어야 한다.",
-          "title": "CBAM declaration content",
-          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
-        },
-        {
-          "article": "Article 8",
-          "celex": "32023R0956",
-          "id": "CBAM-ART8",
-          "matched_domain_anchors": [
-            "내재배출량",
-            "배출"
-          ],
-          "matched_keywords": [
-            "확인"
-          ],
-          "paragraph": "1",
-          "rank": 3,
-          "regulation": "Regulation (EU) 2023/956",
-          "score": 33.349414,
-          "source_checked_on": "2026-08-11",
-          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
-          "summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
-          "title": "Verification of embedded emissions",
           "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
         }
       ],
@@ -157,15 +511,84 @@
         "message": "필수 증빙 값이 비어 있습니다."
       },
       "query": "실제 배출량을 사용하려는데 검증서가 없으면 어떤 조항을 확인해야 하나",
+      "query_trace": {
+        "article_references": [],
+        "concept_counts": {
+          "CBAM": 2
+        },
+        "concept_hits": [
+          {
+            "concept": "actual_emissions",
+            "entry_id": "CBAM-ART8",
+            "instrument": "CBAM",
+            "matched_phrase": "실제 배출량"
+          },
+          {
+            "concept": "third_party_verification",
+            "entry_id": "CBAM-ART8",
+            "instrument": "CBAM",
+            "matched_phrase": "검증서"
+          }
+        ],
+        "explicit_instruments": {},
+        "gate_passed": true,
+        "instrument": "CBAM",
+        "instrument_source": "inferred_from_concepts",
+        "legal_intent_cues": [
+          "검증",
+          "어떤 조항",
+          "없으면",
+          "해야"
+        ],
+        "matched_domain_anchors": [
+          "검증",
+          "검증서",
+          "실제 배출량",
+          "어떤 조항",
+          "없으면",
+          "해야"
+        ],
+        "normalized": "실제 배출량을 사용하려는데 검증서가 없으면 어떤 조항을 확인해야 하나",
+        "query_sha256": "365b5db0c5b5be84b3beb8ccb9425807c76bceea40525896804642f8ec3acbdc",
+        "raw": "실제 배출량을 사용하려는데 검증서가 없으면 어떤 조항을 확인해야 하나",
+        "reason_code": "domain_supported",
+        "tokens": [
+          "실제",
+          "배출량을",
+          "사용하려는데",
+          "검증서가",
+          "없으면",
+          "어떤",
+          "조항을",
+          "확인해야",
+          "하나"
+        ]
+      },
+      "reason_code": "citation_supported",
       "results": [
         {
           "article": "Article 8",
           "celex": "32023R0956",
+          "citation": {
+            "article": "Article 8",
+            "celex": "32023R0956",
+            "corpus_entry_sha256": "8402f9b4656d5d16944963e046613af4f0a2811786e94093c5dddacf0adeb978",
+            "id": "CBAM-ART8",
+            "instrument": "CBAM",
+            "paragraph": "1",
+            "regulation": "Regulation (EU) 2023/956",
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
           "id": "CBAM-ART8",
           "matched_domain_anchors": [
+            "검증",
+            "검증서",
             "실제 배출량",
-            "배출",
-            "검증서"
+            "어떤 조항",
+            "없으면",
+            "해야"
           ],
           "matched_keywords": [
             "검증",
@@ -176,21 +599,151 @@
           "paragraph": "1",
           "rank": 1,
           "regulation": "Regulation (EU) 2023/956",
-          "score": 68.519313,
+          "score": 12.945924,
+          "score_trace": {
+            "article_match_bonus": 0.0,
+            "bm25_character_ngram": 2.985504,
+            "bm25_word": 1.96042,
+            "concept_phrase_bonus": 8.0,
+            "field_scores": {
+              "article": 0.0,
+              "concepts": 3.500654,
+              "keywords": 1.135284,
+              "regulation": 0.0,
+              "summary_ko": 0.309986,
+              "title": 0.0
+            },
+            "matched_concepts": [
+              {
+                "concept": "actual_emissions",
+                "phrase": "실제 배출량"
+              },
+              {
+                "concept": "third_party_verification",
+                "phrase": "검증서"
+              }
+            ],
+            "matched_terms": [
+              {
+                "channel": "word",
+                "fields": {
+                  "concepts": 1.528593,
+                  "keywords": 0.288249,
+                  "summary_ko": 0.143578
+                },
+                "score": 1.96042,
+                "term": "실제"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.3436,
+                  "keywords": 0.26042
+                },
+                "score": 0.60402,
+                "term": "검증서"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.324305,
+                  "keywords": 0.122898,
+                  "summary_ko": 0.043448
+                },
+                "score": 0.490651,
+                "term": "검증"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.374353,
+                  "keywords": 0.094576
+                },
+                "score": 0.468929,
+                "term": "확인"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.27365,
+                  "keywords": 0.051851,
+                  "summary_ko": 0.027496
+                },
+                "score": 0.352998,
+                "term": "실제"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.181116,
+                  "keywords": 0.137271
+                },
+                "score": 0.318387,
+                "term": "증서"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.158345,
+                  "keywords": 0.060006,
+                  "summary_ko": 0.031821
+                },
+                "score": 0.250173,
+                "term": "배출"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.158345,
+                  "keywords": 0.060006,
+                  "summary_ko": 0.031821
+                },
+                "score": 0.250173,
+                "term": "배출량"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.158345,
+                  "keywords": 0.060006,
+                  "summary_ko": 0.031821
+                },
+                "score": 0.250173,
+                "term": "출량"
+              }
+            ],
+            "total_score": 12.945924
+          },
           "source_checked_on": "2026-08-11",
           "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
           "summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
+          "team_summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
           "title": "Verification of embedded emissions",
           "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
         },
         {
           "article": "Article 7",
           "celex": "32023R0956",
+          "citation": {
+            "article": "Article 7",
+            "celex": "32023R0956",
+            "corpus_entry_sha256": "59e3bb749a83ac4fd08f3b847ef0a1579fc78e5cd0ea6be829932c9e00076f1e",
+            "id": "CBAM-ART7",
+            "instrument": "CBAM",
+            "paragraph": "1-7",
+            "regulation": "Regulation (EU) 2023/956",
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
           "id": "CBAM-ART7",
           "matched_domain_anchors": [
+            "검증",
+            "검증서",
             "실제 배출량",
-            "배출",
-            "검증서"
+            "어떤 조항",
+            "없으면",
+            "해야"
           ],
           "matched_keywords": [
             "실제 배출량"
@@ -198,72 +751,257 @@
           "paragraph": "1-7",
           "rank": 2,
           "regulation": "Regulation (EU) 2023/956",
-          "score": 24.007081,
+          "score": 2.688875,
+          "score_trace": {
+            "article_match_bonus": 0.0,
+            "bm25_character_ngram": 1.061581,
+            "bm25_word": 1.627294,
+            "concept_phrase_bonus": 0.0,
+            "field_scores": {
+              "article": 0.0,
+              "concepts": 0.408321,
+              "keywords": 1.592812,
+              "regulation": 0.0,
+              "summary_ko": 0.687741,
+              "title": 0.0
+            },
+            "matched_concepts": [],
+            "matched_terms": [
+              {
+                "channel": "word",
+                "fields": {
+                  "keywords": 1.133173,
+                  "summary_ko": 0.494121
+                },
+                "score": 1.627294,
+                "term": "실제"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "keywords": 0.199098,
+                  "summary_ko": 0.089197
+                },
+                "score": 0.288294,
+                "term": "실제"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.155702,
+                  "keywords": 0.082365,
+                  "summary_ko": 0.0246
+                },
+                "score": 0.262667,
+                "term": "배출"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.126309,
+                  "keywords": 0.089088,
+                  "summary_ko": 0.039912
+                },
+                "score": 0.25531,
+                "term": "배출량"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.126309,
+                  "keywords": 0.089088,
+                  "summary_ko": 0.039912
+                },
+                "score": 0.25531,
+                "term": "출량"
+              }
+            ],
+            "total_score": 2.688875
+          },
           "source_checked_on": "2026-08-11",
           "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
           "summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
+          "team_summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
           "title": "Calculation of embedded emissions",
           "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
         },
         {
-          "article": "Article 10",
-          "celex": "32023R1115",
-          "id": "EUDR-ART10",
+          "article": "Article 9",
+          "celex": "32023R0956",
+          "citation": {
+            "article": "Article 9",
+            "celex": "32023R0956",
+            "corpus_entry_sha256": "1ca552a14810d3bd512e852c4b4042145ac84e98fac08444c5fd426385cfaa50",
+            "id": "CBAM-ART9",
+            "instrument": "CBAM",
+            "paragraph": "1-5",
+            "regulation": "Regulation (EU) 2023/956",
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          "id": "CBAM-ART9",
           "matched_domain_anchors": [
+            "검증",
+            "검증서",
             "실제 배출량",
-            "배출",
-            "검증서"
+            "어떤 조항",
+            "없으면",
+            "해야"
           ],
-          "matched_keywords": [
-            "검증"
-          ],
-          "paragraph": "1-2",
+          "matched_keywords": [],
+          "paragraph": "1-5",
           "rank": 3,
-          "regulation": "Regulation (EU) 2023/1115",
-          "score": 16.197225,
+          "regulation": "Regulation (EU) 2023/956",
+          "score": 2.421054,
+          "score_trace": {
+            "article_match_bonus": 0.0,
+            "bm25_character_ngram": 1.24166,
+            "bm25_word": 1.179394,
+            "concept_phrase_bonus": 0.0,
+            "field_scores": {
+              "article": 0.0,
+              "concepts": 0.31884,
+              "keywords": 0.0,
+              "regulation": 0.0,
+              "summary_ko": 2.102214,
+              "title": 0.0
+            },
+            "matched_concepts": [],
+            "matched_terms": [
+              {
+                "channel": "word",
+                "fields": {
+                  "summary_ko": 1.179394
+                },
+                "score": 1.179394,
+                "term": "실제"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "concepts": 0.31884,
+                  "summary_ko": 0.022488
+                },
+                "score": 0.341328,
+                "term": "증서"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "summary_ko": 0.216619
+                },
+                "score": 0.216619,
+                "term": "실제"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "summary_ko": 0.206777
+                },
+                "score": 0.206777,
+                "term": "확인"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "summary_ko": 0.158978
+                },
+                "score": 0.158978,
+                "term": "배출"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "summary_ko": 0.158978
+                },
+                "score": 0.158978,
+                "term": "배출량"
+              },
+              {
+                "channel": "character_ngram",
+                "fields": {
+                  "summary_ko": 0.158978
+                },
+                "score": 0.158978,
+                "term": "출량"
+              }
+            ],
+            "total_score": 2.421054
+          },
           "source_checked_on": "2026-08-11",
           "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
-          "summary_ko": "사업자는 Article 9의 정보와 기타 문서를 검증·분석해 제품의 비준수 위험이 없거나 무시할 수준인지 평가해야 한다.",
-          "title": "Risk assessment",
-          "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+          "summary_ko": "실제 배출량 기준에서는 제3국에서 탄소가격을 실제 지불했다는 기록과 독립 확인 증빙을 바탕으로 인증서 수 감축을 청구할 수 있다. 기본값 배출량에는 연간 기본 탄소가격 관련 조건이 적용된다.",
+          "team_summary_ko": "실제 배출량 기준에서는 제3국에서 탄소가격을 실제 지불했다는 기록과 독립 확인 증빙을 바탕으로 인증서 수 감축을 청구할 수 있다. 기본값 배출량에는 연간 기본 탄소가격 관련 조건이 적용된다.",
+          "title": "Carbon price paid in a third country",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
         }
       ],
       "status": "supported"
     }
   ],
-  "linked_issue_count": 3,
-  "method": "rule-mapped issue query + article-level lexical retrieval",
+  "linked_issue_count": 2,
+  "method": "rule-mapped issue query + field-weighted BM25F article citation retrieval",
   "reproduction": {
+    "determinism": {
+      "json_allow_nan": false,
+      "json_keys": "sorted",
+      "record_order": "document/page/line and row-major",
+      "timestamps_in_artifacts": false
+    },
     "input_subset": [
-      "ocr_records",
+      "trade_case_documents",
+      "normalization_policy",
       "legal_corpus",
       "legal_source_manifest"
     ],
     "inputs": {
+      "forest_case": {
+        "bytes": 910,
+        "sha256": "bbfbd997d1e5e9b6a22a327425ff5db4ede6deb204a24d282389f2c0935832be"
+      },
       "forest_pixels": {
         "bytes": 914,
         "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
       },
+      "forest_reference_mask": {
+        "bytes": 239,
+        "sha256": "dccbb35d095902e04198f24d9573de51af9678c735e7f9429463b96ef6de74f4"
+      },
       "legal_corpus": {
-        "bytes": 5908,
-        "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+        "bytes": 10364,
+        "sha256": "8830e3d79d7698dfe3c24833f94395b1626cabf6377ac32a3a27aa42f2e9c374"
       },
       "legal_eval": {
-        "bytes": 665,
-        "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+        "bytes": 11754,
+        "sha256": "6e7a1a9665aa3e42dae01e38096464440a184fe81124f1c2ce24b637364cd3b0"
       },
       "legal_source_manifest": {
-        "bytes": 1055,
-        "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+        "bytes": 1914,
+        "sha256": "4f6742db459e0003f85f928ee40ff4c005f6d6dab217ebd074f203bbe64d0f5d"
       },
-      "ocr_records": {
-        "bytes": 3255,
-        "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+      "normalization_policy": {
+        "bytes": 836,
+        "sha256": "d9f52ac2b6272686ccb9741a053ee2c98f6c1f4d196bc7c0169485e4bb71383a"
+      },
+      "trade_case_documents": {
+        "bytes": 5383,
+        "sha256": "be5b3def3d0cd3d617201aa9f93fa318277c7d5f32ae12d6888529f7a06e140e"
       }
     },
-    "pipeline_version": "0.1.0",
-    "schema_version": "1.0.0"
+    "pipeline_version": "0.2.0",
+    "schema_version": "2.0.0"
   },
-  "scope": "decision support over a curated article metadata set; not legal advice",
-  "supported_issue_count": 3
+  "retriever_version": "legal-bm25f-v2",
+  "review_issue_count": 0,
+  "scope": "decision support over curated article metadata; not an LLM and not legal advice",
+  "supported_issue_count": 2,
+  "unmapped_issue_count": 1,
+  "unmapped_issues": [
+    {
+      "code": "parse_failure",
+      "field": "actual_intensity_tco2e_per_t",
+      "message": "numeric value not found: '와 배분근거 미첨부'"
+    }
+  ]
 }

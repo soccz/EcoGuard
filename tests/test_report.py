@@ -15,8 +15,11 @@ class EvidenceReportTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         with tempfile.TemporaryDirectory() as output_dir:
-            report = reproduce(output_dir, root=ROOT)["evidence_report_json"]
-            cls.packet = json.loads(report.read_text(encoding="utf-8"))
+            paths = reproduce(output_dir, root=ROOT)
+            cls.packet = json.loads(
+                paths["evidence_report_json"].read_text(encoding="utf-8")
+            )
+            cls.svg = paths["forest_change_svg"].read_text(encoding="utf-8")
 
     def test_actual_emissions_are_rendered_from_calculation_result(self):
         packet = copy.deepcopy(self.packet)
@@ -24,13 +27,16 @@ class EvidenceReportTests(unittest.TestCase):
             "embedded_emissions_tco2e"
         ] = "2222.72"
         rendered = render_html(packet, "<svg></svg>")
-        self.assertIn("2222.72 tCO2e", rendered)
-        self.assertNotIn("1,111.36 tCO2e", rendered)
+        self.assertIn("2222.72 tCO₂e", rendered)
+        self.assertNotIn("1,111.36 tCO₂e", rendered)
 
     def test_decision_reason_reflects_issue_state(self):
         normalized = copy.deepcopy(self.packet["normalized_evidence"])
         normalized["issues"] = []
+        normalized["summary"]["high_issue_count"] = 0
+        normalized["summary"]["review_issue_count"] = 0
         packet = build_evidence_packet(
+            self.packet["extraction"],
             normalized,
             self.packet["legal_retrieval_evaluation"],
             self.packet["legal_issue_citations"],
@@ -42,6 +48,32 @@ class EvidenceReportTests(unittest.TestCase):
             "교육용 PoC는 자동 승인하지 않으며 사람이 최종 검토합니다.",
         )
         self.assertIn("모든 사례 입력", packet["boundaries"][0])
+
+    def test_report_exposes_each_proof_layer_and_metric_boundary(self):
+        rendered = render_html(self.packet, self.svg)
+        for marker in (
+            "Document ingestion and lineage",
+            "Normalization, selection and review ledger",
+            "Legal citation retrieval baseline",
+            "CBAM component trace and price sensitivity",
+            "Synthetic forest reference-mask evaluation",
+            "Reproduction inputs",
+            "970.50",
+            "140.86",
+            "11 / 1",
+            "not real-world model accuracy",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, rendered)
+        self.assertIn("false support 0.0%", rendered)
+        self.assertIn("일반 법률 정확도가 아닙니다", rendered)
+        self.assertIn("법정 의무액이 아닙니다", rendered)
+
+    def test_report_contains_no_live_demo_or_automatic_approval_claim(self):
+        rendered = render_html(self.packet, self.svg)
+        for forbidden in (".github.io", "Live Demo", "AUTO APPROVED", "amount due"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, rendered)
 
 
 if __name__ == "__main__":
