@@ -1,0 +1,180 @@
+{
+  "actual_data_scenario": {
+    "calculation_basis": "sum of normalized line-item mass × intensity",
+    "embedded_emissions_tco2e": "1111.36",
+    "exposure_eur": "97244.00",
+    "line_items": [
+      {
+        "embedded_emissions_tco2e": "502.56",
+        "intensity_source": {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / item M5 / specific embedded emissions",
+          "raw_label": "M5 SEE",
+          "raw_value": "5.584 tCO2e/t",
+          "record_id": "record-005"
+        },
+        "intensity_tco2e_per_t": "5.584",
+        "item": "M5",
+        "mass_source": {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / item M5 / net weight",
+          "raw_label": "M5 순중량",
+          "raw_value": "90 MT",
+          "record_id": "record-004"
+        },
+        "mass_t": "90"
+      },
+      {
+        "embedded_emissions_tco2e": "608.80",
+        "intensity_source": {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / item M12 / specific embedded emissions",
+          "raw_label": "M12 SEE",
+          "raw_value": "6.088 tCO2e/t",
+          "record_id": "record-007"
+        },
+        "intensity_tco2e_per_t": "6.088",
+        "item": "M12",
+        "mass_source": {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / item M12 / net weight",
+          "raw_label": "M12 순중량",
+          "raw_value": "100,000 kg",
+          "record_id": "record-006"
+        },
+        "mass_t": "100"
+      }
+    ],
+    "weighted_intensity_tco2e_per_t": "5.849263"
+  },
+  "assumptions": [
+    "가격·집약도·적용계수는 합성 사례의 입력값이며 규제 상수가 아닙니다.",
+    "원산지 탄소가격은 입력된 증빙 금액만큼 단순 차감한 비교 시나리오입니다.",
+    "Article 31 무상할당 조정과 Article 9의 법정 변환 방법을 구현하지 않습니다.",
+    "기본값 시나리오의 탄소가격 처리는 현행 법정 의무액이 아닌 단순 민감도 비교입니다.",
+    "인증서 가격은 합성 fixture이며 실제 분기·주간 가격 산식이 아닙니다.",
+    "결과는 공식 신고액이나 인증서 의무량을 대체하지 않습니다."
+  ],
+  "case_id": "ECO-SYN-2026-001",
+  "classification": "gross_price_sensitivity_scenario",
+  "default_value_scenario": {
+    "embedded_emissions_tco2e": "1389.20",
+    "exposure_eur": "121555.00"
+  },
+  "difference": {
+    "embedded_emissions_tco2e": "277.84",
+    "exposure_eur": "24311.00"
+  },
+  "input_provenance": {
+    "actual_intensity_tco2e_per_t": {
+      "confidence": 0.94,
+      "document": "cbam_product_sheet",
+      "extractor": "ocr_adapter_boundary",
+      "location": "page 2 / measured scenario",
+      "raw_label": "실측 배출계수",
+      "raw_value": "5.849263 tCO2e/t",
+      "record_id": "record-009"
+    },
+    "carbon_price_paid_eur_per_tco2e": {
+      "confidence": 0.9,
+      "document": "supplier_declaration",
+      "extractor": "ocr_adapter_boundary",
+      "location": "page 1 / carbon price",
+      "raw_label": "원산지 탄소가격",
+      "raw_value": "EUR 0 / tCO2e",
+      "record_id": "record-014"
+    },
+    "certificate_price_eur_per_tco2e": {
+      "confidence": 1.0,
+      "document": "scenario_assumptions",
+      "extractor": "ocr_adapter_boundary",
+      "location": "row 4",
+      "raw_label": "CBAM 인증서 가격",
+      "raw_value": "EUR 87.50 / tCO2e",
+      "record_id": "record-012"
+    },
+    "default_intensity_tco2e_per_t": {
+      "confidence": 0.94,
+      "document": "cbam_product_sheet",
+      "extractor": "ocr_adapter_boundary",
+      "location": "page 2 / conservative scenario",
+      "raw_label": "EU 기본값",
+      "raw_value": "7.311579 tCO2e/t",
+      "record_id": "record-011"
+    },
+    "phase_in_factor": {
+      "confidence": 1.0,
+      "document": "scenario_assumptions",
+      "extractor": "ocr_adapter_boundary",
+      "location": "row 5",
+      "raw_label": "노출도 적용계수",
+      "raw_value": "100%",
+      "record_id": "record-013"
+    },
+    "shipment_mass_t": {
+      "confidence": 0.98,
+      "document": "commercial_invoice",
+      "extractor": "ocr_adapter_boundary",
+      "location": "page 1 / total net weight",
+      "raw_label": "총 출하 중량",
+      "raw_value": "190,000 kg",
+      "record_id": "record-001"
+    }
+  },
+  "inputs": {
+    "carbon_price_paid_eur_per_tco2e": "0",
+    "certificate_price_eur_per_tco2e": "87.5",
+    "default_intensity_tco2e_per_t": "7.311579",
+    "phase_in_factor": "1",
+    "sheet_actual_intensity_tco2e_per_t": "5.849263",
+    "shipment_mass_t": "190"
+  },
+  "method": "sum of normalized line-item mass × intensity × phase-in × max(certificate price − origin carbon price, 0)",
+  "reconciliation": {
+    "absolute_intensity_difference": "0.000000158",
+    "derived_weighted_intensity_tco2e_per_t": "5.849263",
+    "intensity_matches": true,
+    "intensity_tolerance": "0.000001",
+    "line_item_mass_total_t": "190",
+    "mass_matches": true,
+    "sheet_weighted_intensity_tco2e_per_t": "5.849263",
+    "shipment_mass_t": "190"
+  },
+  "reproduction": {
+    "input_subset": [
+      "ocr_records"
+    ],
+    "inputs": {
+      "forest_pixels": {
+        "bytes": 914,
+        "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+      },
+      "legal_corpus": {
+        "bytes": 5908,
+        "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+      },
+      "legal_eval": {
+        "bytes": 665,
+        "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+      },
+      "legal_source_manifest": {
+        "bytes": 1055,
+        "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+      },
+      "ocr_records": {
+        "bytes": 3255,
+        "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+      }
+    },
+    "pipeline_version": "0.1.0",
+    "schema_version": "1.0.0"
+  }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "query": "실제 배출량을 쓰려는데 검증서가 없으면 어떤 조항을 확인해야 하나",
+    "expected_ids": ["CBAM-ART8"]
+  },
+  {
+    "query": "제품의 내재배출량과 EU 기본값 계산 근거",
+    "expected_ids": ["CBAM-ART7"]
+  },
+  {
+    "query": "원산지에서 이미 낸 탄소가격을 공제하려면 어떤 증빙이 필요한가",
+    "expected_ids": ["CBAM-ART9"]
+  },
+  {
+    "query": "EUDR 자료에서 생산지 좌표와 생산일이 빠졌다",
+    "expected_ids": ["EUDR-ART9"]
+  },
+  {
+    "query": "산림 훼손 가능성을 어떻게 위험 평가해야 하는가",
+    "expected_ids": ["EUDR-ART10"]
+  }
+]

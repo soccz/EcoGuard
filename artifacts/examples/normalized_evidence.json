@@ -1,0 +1,485 @@
+{
+  "case_id": "ECO-SYN-2026-001",
+  "fields": {
+    "actual_intensity_tco2e_per_t": {
+      "candidates": [
+        {
+          "confidence": 0.94,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "field": "actual_intensity_tco2e_per_t",
+          "location": "page 2 / measured scenario",
+          "normalized_value": "5.849263",
+          "raw_label": "실측 배출계수",
+          "raw_value": "5.849263 tCO2e/t",
+          "record_id": "record-009",
+          "unit": "tCO2e/t"
+        },
+        {
+          "confidence": 0.68,
+          "document": "operator_memo",
+          "extractor": "ocr_adapter_boundary",
+          "field": "actual_intensity_tco2e_per_t",
+          "location": "line 7",
+          "normalized_value": "5.85",
+          "raw_label": "배출계수",
+          "raw_value": "5.85 tCO2/t 정도",
+          "record_id": "record-010",
+          "unit": "tCO2e/t"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.94,
+        "document": "cbam_product_sheet",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 2 / measured scenario",
+        "raw_label": "실측 배출계수",
+        "raw_value": "5.849263 tCO2e/t",
+        "record_id": "record-009"
+      },
+      "unit": "tCO2e/t",
+      "value": "5.849263"
+    },
+    "carbon_price_paid_eur_per_tco2e": {
+      "candidates": [
+        {
+          "confidence": 0.9,
+          "document": "supplier_declaration",
+          "extractor": "ocr_adapter_boundary",
+          "field": "carbon_price_paid_eur_per_tco2e",
+          "location": "page 1 / carbon price",
+          "normalized_value": "0",
+          "raw_label": "원산지 탄소가격",
+          "raw_value": "EUR 0 / tCO2e",
+          "record_id": "record-014",
+          "unit": "EUR/tCO2e"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.9,
+        "document": "supplier_declaration",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 1 / carbon price",
+        "raw_label": "원산지 탄소가격",
+        "raw_value": "EUR 0 / tCO2e",
+        "record_id": "record-014"
+      },
+      "unit": "EUR/tCO2e",
+      "value": "0"
+    },
+    "certificate_price_eur_per_tco2e": {
+      "candidates": [
+        {
+          "confidence": 1.0,
+          "document": "scenario_assumptions",
+          "extractor": "ocr_adapter_boundary",
+          "field": "certificate_price_eur_per_tco2e",
+          "location": "row 4",
+          "normalized_value": "87.5",
+          "raw_label": "CBAM 인증서 가격",
+          "raw_value": "EUR 87.50 / tCO2e",
+          "record_id": "record-012",
+          "unit": "EUR/tCO2e"
+        }
+      ],
+      "selected_from": {
+        "confidence": 1.0,
+        "document": "scenario_assumptions",
+        "extractor": "ocr_adapter_boundary",
+        "location": "row 4",
+        "raw_label": "CBAM 인증서 가격",
+        "raw_value": "EUR 87.50 / tCO2e",
+        "record_id": "record-012"
+      },
+      "unit": "EUR/tCO2e",
+      "value": "87.5"
+    },
+    "cn_code": {
+      "candidates": [
+        {
+          "confidence": 0.99,
+          "document": "commercial_invoice",
+          "extractor": "ocr_adapter_boundary",
+          "field": "cn_code",
+          "location": "page 1 / item",
+          "normalized_value": "73181552",
+          "raw_label": "CN code",
+          "raw_value": "7318.15.52",
+          "record_id": "record-008",
+          "unit": null
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.99,
+        "document": "commercial_invoice",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 1 / item",
+        "raw_label": "CN code",
+        "raw_value": "7318.15.52",
+        "record_id": "record-008"
+      },
+      "unit": null,
+      "value": "73181552"
+    },
+    "default_intensity_tco2e_per_t": {
+      "candidates": [
+        {
+          "confidence": 0.94,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "field": "default_intensity_tco2e_per_t",
+          "location": "page 2 / conservative scenario",
+          "normalized_value": "7.311579",
+          "raw_label": "EU 기본값",
+          "raw_value": "7.311579 tCO2e/t",
+          "record_id": "record-011",
+          "unit": "tCO2e/t"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.94,
+        "document": "cbam_product_sheet",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 2 / conservative scenario",
+        "raw_label": "EU 기본값",
+        "raw_value": "7.311579 tCO2e/t",
+        "record_id": "record-011"
+      },
+      "unit": "tCO2e/t",
+      "value": "7.311579"
+    },
+    "electricity_kwh": {
+      "candidates": [
+        {
+          "confidence": 0.72,
+          "document": "energy_memo",
+          "extractor": "ocr_adapter_boundary",
+          "field": "electricity_kwh",
+          "location": "line 2",
+          "normalized_value": "970000",
+          "raw_label": "전기사용량",
+          "raw_value": "970,000 kWh",
+          "record_id": "record-016",
+          "unit": "kWh"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.72,
+        "document": "energy_memo",
+        "extractor": "ocr_adapter_boundary",
+        "location": "line 2",
+        "raw_label": "전기사용량",
+        "raw_value": "970,000 kWh",
+        "record_id": "record-016"
+      },
+      "unit": "kWh",
+      "value": "970000"
+    },
+    "lng_nm3": {
+      "candidates": [
+        {
+          "confidence": 0.7,
+          "document": "energy_memo",
+          "extractor": "ocr_adapter_boundary",
+          "field": "lng_nm3",
+          "location": "line 4",
+          "normalized_value": "39300",
+          "raw_label": "LNG 사용량",
+          "raw_value": "39,300 Nm3",
+          "record_id": "record-017",
+          "unit": "Nm3"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.7,
+        "document": "energy_memo",
+        "extractor": "ocr_adapter_boundary",
+        "location": "line 4",
+        "raw_label": "LNG 사용량",
+        "raw_value": "39,300 Nm3",
+        "record_id": "record-017"
+      },
+      "unit": "Nm3",
+      "value": "39300"
+    },
+    "m12_intensity_tco2e_per_t": {
+      "candidates": [
+        {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "field": "m12_intensity_tco2e_per_t",
+          "location": "page 1 / item M12 / specific embedded emissions",
+          "normalized_value": "6.088",
+          "raw_label": "M12 SEE",
+          "raw_value": "6.088 tCO2e/t",
+          "record_id": "record-007",
+          "unit": "tCO2e/t"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.98,
+        "document": "cbam_product_sheet",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 1 / item M12 / specific embedded emissions",
+        "raw_label": "M12 SEE",
+        "raw_value": "6.088 tCO2e/t",
+        "record_id": "record-007"
+      },
+      "unit": "tCO2e/t",
+      "value": "6.088"
+    },
+    "m12_mass_t": {
+      "candidates": [
+        {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "field": "m12_mass_t",
+          "location": "page 1 / item M12 / net weight",
+          "normalized_value": "100",
+          "raw_label": "M12 순중량",
+          "raw_value": "100,000 kg",
+          "record_id": "record-006",
+          "unit": "t"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.98,
+        "document": "cbam_product_sheet",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 1 / item M12 / net weight",
+        "raw_label": "M12 순중량",
+        "raw_value": "100,000 kg",
+        "record_id": "record-006"
+      },
+      "unit": "t",
+      "value": "100"
+    },
+    "m5_intensity_tco2e_per_t": {
+      "candidates": [
+        {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "field": "m5_intensity_tco2e_per_t",
+          "location": "page 1 / item M5 / specific embedded emissions",
+          "normalized_value": "5.584",
+          "raw_label": "M5 SEE",
+          "raw_value": "5.584 tCO2e/t",
+          "record_id": "record-005",
+          "unit": "tCO2e/t"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.98,
+        "document": "cbam_product_sheet",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 1 / item M5 / specific embedded emissions",
+        "raw_label": "M5 SEE",
+        "raw_value": "5.584 tCO2e/t",
+        "record_id": "record-005"
+      },
+      "unit": "tCO2e/t",
+      "value": "5.584"
+    },
+    "m5_mass_t": {
+      "candidates": [
+        {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "field": "m5_mass_t",
+          "location": "page 1 / item M5 / net weight",
+          "normalized_value": "90",
+          "raw_label": "M5 순중량",
+          "raw_value": "90 MT",
+          "record_id": "record-004",
+          "unit": "t"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.98,
+        "document": "cbam_product_sheet",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 1 / item M5 / net weight",
+        "raw_label": "M5 순중량",
+        "raw_value": "90 MT",
+        "record_id": "record-004"
+      },
+      "unit": "t",
+      "value": "90"
+    },
+    "phase_in_factor": {
+      "candidates": [
+        {
+          "confidence": 1.0,
+          "document": "scenario_assumptions",
+          "extractor": "ocr_adapter_boundary",
+          "field": "phase_in_factor",
+          "location": "row 5",
+          "normalized_value": "1",
+          "raw_label": "노출도 적용계수",
+          "raw_value": "100%",
+          "record_id": "record-013",
+          "unit": "ratio"
+        }
+      ],
+      "selected_from": {
+        "confidence": 1.0,
+        "document": "scenario_assumptions",
+        "extractor": "ocr_adapter_boundary",
+        "location": "row 5",
+        "raw_label": "노출도 적용계수",
+        "raw_value": "100%",
+        "record_id": "record-013"
+      },
+      "unit": "ratio",
+      "value": "1"
+    },
+    "shipment_mass_t": {
+      "candidates": [
+        {
+          "confidence": 0.98,
+          "document": "commercial_invoice",
+          "extractor": "ocr_adapter_boundary",
+          "field": "shipment_mass_t",
+          "location": "page 1 / total net weight",
+          "normalized_value": "190",
+          "raw_label": "총 출하 중량",
+          "raw_value": "190,000 kg",
+          "record_id": "record-001",
+          "unit": "t"
+        },
+        {
+          "confidence": 0.96,
+          "document": "packing_list",
+          "extractor": "ocr_adapter_boundary",
+          "field": "shipment_mass_t",
+          "location": "page 1 / totals",
+          "normalized_value": "190",
+          "raw_label": "NET WT",
+          "raw_value": "190 MT",
+          "record_id": "record-002",
+          "unit": "t"
+        },
+        {
+          "confidence": 0.55,
+          "document": "operator_memo",
+          "extractor": "ocr_adapter_boundary",
+          "field": "shipment_mass_t",
+          "location": "line 3",
+          "normalized_value": "191",
+          "raw_label": "출하량",
+          "raw_value": "약 191톤?",
+          "record_id": "record-003",
+          "unit": "t"
+        }
+      ],
+      "selected_from": {
+        "confidence": 0.98,
+        "document": "commercial_invoice",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 1 / total net weight",
+        "raw_label": "총 출하 중량",
+        "raw_value": "190,000 kg",
+        "record_id": "record-001"
+      },
+      "unit": "t",
+      "value": "190"
+    },
+    "verification_reference": {
+      "candidates": [
+        {
+          "confidence": 1.0,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "field": "verification_reference",
+          "location": "page 2 / verification",
+          "normalized_value": null,
+          "raw_label": "검증서 번호",
+          "raw_value": "",
+          "record_id": "record-015",
+          "unit": null
+        }
+      ],
+      "selected_from": {
+        "confidence": 1.0,
+        "document": "cbam_product_sheet",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 2 / verification",
+        "raw_label": "검증서 번호",
+        "raw_value": "",
+        "record_id": "record-015"
+      },
+      "unit": null,
+      "value": null
+    }
+  },
+  "issues": [
+    {
+      "alternatives": [
+        "190",
+        "191"
+      ],
+      "code": "cross_document_conflict",
+      "field": "shipment_mass_t",
+      "message": "문서 간 값이 달라 원본 확인이 필요합니다.",
+      "selected": "190",
+      "severity": "review"
+    },
+    {
+      "alternatives": [
+        "5.849263",
+        "5.85"
+      ],
+      "code": "cross_document_conflict",
+      "field": "actual_intensity_tco2e_per_t",
+      "message": "문서 간 값이 달라 원본 확인이 필요합니다.",
+      "selected": "5.849263",
+      "severity": "review"
+    },
+    {
+      "code": "missing_required_evidence",
+      "field": "verification_reference",
+      "message": "필수 증빙 값이 비어 있습니다.",
+      "severity": "high"
+    }
+  ],
+  "notice": "All records are synthetic and intentionally include one conflicting memo value and one missing verification reference.",
+  "rejected_records": [],
+  "reproduction": {
+    "input_subset": [
+      "ocr_records"
+    ],
+    "inputs": {
+      "forest_pixels": {
+        "bytes": 914,
+        "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+      },
+      "legal_corpus": {
+        "bytes": 5908,
+        "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+      },
+      "legal_eval": {
+        "bytes": 665,
+        "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+      },
+      "legal_source_manifest": {
+        "bytes": 1055,
+        "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+      },
+      "ocr_records": {
+        "bytes": 3255,
+        "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+      }
+    },
+    "pipeline_version": "0.1.0",
+    "schema_version": "1.0.0"
+  },
+  "summary": {
+    "field_count": 14,
+    "issue_count": 3,
+    "status": "review"
+  }
+}

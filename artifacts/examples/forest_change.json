@@ -1,0 +1,408 @@
+{
+  "case_id": "ECO-FOREST-SYN-2026-001",
+  "classification": "reconstructed_public_baseline",
+  "grid": {
+    "cols": 6,
+    "pixel_count": 36,
+    "rows": 6
+  },
+  "input": "synthetic red/NIR pixel grid",
+  "limitations": [
+    "합성 픽셀로 임계값과 산식의 재현성만 확인합니다.",
+    "운영용 위성 분류기, 현장 검증, EUDR 적합성 판정을 대체하지 않습니다.",
+    "대회 당시의 CNN/XAI 정확도를 재현하거나 주장하지 않습니다."
+  ],
+  "method": "NDVI=(NIR−Red)/(NIR+Red); loss when baseline NDVI and decrease exceed explicit thresholds",
+  "pixels": [
+    {
+      "col": 0,
+      "loss_flag": false,
+      "ndvi_after": 0.573,
+      "ndvi_before": 0.6,
+      "ndvi_change": -0.027,
+      "row": 0
+    },
+    {
+      "col": 1,
+      "loss_flag": false,
+      "ndvi_after": 0.5862,
+      "ndvi_before": 0.6092,
+      "ndvi_change": -0.023,
+      "row": 0
+    },
+    {
+      "col": 2,
+      "loss_flag": false,
+      "ndvi_after": 0.5632,
+      "ndvi_before": 0.5955,
+      "ndvi_change": -0.0323,
+      "row": 0
+    },
+    {
+      "col": 3,
+      "loss_flag": false,
+      "ndvi_after": 0.5556,
+      "ndvi_before": 0.587,
+      "ndvi_change": -0.0314,
+      "row": 0
+    },
+    {
+      "col": 4,
+      "loss_flag": false,
+      "ndvi_after": 0.5778,
+      "ndvi_before": 0.6,
+      "ndvi_change": -0.0222,
+      "row": 0
+    },
+    {
+      "col": 5,
+      "loss_flag": false,
+      "ndvi_after": 0.5814,
+      "ndvi_before": 0.6047,
+      "ndvi_change": -0.0233,
+      "row": 0
+    },
+    {
+      "col": 0,
+      "loss_flag": false,
+      "ndvi_after": 0.573,
+      "ndvi_before": 0.5955,
+      "ndvi_change": -0.0225,
+      "row": 1
+    },
+    {
+      "col": 1,
+      "loss_flag": false,
+      "ndvi_after": 0.5814,
+      "ndvi_before": 0.618,
+      "ndvi_change": -0.0366,
+      "row": 1
+    },
+    {
+      "col": 2,
+      "loss_flag": true,
+      "ndvi_after": 0.04,
+      "ndvi_before": 0.5909,
+      "ndvi_change": -0.5509,
+      "row": 1
+    },
+    {
+      "col": 3,
+      "loss_flag": true,
+      "ndvi_after": -0.0133,
+      "ndvi_before": 0.5914,
+      "ndvi_change": -0.6047,
+      "row": 1
+    },
+    {
+      "col": 4,
+      "loss_flag": false,
+      "ndvi_after": 0.5682,
+      "ndvi_before": 0.6,
+      "ndvi_change": -0.0318,
+      "row": 1
+    },
+    {
+      "col": 5,
+      "loss_flag": false,
+      "ndvi_after": 0.5765,
+      "ndvi_before": 0.6092,
+      "ndvi_change": -0.0327,
+      "row": 1
+    },
+    {
+      "col": 0,
+      "loss_flag": false,
+      "ndvi_after": 0.5682,
+      "ndvi_before": 0.6044,
+      "ndvi_change": -0.0362,
+      "row": 2
+    },
+    {
+      "col": 1,
+      "loss_flag": true,
+      "ndvi_after": 0.0811,
+      "ndvi_before": 0.6136,
+      "ndvi_change": -0.5326,
+      "row": 2
+    },
+    {
+      "col": 2,
+      "loss_flag": true,
+      "ndvi_after": -0.1389,
+      "ndvi_before": 0.6,
+      "ndvi_change": -0.7389,
+      "row": 2
+    },
+    {
+      "col": 3,
+      "loss_flag": true,
+      "ndvi_after": -0.1944,
+      "ndvi_before": 0.587,
+      "ndvi_change": -0.7814,
+      "row": 2
+    },
+    {
+      "col": 4,
+      "loss_flag": true,
+      "ndvi_after": 0.0411,
+      "ndvi_before": 0.5909,
+      "ndvi_change": -0.5498,
+      "row": 2
+    },
+    {
+      "col": 5,
+      "loss_flag": false,
+      "ndvi_after": 0.5714,
+      "ndvi_before": 0.6047,
+      "ndvi_change": -0.0332,
+      "row": 2
+    },
+    {
+      "col": 0,
+      "loss_flag": false,
+      "ndvi_after": 0.5506,
+      "ndvi_before": 0.5824,
+      "ndvi_change": -0.0319,
+      "row": 3
+    },
+    {
+      "col": 1,
+      "loss_flag": true,
+      "ndvi_after": 0.0,
+      "ndvi_before": 0.5955,
+      "ndvi_change": -0.5955,
+      "row": 3
+    },
+    {
+      "col": 2,
+      "loss_flag": true,
+      "ndvi_after": -0.2394,
+      "ndvi_before": 0.6092,
+      "ndvi_change": -0.8486,
+      "row": 3
+    },
+    {
+      "col": 3,
+      "loss_flag": true,
+      "ndvi_after": -0.2676,
+      "ndvi_before": 0.6044,
+      "ndvi_change": -0.872,
+      "row": 3
+    },
+    {
+      "col": 4,
+      "loss_flag": true,
+      "ndvi_after": -0.0278,
+      "ndvi_before": 0.5824,
+      "ndvi_change": -0.6102,
+      "row": 3
+    },
+    {
+      "col": 5,
+      "loss_flag": false,
+      "ndvi_after": 0.5581,
+      "ndvi_before": 0.5909,
+      "ndvi_change": -0.0328,
+      "row": 3
+    },
+    {
+      "col": 0,
+      "loss_flag": false,
+      "ndvi_after": 0.5632,
+      "ndvi_before": 0.5955,
+      "ndvi_change": -0.0323,
+      "row": 4
+    },
+    {
+      "col": 1,
+      "loss_flag": false,
+      "ndvi_after": 0.5765,
+      "ndvi_before": 0.6092,
+      "ndvi_change": -0.0327,
+      "row": 4
+    },
+    {
+      "col": 2,
+      "loss_flag": true,
+      "ndvi_after": 0.0541,
+      "ndvi_before": 0.6,
+      "ndvi_change": -0.5459,
+      "row": 4
+    },
+    {
+      "col": 3,
+      "loss_flag": true,
+      "ndvi_after": -0.0137,
+      "ndvi_before": 0.587,
+      "ndvi_change": -0.6007,
+      "row": 4
+    },
+    {
+      "col": 4,
+      "loss_flag": false,
+      "ndvi_after": 0.5632,
+      "ndvi_before": 0.5955,
+      "ndvi_change": -0.0323,
+      "row": 4
+    },
+    {
+      "col": 5,
+      "loss_flag": false,
+      "ndvi_after": 0.5714,
+      "ndvi_before": 0.6047,
+      "ndvi_change": -0.0332,
+      "row": 4
+    },
+    {
+      "col": 0,
+      "loss_flag": false,
+      "ndvi_after": 0.5632,
+      "ndvi_before": 0.5909,
+      "ndvi_change": -0.0277,
+      "row": 5
+    },
+    {
+      "col": 1,
+      "loss_flag": false,
+      "ndvi_after": 0.5862,
+      "ndvi_before": 0.6136,
+      "ndvi_change": -0.0274,
+      "row": 5
+    },
+    {
+      "col": 2,
+      "loss_flag": false,
+      "ndvi_after": 0.573,
+      "ndvi_before": 0.6,
+      "ndvi_change": -0.027,
+      "row": 5
+    },
+    {
+      "col": 3,
+      "loss_flag": false,
+      "ndvi_after": 0.5604,
+      "ndvi_before": 0.587,
+      "ndvi_change": -0.0265,
+      "row": 5
+    },
+    {
+      "col": 4,
+      "loss_flag": false,
+      "ndvi_after": 0.5632,
+      "ndvi_before": 0.5909,
+      "ndvi_change": -0.0277,
+      "row": 5
+    },
+    {
+      "col": 5,
+      "loss_flag": false,
+      "ndvi_after": 0.5765,
+      "ndvi_before": 0.6047,
+      "ndvi_change": -0.0282,
+      "row": 5
+    }
+  ],
+  "regions": [
+    {
+      "area_m2": 1200.0,
+      "cells": [
+        {
+          "col": 2,
+          "row": 1
+        },
+        {
+          "col": 3,
+          "row": 1
+        },
+        {
+          "col": 1,
+          "row": 2
+        },
+        {
+          "col": 2,
+          "row": 2
+        },
+        {
+          "col": 3,
+          "row": 2
+        },
+        {
+          "col": 4,
+          "row": 2
+        },
+        {
+          "col": 1,
+          "row": 3
+        },
+        {
+          "col": 2,
+          "row": 3
+        },
+        {
+          "col": 3,
+          "row": 3
+        },
+        {
+          "col": 4,
+          "row": 3
+        },
+        {
+          "col": 2,
+          "row": 4
+        },
+        {
+          "col": 3,
+          "row": 4
+        }
+      ],
+      "pixel_count": 12,
+      "region_id": 1
+    }
+  ],
+  "relation_to_trade_case": "independent synthetic technical baseline",
+  "reproduction": {
+    "input_subset": [
+      "forest_pixels"
+    ],
+    "inputs": {
+      "forest_pixels": {
+        "bytes": 914,
+        "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+      },
+      "legal_corpus": {
+        "bytes": 5908,
+        "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+      },
+      "legal_eval": {
+        "bytes": 665,
+        "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+      },
+      "legal_source_manifest": {
+        "bytes": 1055,
+        "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+      },
+      "ocr_records": {
+        "bytes": 3255,
+        "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+      }
+    },
+    "pipeline_version": "0.1.0",
+    "schema_version": "1.0.0"
+  },
+  "summary": {
+    "contiguous_region_count": 1,
+    "largest_region_pixel_count": 12,
+    "loss_area_m2": 1200.0,
+    "loss_pixel_count": 12,
+    "loss_share": 0.3333,
+    "mean_ndvi_after": 0.3612,
+    "mean_ndvi_before": 0.5985,
+    "mean_ndvi_change": -0.2373
+  },
+  "thresholds": {
+    "forest_ndvi_min": 0.45,
+    "ndvi_decrease_min": 0.25,
+    "synthetic_pixel_area_m2": 100.0
+  }
+}

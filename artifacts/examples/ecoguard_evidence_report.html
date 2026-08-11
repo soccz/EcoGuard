@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EcoGuard evidence report — ECO-SYN-2026-001</title>
+  <style>
+    :root { --ink:#123c35; --muted:#60756f; --line:#d8e6e1; --mint:#04a887;
+      --soft:#f2f7f4; --warn:#f6a723; --high:#f05a47; }
+    * { box-sizing:border-box; }
+    body { margin:0; color:var(--ink); background:#edf4f1;
+      font:15px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    main { width:min(1120px,calc(100% - 32px)); margin:32px auto; }
+    .hero,.panel { background:white; border:1px solid var(--line); border-radius:22px;
+      padding:clamp(22px,4vw,44px); box-shadow:0 12px 34px rgba(18,60,53,.06); }
+    .hero { background:linear-gradient(135deg,#0e3c34,#14594d); color:white; }
+    .eyebrow { letter-spacing:.12em; text-transform:uppercase; font-size:12px; opacity:.74; }
+    h1 { margin:.2em 0 0; font-size:clamp(38px,7vw,72px); line-height:1; }
+    h2 { margin:0 0 14px; font-size:clamp(24px,4vw,36px); }
+    h3 { margin:0 0 8px; }
+    .lede { max-width:780px; font-size:18px; }
+    .notice { display:inline-block; margin-top:18px; padding:7px 12px; border-radius:999px;
+      background:rgba(255,255,255,.12); }
+    .panel { margin-top:20px; }
+    .flow { padding:18px; border-radius:14px; background:var(--soft); font-weight:700; }
+    .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+    .metric { padding:18px; border:1px solid var(--line); border-radius:16px; }
+    .metric b { display:block; font-size:26px; }
+    table { width:100%; border-collapse:collapse; }
+    th,td { padding:12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+    th { color:var(--muted); font-size:12px; text-transform:uppercase; }
+    code { font-size:12px; }
+    small,.muted { color:var(--muted); }
+    ul.clean { padding:0; list-style:none; }
+    ul.clean li { margin:10px 0; }
+    .pill { display:inline-block; min-width:64px; margin-right:8px; padding:2px 8px;
+      border-radius:999px; color:white; font-size:11px; text-align:center; }
+    .pill.review { background:var(--warn); }
+    .pill.high { background:var(--high); }
+    a { color:#087e68; }
+    .forest svg { width:100%; height:auto; }
+    footer { margin:20px 0 48px; color:var(--muted); text-align:center; }
+    @media (max-width:760px) {
+      .grid { grid-template-columns:1fr; }
+      .table-wrap { overflow-x:auto; }
+      th,td { min-width:150px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <div class="eyebrow">Synthetic evidence packet · human in the loop</div>
+    <h1>EcoGuard</h1>
+    <p class="lede">비정형 원자료에서 계산 결과만 꺼내지 않고, 어떤 값이 어느 문서에서
+    왔으며 어떤 근거와 검토 항목으로 이어졌는지 한 묶음으로 남긴 재현 보고서입니다.</p>
+    <span class="notice">Case ECO-SYN-2026-001 · 자동 승인 아님</span>
+  </section>
+
+  <section class="panel">
+    <h2>Evidence flow</h2>
+    <p class="flow">OCR-like raw records <span aria-hidden='true'>→</span> normalization and provenance <span aria-hidden='true'>→</span> cross-document checks <span aria-hidden='true'>→</span> case-issue to article citation retrieval <span aria-hidden='true'>→</span> CBAM exposure scenarios <span aria-hidden='true'>→</span> independent synthetic NDVI baseline <span aria-hidden='true'>→</span> human review packet</p>
+    <p>판단 상태: <strong>HUMAN REVIEW REQUIRED</strong> —
+    정규화 과정에서 3개 검토 이슈가 확인되어 자동 판단하지 않습니다.</p>
+  </section>
+
+  <section class="panel">
+    <h2>1. Normalized data with provenance</h2>
+    <p class="muted">같은 개념의 kg·MT·메모 표현을 정규화하되 원문 위치와 후보값을 보존합니다.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Field</th><th>Selected value</th><th>Source</th><th>Confidence</th></tr></thead>
+      <tbody><tr><td><code>shipment_mass_t</code></td><td>190 t</td><td>commercial_invoice<br><small>page 1 / total net weight</small></td><td>0.98</td></tr><tr><td><code>m5_mass_t</code></td><td>90 t</td><td>cbam_product_sheet<br><small>page 1 / item M5 / net weight</small></td><td>0.98</td></tr><tr><td><code>m5_intensity_tco2e_per_t</code></td><td>5.584 tCO2e/t</td><td>cbam_product_sheet<br><small>page 1 / item M5 / specific embedded emissions</small></td><td>0.98</td></tr><tr><td><code>m12_mass_t</code></td><td>100 t</td><td>cbam_product_sheet<br><small>page 1 / item M12 / net weight</small></td><td>0.98</td></tr><tr><td><code>m12_intensity_tco2e_per_t</code></td><td>6.088 tCO2e/t</td><td>cbam_product_sheet<br><small>page 1 / item M12 / specific embedded emissions</small></td><td>0.98</td></tr><tr><td><code>cn_code</code></td><td>73181552 </td><td>commercial_invoice<br><small>page 1 / item</small></td><td>0.99</td></tr><tr><td><code>actual_intensity_tco2e_per_t</code></td><td>5.849263 tCO2e/t</td><td>cbam_product_sheet<br><small>page 2 / measured scenario</small></td><td>0.94</td></tr><tr><td><code>default_intensity_tco2e_per_t</code></td><td>7.311579 tCO2e/t</td><td>cbam_product_sheet<br><small>page 2 / conservative scenario</small></td><td>0.94</td></tr><tr><td><code>certificate_price_eur_per_tco2e</code></td><td>87.5 EUR/tCO2e</td><td>scenario_assumptions<br><small>row 4</small></td><td>1.00</td></tr><tr><td><code>phase_in_factor</code></td><td>1 ratio</td><td>scenario_assumptions<br><small>row 5</small></td><td>1.00</td></tr><tr><td><code>carbon_price_paid_eur_per_tco2e</code></td><td>0 EUR/tCO2e</td><td>supplier_declaration<br><small>page 1 / carbon price</small></td><td>0.90</td></tr><tr><td><code>verification_reference</code></td><td>missing </td><td>cbam_product_sheet<br><small>page 2 / verification</small></td><td>1.00</td></tr><tr><td><code>electricity_kwh</code></td><td>970000 kWh</td><td>energy_memo<br><small>line 2</small></td><td>0.72</td></tr><tr><td><code>lng_nm3</code></td><td>39300 Nm3</td><td>energy_memo<br><small>line 4</small></td><td>0.70</td></tr></tbody>
+    </table></div>
+    <h3>Review queue</h3>
+    <ul class="clean"><li><span class='pill review'>REVIEW</span><strong>cross_document_conflict</strong> — 문서 간 값이 달라 원본 확인이 필요합니다.</li><li><span class='pill review'>REVIEW</span><strong>cross_document_conflict</strong> — 문서 간 값이 달라 원본 확인이 필요합니다.</li><li><span class='pill high'>HIGH</span><strong>missing_required_evidence</strong> — 필수 증빙 값이 비어 있습니다.</li></ul>
+  </section>
+
+  <section class="panel">
+    <h2>2. Article-level legal retrieval</h2>
+    <div class="grid">
+      <div class="metric"><span>Evaluation cases</span><b>5</b></div>
+      <div class="metric"><span>Hit rate @ 3</span><b>100%</b></div>
+      <div class="metric"><span>MRR</span><b>1.00</b></div>
+    </div>
+    <p class="muted">작은 공개 코퍼스에서 기대 조문 citation을 회수하는지 보는 기술 베이스라인입니다.
+    생성형 법률 답변이나 법률 자문 정확도를 뜻하지 않습니다.</p>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Detected issue and query</th><th>Top citation</th><th>Source</th></tr></thead>
+      <tbody><tr><td><strong>shipment_mass_t</strong><br><small>CBAM 신고 수량이 문서마다 다르면 신고 내용과 수량 근거는 어떤 조항을 확인해야 하나</small></td><td><strong>Regulation (EU) 2023/956 Article 6</strong><br><small>CBAM 신고에는 수입 물품의 수량, 내재배출량, 제출할 인증서 수량과 관련 근거가 포함되어야 한다.</small></td><td><a href='https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng'>official source</a></td></tr><tr><td><strong>actual_intensity_tco2e_per_t</strong><br><small>실제 내재배출량과 기본값 계산 근거가 충돌하면 어떤 조항을 확인해야 하나</small></td><td><strong>Regulation (EU) 2023/956 Article 7</strong><br><small>물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.</small></td><td><a href='https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng'>official source</a></td></tr><tr><td><strong>verification_reference</strong><br><small>실제 배출량을 사용하려는데 검증서가 없으면 어떤 조항을 확인해야 하나</small></td><td><strong>Regulation (EU) 2023/956 Article 8</strong><br><small>신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.</small></td><td><a href='https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng'>official source</a></td></tr></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel">
+    <h2>3. CBAM exposure scenarios</h2>
+    <div class="grid">
+      <div class="metric"><span>Actual-data scenario</span>
+        <b>€97,244.00</b>
+        <small>1111.36 tCO2e</small></div>
+      <div class="metric"><span>Default-value scenario</span>
+        <b>€121,555.00</b>
+        <small>1389.20 tCO2e</small></div>
+      <div class="metric"><span>Scenario difference</span>
+        <b>€24,311.00</b>
+        <small>입력 가정에 따른 비교값</small></div>
+    </div>
+    <p><code>sum of normalized line-item mass × intensity × phase-in × max(certificate price − origin carbon price, 0)</code></p>
+    <p><strong>M5 502.56 + M12 608.80</strong> =
+    <strong>1111.36 tCO2e</strong> · 품목 중량 합계와 출하량 일치:
+    <strong>TRUE</strong> ·
+    가중 집약도 허용오차 일치:
+    <strong>TRUE</strong></p>
+    <p class="muted">가격, 집약도, 적용계수는 결과와 함께 기록됩니다. 이 값은 공식 신고액이 아닙니다.</p>
+  </section>
+
+  <section class="panel forest">
+    <h2>4. Independent synthetic forest baseline</h2>
+    <p>손실 플래그 <strong>12 /
+    36</strong> · 평균 NDVI 변화
+    <strong>-0.2373</strong> ·
+    연속 영역 <strong>1</strong> ·
+    합성 면적 <strong>1,200 m²</strong></p>
+    <p class="muted">이 산림 fixture는 ECO-SYN-2026-001 거래와 결합된
+    증빙이 아니라, 별도의 합성 기술 기준선 ECO-FOREST-SYN-2026-001입니다.</p>
+    <svg xmlns="http://www.w3.org/2000/svg" width="448" height="513" viewBox="0 0 448 513" role="img" aria-label="Synthetic NDVI change grid"><rect width="100%" height="100%" rx="18" fill="#f2f7f4"/><text x="20" y="30" font-size="17" font-weight="700" fill="#123c35">Synthetic NDVI change evidence</text><text x="20" y="48" font-size="11" fill="#55706b">Red = threshold-based loss flag · labels show NDVI change</text><rect x="20" y="58" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="51.0" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="51.0" y="104" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="88" y="58" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="119.0" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="119.0" y="104" text-anchor="middle" font-size="10" fill="white">-0.02</text><rect x="156" y="58" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="187.0" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="187.0" y="104" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="224" y="58" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="255.0" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="255.0" y="104" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="292" y="58" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="323.0" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="323.0" y="104" text-anchor="middle" font-size="10" fill="white">-0.02</text><rect x="360" y="58" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="391.0" y="87" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="391.0" y="104" text-anchor="middle" font-size="10" fill="white">-0.02</text><rect x="20" y="126" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="51.0" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="51.0" y="172" text-anchor="middle" font-size="10" fill="white">-0.02</text><rect x="88" y="126" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="119.0" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="119.0" y="172" text-anchor="middle" font-size="10" fill="white">-0.04</text><rect x="156" y="126" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="187.0" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="187.0" y="172" text-anchor="middle" font-size="10" fill="white">-0.55</text><rect x="224" y="126" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="255.0" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="255.0" y="172" text-anchor="middle" font-size="10" fill="white">-0.60</text><rect x="292" y="126" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="323.0" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="323.0" y="172" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="360" y="126" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="391.0" y="155" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="391.0" y="172" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="20" y="194" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="51.0" y="223" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="51.0" y="240" text-anchor="middle" font-size="10" fill="white">-0.04</text><rect x="88" y="194" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="119.0" y="223" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="119.0" y="240" text-anchor="middle" font-size="10" fill="white">-0.53</text><rect x="156" y="194" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="187.0" y="223" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="187.0" y="240" text-anchor="middle" font-size="10" fill="white">-0.74</text><rect x="224" y="194" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="255.0" y="223" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="255.0" y="240" text-anchor="middle" font-size="10" fill="white">-0.78</text><rect x="292" y="194" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="323.0" y="223" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="323.0" y="240" text-anchor="middle" font-size="10" fill="white">-0.55</text><rect x="360" y="194" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="391.0" y="223" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="391.0" y="240" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="20" y="262" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="51.0" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="51.0" y="308" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="88" y="262" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="119.0" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="119.0" y="308" text-anchor="middle" font-size="10" fill="white">-0.60</text><rect x="156" y="262" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="187.0" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="187.0" y="308" text-anchor="middle" font-size="10" fill="white">-0.85</text><rect x="224" y="262" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="255.0" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="255.0" y="308" text-anchor="middle" font-size="10" fill="white">-0.87</text><rect x="292" y="262" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="323.0" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="323.0" y="308" text-anchor="middle" font-size="10" fill="white">-0.61</text><rect x="360" y="262" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="391.0" y="291" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="391.0" y="308" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="20" y="330" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="51.0" y="359" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="51.0" y="376" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="88" y="330" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="119.0" y="359" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="119.0" y="376" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="156" y="330" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="187.0" y="359" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="187.0" y="376" text-anchor="middle" font-size="10" fill="white">-0.55</text><rect x="224" y="330" width="62" height="62" rx="10" fill="#f05a47" opacity="0.92"/><text x="255.0" y="359" text-anchor="middle" font-size="12" font-weight="700" fill="white">LOSS</text><text x="255.0" y="376" text-anchor="middle" font-size="10" fill="white">-0.60</text><rect x="292" y="330" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="323.0" y="359" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="323.0" y="376" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="360" y="330" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="391.0" y="359" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="391.0" y="376" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="20" y="398" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="51.0" y="427" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="51.0" y="444" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="88" y="398" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="119.0" y="427" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="119.0" y="444" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="156" y="398" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="187.0" y="427" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="187.0" y="444" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="224" y="398" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="255.0" y="427" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="255.0" y="444" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="292" y="398" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="323.0" y="427" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="323.0" y="444" text-anchor="middle" font-size="10" fill="white">-0.03</text><rect x="360" y="398" width="62" height="62" rx="10" fill="#2da57b" opacity="0.92"/><text x="391.0" y="427" text-anchor="middle" font-size="12" font-weight="700" fill="white">OK</text><text x="391.0" y="444" text-anchor="middle" font-size="10" fill="white">-0.03</text><text x="20" y="497" font-size="10" fill="#55706b">Educational reconstructed baseline — not an EUDR compliance determination</text></svg>
+  </section>
+
+  <section class="panel">
+    <h2>Boundaries</h2>
+    <ul><li>모든 사례 입력과 계산 시나리오는 합성 데이터입니다.</li><li>OCR 엔진이 아니라 OCR 이후의 전처리와 증거 연결을 재현합니다.</li><li>법률 검색 결과와 계산은 법률·통관·금융 자문이 아닙니다.</li><li>산림 변화 모듈은 거래 사례와 분리된 합성 픽셀 기반 공개 베이스라인입니다.</li><li>EcoGuard는 하나은행의 공식 제품이 아닙니다.</li></ul>
+  </section>
+  <footer>EcoGuard · Team UniHana · 2026 · public reproducibility baseline</footer>
+</main>
+</body>
+</html>

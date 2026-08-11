@@ -1,0 +1,1767 @@
+{
+  "boundaries": [
+    "모든 사례 입력과 계산 시나리오는 합성 데이터입니다.",
+    "OCR 엔진이 아니라 OCR 이후의 전처리와 증거 연결을 재현합니다.",
+    "법률 검색 결과와 계산은 법률·통관·금융 자문이 아닙니다.",
+    "산림 변화 모듈은 거래 사례와 분리된 합성 픽셀 기반 공개 베이스라인입니다.",
+    "EcoGuard는 하나은행의 공식 제품이 아닙니다."
+  ],
+  "case_id": "ECO-SYN-2026-001",
+  "cbam_exposure": {
+    "actual_data_scenario": {
+      "calculation_basis": "sum of normalized line-item mass × intensity",
+      "embedded_emissions_tco2e": "1111.36",
+      "exposure_eur": "97244.00",
+      "line_items": [
+        {
+          "embedded_emissions_tco2e": "502.56",
+          "intensity_source": {
+            "confidence": 0.98,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "location": "page 1 / item M5 / specific embedded emissions",
+            "raw_label": "M5 SEE",
+            "raw_value": "5.584 tCO2e/t",
+            "record_id": "record-005"
+          },
+          "intensity_tco2e_per_t": "5.584",
+          "item": "M5",
+          "mass_source": {
+            "confidence": 0.98,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "location": "page 1 / item M5 / net weight",
+            "raw_label": "M5 순중량",
+            "raw_value": "90 MT",
+            "record_id": "record-004"
+          },
+          "mass_t": "90"
+        },
+        {
+          "embedded_emissions_tco2e": "608.80",
+          "intensity_source": {
+            "confidence": 0.98,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "location": "page 1 / item M12 / specific embedded emissions",
+            "raw_label": "M12 SEE",
+            "raw_value": "6.088 tCO2e/t",
+            "record_id": "record-007"
+          },
+          "intensity_tco2e_per_t": "6.088",
+          "item": "M12",
+          "mass_source": {
+            "confidence": 0.98,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "location": "page 1 / item M12 / net weight",
+            "raw_label": "M12 순중량",
+            "raw_value": "100,000 kg",
+            "record_id": "record-006"
+          },
+          "mass_t": "100"
+        }
+      ],
+      "weighted_intensity_tco2e_per_t": "5.849263"
+    },
+    "assumptions": [
+      "가격·집약도·적용계수는 합성 사례의 입력값이며 규제 상수가 아닙니다.",
+      "원산지 탄소가격은 입력된 증빙 금액만큼 단순 차감한 비교 시나리오입니다.",
+      "Article 31 무상할당 조정과 Article 9의 법정 변환 방법을 구현하지 않습니다.",
+      "기본값 시나리오의 탄소가격 처리는 현행 법정 의무액이 아닌 단순 민감도 비교입니다.",
+      "인증서 가격은 합성 fixture이며 실제 분기·주간 가격 산식이 아닙니다.",
+      "결과는 공식 신고액이나 인증서 의무량을 대체하지 않습니다."
+    ],
+    "case_id": "ECO-SYN-2026-001",
+    "classification": "gross_price_sensitivity_scenario",
+    "default_value_scenario": {
+      "embedded_emissions_tco2e": "1389.20",
+      "exposure_eur": "121555.00"
+    },
+    "difference": {
+      "embedded_emissions_tco2e": "277.84",
+      "exposure_eur": "24311.00"
+    },
+    "input_provenance": {
+      "actual_intensity_tco2e_per_t": {
+        "confidence": 0.94,
+        "document": "cbam_product_sheet",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 2 / measured scenario",
+        "raw_label": "실측 배출계수",
+        "raw_value": "5.849263 tCO2e/t",
+        "record_id": "record-009"
+      },
+      "carbon_price_paid_eur_per_tco2e": {
+        "confidence": 0.9,
+        "document": "supplier_declaration",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 1 / carbon price",
+        "raw_label": "원산지 탄소가격",
+        "raw_value": "EUR 0 / tCO2e",
+        "record_id": "record-014"
+      },
+      "certificate_price_eur_per_tco2e": {
+        "confidence": 1.0,
+        "document": "scenario_assumptions",
+        "extractor": "ocr_adapter_boundary",
+        "location": "row 4",
+        "raw_label": "CBAM 인증서 가격",
+        "raw_value": "EUR 87.50 / tCO2e",
+        "record_id": "record-012"
+      },
+      "default_intensity_tco2e_per_t": {
+        "confidence": 0.94,
+        "document": "cbam_product_sheet",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 2 / conservative scenario",
+        "raw_label": "EU 기본값",
+        "raw_value": "7.311579 tCO2e/t",
+        "record_id": "record-011"
+      },
+      "phase_in_factor": {
+        "confidence": 1.0,
+        "document": "scenario_assumptions",
+        "extractor": "ocr_adapter_boundary",
+        "location": "row 5",
+        "raw_label": "노출도 적용계수",
+        "raw_value": "100%",
+        "record_id": "record-013"
+      },
+      "shipment_mass_t": {
+        "confidence": 0.98,
+        "document": "commercial_invoice",
+        "extractor": "ocr_adapter_boundary",
+        "location": "page 1 / total net weight",
+        "raw_label": "총 출하 중량",
+        "raw_value": "190,000 kg",
+        "record_id": "record-001"
+      }
+    },
+    "inputs": {
+      "carbon_price_paid_eur_per_tco2e": "0",
+      "certificate_price_eur_per_tco2e": "87.5",
+      "default_intensity_tco2e_per_t": "7.311579",
+      "phase_in_factor": "1",
+      "sheet_actual_intensity_tco2e_per_t": "5.849263",
+      "shipment_mass_t": "190"
+    },
+    "method": "sum of normalized line-item mass × intensity × phase-in × max(certificate price − origin carbon price, 0)",
+    "reconciliation": {
+      "absolute_intensity_difference": "0.000000158",
+      "derived_weighted_intensity_tco2e_per_t": "5.849263",
+      "intensity_matches": true,
+      "intensity_tolerance": "0.000001",
+      "line_item_mass_total_t": "190",
+      "mass_matches": true,
+      "sheet_weighted_intensity_tco2e_per_t": "5.849263",
+      "shipment_mass_t": "190"
+    },
+    "reproduction": {
+      "input_subset": [
+        "ocr_records"
+      ],
+      "inputs": {
+        "forest_pixels": {
+          "bytes": 914,
+          "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+        },
+        "legal_corpus": {
+          "bytes": 5908,
+          "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+        },
+        "legal_eval": {
+          "bytes": 665,
+          "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+        },
+        "legal_source_manifest": {
+          "bytes": 1055,
+          "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+        },
+        "ocr_records": {
+          "bytes": 3255,
+          "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+        }
+      },
+      "pipeline_version": "0.1.0",
+      "schema_version": "1.0.0"
+    }
+  },
+  "classification": "synthetic educational proof-of-concept",
+  "decision": {
+    "reason": "정규화 과정에서 3개 검토 이슈가 확인되어 자동 판단하지 않습니다.",
+    "status": "human_review_required"
+  },
+  "forest_change_baseline": {
+    "case_id": "ECO-FOREST-SYN-2026-001",
+    "classification": "reconstructed_public_baseline",
+    "grid": {
+      "cols": 6,
+      "pixel_count": 36,
+      "rows": 6
+    },
+    "input": "synthetic red/NIR pixel grid",
+    "limitations": [
+      "합성 픽셀로 임계값과 산식의 재현성만 확인합니다.",
+      "운영용 위성 분류기, 현장 검증, EUDR 적합성 판정을 대체하지 않습니다.",
+      "대회 당시의 CNN/XAI 정확도를 재현하거나 주장하지 않습니다."
+    ],
+    "method": "NDVI=(NIR−Red)/(NIR+Red); loss when baseline NDVI and decrease exceed explicit thresholds",
+    "pixels": [
+      {
+        "col": 0,
+        "loss_flag": false,
+        "ndvi_after": 0.573,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.027,
+        "row": 0
+      },
+      {
+        "col": 1,
+        "loss_flag": false,
+        "ndvi_after": 0.5862,
+        "ndvi_before": 0.6092,
+        "ndvi_change": -0.023,
+        "row": 0
+      },
+      {
+        "col": 2,
+        "loss_flag": false,
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.0323,
+        "row": 0
+      },
+      {
+        "col": 3,
+        "loss_flag": false,
+        "ndvi_after": 0.5556,
+        "ndvi_before": 0.587,
+        "ndvi_change": -0.0314,
+        "row": 0
+      },
+      {
+        "col": 4,
+        "loss_flag": false,
+        "ndvi_after": 0.5778,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.0222,
+        "row": 0
+      },
+      {
+        "col": 5,
+        "loss_flag": false,
+        "ndvi_after": 0.5814,
+        "ndvi_before": 0.6047,
+        "ndvi_change": -0.0233,
+        "row": 0
+      },
+      {
+        "col": 0,
+        "loss_flag": false,
+        "ndvi_after": 0.573,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.0225,
+        "row": 1
+      },
+      {
+        "col": 1,
+        "loss_flag": false,
+        "ndvi_after": 0.5814,
+        "ndvi_before": 0.618,
+        "ndvi_change": -0.0366,
+        "row": 1
+      },
+      {
+        "col": 2,
+        "loss_flag": true,
+        "ndvi_after": 0.04,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.5509,
+        "row": 1
+      },
+      {
+        "col": 3,
+        "loss_flag": true,
+        "ndvi_after": -0.0133,
+        "ndvi_before": 0.5914,
+        "ndvi_change": -0.6047,
+        "row": 1
+      },
+      {
+        "col": 4,
+        "loss_flag": false,
+        "ndvi_after": 0.5682,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.0318,
+        "row": 1
+      },
+      {
+        "col": 5,
+        "loss_flag": false,
+        "ndvi_after": 0.5765,
+        "ndvi_before": 0.6092,
+        "ndvi_change": -0.0327,
+        "row": 1
+      },
+      {
+        "col": 0,
+        "loss_flag": false,
+        "ndvi_after": 0.5682,
+        "ndvi_before": 0.6044,
+        "ndvi_change": -0.0362,
+        "row": 2
+      },
+      {
+        "col": 1,
+        "loss_flag": true,
+        "ndvi_after": 0.0811,
+        "ndvi_before": 0.6136,
+        "ndvi_change": -0.5326,
+        "row": 2
+      },
+      {
+        "col": 2,
+        "loss_flag": true,
+        "ndvi_after": -0.1389,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.7389,
+        "row": 2
+      },
+      {
+        "col": 3,
+        "loss_flag": true,
+        "ndvi_after": -0.1944,
+        "ndvi_before": 0.587,
+        "ndvi_change": -0.7814,
+        "row": 2
+      },
+      {
+        "col": 4,
+        "loss_flag": true,
+        "ndvi_after": 0.0411,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.5498,
+        "row": 2
+      },
+      {
+        "col": 5,
+        "loss_flag": false,
+        "ndvi_after": 0.5714,
+        "ndvi_before": 0.6047,
+        "ndvi_change": -0.0332,
+        "row": 2
+      },
+      {
+        "col": 0,
+        "loss_flag": false,
+        "ndvi_after": 0.5506,
+        "ndvi_before": 0.5824,
+        "ndvi_change": -0.0319,
+        "row": 3
+      },
+      {
+        "col": 1,
+        "loss_flag": true,
+        "ndvi_after": 0.0,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.5955,
+        "row": 3
+      },
+      {
+        "col": 2,
+        "loss_flag": true,
+        "ndvi_after": -0.2394,
+        "ndvi_before": 0.6092,
+        "ndvi_change": -0.8486,
+        "row": 3
+      },
+      {
+        "col": 3,
+        "loss_flag": true,
+        "ndvi_after": -0.2676,
+        "ndvi_before": 0.6044,
+        "ndvi_change": -0.872,
+        "row": 3
+      },
+      {
+        "col": 4,
+        "loss_flag": true,
+        "ndvi_after": -0.0278,
+        "ndvi_before": 0.5824,
+        "ndvi_change": -0.6102,
+        "row": 3
+      },
+      {
+        "col": 5,
+        "loss_flag": false,
+        "ndvi_after": 0.5581,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.0328,
+        "row": 3
+      },
+      {
+        "col": 0,
+        "loss_flag": false,
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.0323,
+        "row": 4
+      },
+      {
+        "col": 1,
+        "loss_flag": false,
+        "ndvi_after": 0.5765,
+        "ndvi_before": 0.6092,
+        "ndvi_change": -0.0327,
+        "row": 4
+      },
+      {
+        "col": 2,
+        "loss_flag": true,
+        "ndvi_after": 0.0541,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.5459,
+        "row": 4
+      },
+      {
+        "col": 3,
+        "loss_flag": true,
+        "ndvi_after": -0.0137,
+        "ndvi_before": 0.587,
+        "ndvi_change": -0.6007,
+        "row": 4
+      },
+      {
+        "col": 4,
+        "loss_flag": false,
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5955,
+        "ndvi_change": -0.0323,
+        "row": 4
+      },
+      {
+        "col": 5,
+        "loss_flag": false,
+        "ndvi_after": 0.5714,
+        "ndvi_before": 0.6047,
+        "ndvi_change": -0.0332,
+        "row": 4
+      },
+      {
+        "col": 0,
+        "loss_flag": false,
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.0277,
+        "row": 5
+      },
+      {
+        "col": 1,
+        "loss_flag": false,
+        "ndvi_after": 0.5862,
+        "ndvi_before": 0.6136,
+        "ndvi_change": -0.0274,
+        "row": 5
+      },
+      {
+        "col": 2,
+        "loss_flag": false,
+        "ndvi_after": 0.573,
+        "ndvi_before": 0.6,
+        "ndvi_change": -0.027,
+        "row": 5
+      },
+      {
+        "col": 3,
+        "loss_flag": false,
+        "ndvi_after": 0.5604,
+        "ndvi_before": 0.587,
+        "ndvi_change": -0.0265,
+        "row": 5
+      },
+      {
+        "col": 4,
+        "loss_flag": false,
+        "ndvi_after": 0.5632,
+        "ndvi_before": 0.5909,
+        "ndvi_change": -0.0277,
+        "row": 5
+      },
+      {
+        "col": 5,
+        "loss_flag": false,
+        "ndvi_after": 0.5765,
+        "ndvi_before": 0.6047,
+        "ndvi_change": -0.0282,
+        "row": 5
+      }
+    ],
+    "regions": [
+      {
+        "area_m2": 1200.0,
+        "cells": [
+          {
+            "col": 2,
+            "row": 1
+          },
+          {
+            "col": 3,
+            "row": 1
+          },
+          {
+            "col": 1,
+            "row": 2
+          },
+          {
+            "col": 2,
+            "row": 2
+          },
+          {
+            "col": 3,
+            "row": 2
+          },
+          {
+            "col": 4,
+            "row": 2
+          },
+          {
+            "col": 1,
+            "row": 3
+          },
+          {
+            "col": 2,
+            "row": 3
+          },
+          {
+            "col": 3,
+            "row": 3
+          },
+          {
+            "col": 4,
+            "row": 3
+          },
+          {
+            "col": 2,
+            "row": 4
+          },
+          {
+            "col": 3,
+            "row": 4
+          }
+        ],
+        "pixel_count": 12,
+        "region_id": 1
+      }
+    ],
+    "relation_to_trade_case": "independent synthetic technical baseline",
+    "reproduction": {
+      "input_subset": [
+        "forest_pixels"
+      ],
+      "inputs": {
+        "forest_pixels": {
+          "bytes": 914,
+          "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+        },
+        "legal_corpus": {
+          "bytes": 5908,
+          "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+        },
+        "legal_eval": {
+          "bytes": 665,
+          "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+        },
+        "legal_source_manifest": {
+          "bytes": 1055,
+          "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+        },
+        "ocr_records": {
+          "bytes": 3255,
+          "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+        }
+      },
+      "pipeline_version": "0.1.0",
+      "schema_version": "1.0.0"
+    },
+    "summary": {
+      "contiguous_region_count": 1,
+      "largest_region_pixel_count": 12,
+      "loss_area_m2": 1200.0,
+      "loss_pixel_count": 12,
+      "loss_share": 0.3333,
+      "mean_ndvi_after": 0.3612,
+      "mean_ndvi_before": 0.5985,
+      "mean_ndvi_change": -0.2373
+    },
+    "thresholds": {
+      "forest_ndvi_min": 0.45,
+      "ndvi_decrease_min": 0.25,
+      "synthetic_pixel_area_m2": 100.0
+    }
+  },
+  "legal_issue_citations": {
+    "case_id": "ECO-SYN-2026-001",
+    "items": [
+      {
+        "issue": {
+          "code": "cross_document_conflict",
+          "field": "shipment_mass_t",
+          "message": "문서 간 값이 달라 원본 확인이 필요합니다."
+        },
+        "query": "CBAM 신고 수량이 문서마다 다르면 신고 내용과 수량 근거는 어떤 조항을 확인해야 하나",
+        "results": [
+          {
+            "article": "Article 6",
+            "celex": "32023R0956",
+            "id": "CBAM-ART6",
+            "matched_domain_anchors": [
+              "cbam",
+              "신고"
+            ],
+            "matched_keywords": [
+              "CBAM 신고",
+              "수량"
+            ],
+            "paragraph": "2",
+            "rank": 1,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 68.739215,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "CBAM 신고에는 수입 물품의 수량, 내재배출량, 제출할 인증서 수량과 관련 근거가 포함되어야 한다.",
+            "title": "CBAM declaration content",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 8",
+            "celex": "32023R0956",
+            "id": "CBAM-ART8",
+            "matched_domain_anchors": [
+              "cbam",
+              "신고"
+            ],
+            "matched_keywords": [
+              "확인"
+            ],
+            "paragraph": "1",
+            "rank": 2,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 16.197225,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
+            "title": "Verification of embedded emissions",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 9",
+            "celex": "32023R1115",
+            "id": "EUDR-ART9",
+            "matched_domain_anchors": [
+              "cbam",
+              "신고"
+            ],
+            "matched_keywords": [],
+            "paragraph": "1",
+            "rank": 3,
+            "regulation": "Regulation (EU) 2023/1115",
+            "score": 8.394449,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "실사 정보에는 제품 설명·수량·생산국과 함께 관련 원자재가 생산된 토지의 지리적 위치와 생산일 또는 기간이 포함된다. 다만 Article 4a(5)의 micro 또는 small primary operator에는 우편주소 대체 예외가 적용될 수 있다.",
+            "title": "Information requirement",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+          }
+        ],
+        "status": "supported"
+      },
+      {
+        "issue": {
+          "code": "cross_document_conflict",
+          "field": "actual_intensity_tco2e_per_t",
+          "message": "문서 간 값이 달라 원본 확인이 필요합니다."
+        },
+        "query": "실제 내재배출량과 기본값 계산 근거가 충돌하면 어떤 조항을 확인해야 하나",
+        "results": [
+          {
+            "article": "Article 7",
+            "celex": "32023R0956",
+            "id": "CBAM-ART7",
+            "matched_domain_anchors": [
+              "내재배출량",
+              "배출"
+            ],
+            "matched_keywords": [
+              "내재배출량",
+              "기본값",
+              "계산"
+            ],
+            "paragraph": "1-7",
+            "rank": 1,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 77.858785,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
+            "title": "Calculation of embedded emissions",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 6",
+            "celex": "32023R0956",
+            "id": "CBAM-ART6",
+            "matched_domain_anchors": [
+              "내재배출량",
+              "배출"
+            ],
+            "matched_keywords": [
+              "내재배출량"
+            ],
+            "paragraph": "2",
+            "rank": 2,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 41.535623,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "CBAM 신고에는 수입 물품의 수량, 내재배출량, 제출할 인증서 수량과 관련 근거가 포함되어야 한다.",
+            "title": "CBAM declaration content",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 8",
+            "celex": "32023R0956",
+            "id": "CBAM-ART8",
+            "matched_domain_anchors": [
+              "내재배출량",
+              "배출"
+            ],
+            "matched_keywords": [
+              "확인"
+            ],
+            "paragraph": "1",
+            "rank": 3,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 33.349414,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
+            "title": "Verification of embedded emissions",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          }
+        ],
+        "status": "supported"
+      },
+      {
+        "issue": {
+          "code": "missing_required_evidence",
+          "field": "verification_reference",
+          "message": "필수 증빙 값이 비어 있습니다."
+        },
+        "query": "실제 배출량을 사용하려는데 검증서가 없으면 어떤 조항을 확인해야 하나",
+        "results": [
+          {
+            "article": "Article 8",
+            "celex": "32023R0956",
+            "id": "CBAM-ART8",
+            "matched_domain_anchors": [
+              "실제 배출량",
+              "배출",
+              "검증서"
+            ],
+            "matched_keywords": [
+              "검증",
+              "검증서",
+              "확인",
+              "실제 배출량"
+            ],
+            "paragraph": "1",
+            "rank": 1,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 68.519313,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
+            "title": "Verification of embedded emissions",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 7",
+            "celex": "32023R0956",
+            "id": "CBAM-ART7",
+            "matched_domain_anchors": [
+              "실제 배출량",
+              "배출",
+              "검증서"
+            ],
+            "matched_keywords": [
+              "실제 배출량"
+            ],
+            "paragraph": "1-7",
+            "rank": 2,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 24.007081,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
+            "title": "Calculation of embedded emissions",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 10",
+            "celex": "32023R1115",
+            "id": "EUDR-ART10",
+            "matched_domain_anchors": [
+              "실제 배출량",
+              "배출",
+              "검증서"
+            ],
+            "matched_keywords": [
+              "검증"
+            ],
+            "paragraph": "1-2",
+            "rank": 3,
+            "regulation": "Regulation (EU) 2023/1115",
+            "score": 16.197225,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "사업자는 Article 9의 정보와 기타 문서를 검증·분석해 제품의 비준수 위험이 없거나 무시할 수준인지 평가해야 한다.",
+            "title": "Risk assessment",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+          }
+        ],
+        "status": "supported"
+      }
+    ],
+    "linked_issue_count": 3,
+    "method": "rule-mapped issue query + article-level lexical retrieval",
+    "reproduction": {
+      "input_subset": [
+        "ocr_records",
+        "legal_corpus",
+        "legal_source_manifest"
+      ],
+      "inputs": {
+        "forest_pixels": {
+          "bytes": 914,
+          "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+        },
+        "legal_corpus": {
+          "bytes": 5908,
+          "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+        },
+        "legal_eval": {
+          "bytes": 665,
+          "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+        },
+        "legal_source_manifest": {
+          "bytes": 1055,
+          "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+        },
+        "ocr_records": {
+          "bytes": 3255,
+          "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+        }
+      },
+      "pipeline_version": "0.1.0",
+      "schema_version": "1.0.0"
+    },
+    "scope": "decision support over a curated article metadata set; not legal advice",
+    "supported_issue_count": 3
+  },
+  "legal_retrieval_evaluation": {
+    "case_count": 5,
+    "cases": [
+      {
+        "expected_ids": [
+          "CBAM-ART8"
+        ],
+        "hit_at_k": true,
+        "query": "실제 배출량을 쓰려는데 검증서가 없으면 어떤 조항을 확인해야 하나",
+        "results": [
+          {
+            "article": "Article 8",
+            "celex": "32023R0956",
+            "id": "CBAM-ART8",
+            "matched_domain_anchors": [
+              "실제 배출량",
+              "배출",
+              "검증서"
+            ],
+            "matched_keywords": [
+              "검증",
+              "검증서",
+              "확인",
+              "실제 배출량"
+            ],
+            "paragraph": "1",
+            "rank": 1,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 68.519313,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
+            "title": "Verification of embedded emissions",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 7",
+            "celex": "32023R0956",
+            "id": "CBAM-ART7",
+            "matched_domain_anchors": [
+              "실제 배출량",
+              "배출",
+              "검증서"
+            ],
+            "matched_keywords": [
+              "실제 배출량"
+            ],
+            "paragraph": "1-7",
+            "rank": 2,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 24.007081,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
+            "title": "Calculation of embedded emissions",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 10",
+            "celex": "32023R1115",
+            "id": "EUDR-ART10",
+            "matched_domain_anchors": [
+              "실제 배출량",
+              "배출",
+              "검증서"
+            ],
+            "matched_keywords": [
+              "검증"
+            ],
+            "paragraph": "1-2",
+            "rank": 3,
+            "regulation": "Regulation (EU) 2023/1115",
+            "score": 16.197225,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "사업자는 Article 9의 정보와 기타 문서를 검증·분석해 제품의 비준수 위험이 없거나 무시할 수준인지 평가해야 한다.",
+            "title": "Risk assessment",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+          }
+        ],
+        "retrieved_ids": [
+          "CBAM-ART8",
+          "CBAM-ART7",
+          "EUDR-ART10"
+        ]
+      },
+      {
+        "expected_ids": [
+          "CBAM-ART7"
+        ],
+        "hit_at_k": true,
+        "query": "제품의 내재배출량과 EU 기본값 계산 근거",
+        "results": [
+          {
+            "article": "Article 7",
+            "celex": "32023R0956",
+            "id": "CBAM-ART7",
+            "matched_domain_anchors": [
+              "내재배출량",
+              "배출"
+            ],
+            "matched_keywords": [
+              "내재배출량",
+              "기본값",
+              "계산"
+            ],
+            "paragraph": "1-7",
+            "rank": 1,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 76.425994,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
+            "title": "Calculation of embedded emissions",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 6",
+            "celex": "32023R0956",
+            "id": "CBAM-ART6",
+            "matched_domain_anchors": [
+              "내재배출량",
+              "배출"
+            ],
+            "matched_keywords": [
+              "내재배출량"
+            ],
+            "paragraph": "2",
+            "rank": 2,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 34.826166,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "CBAM 신고에는 수입 물품의 수량, 내재배출량, 제출할 인증서 수량과 관련 근거가 포함되어야 한다.",
+            "title": "CBAM declaration content",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          },
+          {
+            "article": "Article 9",
+            "celex": "32023R0956",
+            "id": "CBAM-ART9",
+            "matched_domain_anchors": [
+              "내재배출량",
+              "배출"
+            ],
+            "matched_keywords": [],
+            "paragraph": "1-5",
+            "rank": 3,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 21.355034,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "실제 배출량 기준에서는 제3국에서 탄소가격을 실제 지불했다는 기록과 독립 확인 증빙을 바탕으로 인증서 수 감축을 청구할 수 있다. 기본값 배출량에는 연간 기본 탄소가격 관련 조건이 적용된다.",
+            "title": "Carbon price paid in a third country",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          }
+        ],
+        "retrieved_ids": [
+          "CBAM-ART7",
+          "CBAM-ART6",
+          "CBAM-ART9"
+        ]
+      },
+      {
+        "expected_ids": [
+          "CBAM-ART9"
+        ],
+        "hit_at_k": true,
+        "query": "원산지에서 이미 낸 탄소가격을 공제하려면 어떤 증빙이 필요한가",
+        "results": [
+          {
+            "article": "Article 9",
+            "celex": "32023R0956",
+            "id": "CBAM-ART9",
+            "matched_domain_anchors": [
+              "탄소가격",
+              "탄소",
+              "원산지"
+            ],
+            "matched_keywords": [
+              "원산지",
+              "탄소가격",
+              "공제",
+              "증빙"
+            ],
+            "paragraph": "1-5",
+            "rank": 1,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 87.659773,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "실제 배출량 기준에서는 제3국에서 탄소가격을 실제 지불했다는 기록과 독립 확인 증빙을 바탕으로 인증서 수 감축을 청구할 수 있다. 기본값 배출량에는 연간 기본 탄소가격 관련 조건이 적용된다.",
+            "title": "Carbon price paid in a third country",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          }
+        ],
+        "retrieved_ids": [
+          "CBAM-ART9"
+        ]
+      },
+      {
+        "expected_ids": [
+          "EUDR-ART9"
+        ],
+        "hit_at_k": true,
+        "query": "EUDR 자료에서 생산지 좌표와 생산일이 빠졌다",
+        "results": [
+          {
+            "article": "Article 9",
+            "celex": "32023R1115",
+            "id": "EUDR-ART9",
+            "matched_domain_anchors": [
+              "eudr",
+              "생산지",
+              "좌표"
+            ],
+            "matched_keywords": [
+              "생산지",
+              "좌표",
+              "생산일"
+            ],
+            "paragraph": "1",
+            "rank": 1,
+            "regulation": "Regulation (EU) 2023/1115",
+            "score": 61.635309,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "실사 정보에는 제품 설명·수량·생산국과 함께 관련 원자재가 생산된 토지의 지리적 위치와 생산일 또는 기간이 포함된다. 다만 Article 4a(5)의 micro 또는 small primary operator에는 우편주소 대체 예외가 적용될 수 있다.",
+            "title": "Information requirement",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+          },
+          {
+            "article": "Article 4",
+            "celex": "32023R1115",
+            "id": "EUDR-ART4",
+            "matched_domain_anchors": [
+              "eudr",
+              "생산지",
+              "좌표"
+            ],
+            "matched_keywords": [
+              "EUDR"
+            ],
+            "paragraph": "1-3",
+            "rank": 2,
+            "regulation": "Regulation (EU) 2023/1115",
+            "score": 30.528542,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "일반 사업자는 관련 제품을 시장에 출시하거나 수출하기 전에 실사와 실사 선언 의무를 이행한다. micro 또는 small primary operator에는 Article 4a의 단순화 체계가 별도로 적용될 수 있다.",
+            "title": "Obligations of operators",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+          },
+          {
+            "article": "Article 9",
+            "celex": "32023R0956",
+            "id": "CBAM-ART9",
+            "matched_domain_anchors": [
+              "eudr",
+              "생산지",
+              "좌표"
+            ],
+            "matched_keywords": [],
+            "paragraph": "1-5",
+            "rank": 3,
+            "regulation": "Regulation (EU) 2023/956",
+            "score": 5.60269,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "실제 배출량 기준에서는 제3국에서 탄소가격을 실제 지불했다는 기록과 독립 확인 증빙을 바탕으로 인증서 수 감축을 청구할 수 있다. 기본값 배출량에는 연간 기본 탄소가격 관련 조건이 적용된다.",
+            "title": "Carbon price paid in a third country",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+          }
+        ],
+        "retrieved_ids": [
+          "EUDR-ART9",
+          "EUDR-ART4",
+          "CBAM-ART9"
+        ]
+      },
+      {
+        "expected_ids": [
+          "EUDR-ART10"
+        ],
+        "hit_at_k": true,
+        "query": "산림 훼손 가능성을 어떻게 위험 평가해야 하는가",
+        "results": [
+          {
+            "article": "Article 10",
+            "celex": "32023R1115",
+            "id": "EUDR-ART10",
+            "matched_domain_anchors": [
+              "위험 평가",
+              "산림 훼손",
+              "산림"
+            ],
+            "matched_keywords": [
+              "위험 평가",
+              "산림"
+            ],
+            "paragraph": "1-2",
+            "rank": 1,
+            "regulation": "Regulation (EU) 2023/1115",
+            "score": 62.037913,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "사업자는 Article 9의 정보와 기타 문서를 검증·분석해 제품의 비준수 위험이 없거나 무시할 수준인지 평가해야 한다.",
+            "title": "Risk assessment",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+          },
+          {
+            "article": "Article 11",
+            "celex": "32023R1115",
+            "id": "EUDR-ART11",
+            "matched_domain_anchors": [
+              "위험 평가",
+              "산림 훼손",
+              "산림"
+            ],
+            "matched_keywords": [],
+            "paragraph": "1",
+            "rank": 2,
+            "regulation": "Regulation (EU) 2023/1115",
+            "score": 10.493061,
+            "source_checked_on": "2026-08-11",
+            "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+            "summary_ko": "위험이 무시할 수준이 아니면 추가 정보·조사·독립 감사 등 적절한 완화 절차를 적용해야 한다.",
+            "title": "Risk mitigation",
+            "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+          }
+        ],
+        "retrieved_ids": [
+          "EUDR-ART10",
+          "EUDR-ART11"
+        ]
+      }
+    ],
+    "evaluation": "article-level citation retrieval",
+    "hit_rate_at_k": 1.0,
+    "k": 3,
+    "mean_reciprocal_rank": 1.0,
+    "reproduction": {
+      "input_subset": [
+        "legal_corpus",
+        "legal_eval",
+        "legal_source_manifest"
+      ],
+      "inputs": {
+        "forest_pixels": {
+          "bytes": 914,
+          "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+        },
+        "legal_corpus": {
+          "bytes": 5908,
+          "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+        },
+        "legal_eval": {
+          "bytes": 665,
+          "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+        },
+        "legal_source_manifest": {
+          "bytes": 1055,
+          "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+        },
+        "ocr_records": {
+          "bytes": 3255,
+          "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+        }
+      },
+      "pipeline_version": "0.1.0",
+      "schema_version": "1.0.0"
+    },
+    "scope": "curated CBAM/EUDR article metadata; not legal advice"
+  },
+  "normalized_evidence": {
+    "case_id": "ECO-SYN-2026-001",
+    "fields": {
+      "actual_intensity_tco2e_per_t": {
+        "candidates": [
+          {
+            "confidence": 0.94,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "field": "actual_intensity_tco2e_per_t",
+            "location": "page 2 / measured scenario",
+            "normalized_value": "5.849263",
+            "raw_label": "실측 배출계수",
+            "raw_value": "5.849263 tCO2e/t",
+            "record_id": "record-009",
+            "unit": "tCO2e/t"
+          },
+          {
+            "confidence": 0.68,
+            "document": "operator_memo",
+            "extractor": "ocr_adapter_boundary",
+            "field": "actual_intensity_tco2e_per_t",
+            "location": "line 7",
+            "normalized_value": "5.85",
+            "raw_label": "배출계수",
+            "raw_value": "5.85 tCO2/t 정도",
+            "record_id": "record-010",
+            "unit": "tCO2e/t"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.94,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 2 / measured scenario",
+          "raw_label": "실측 배출계수",
+          "raw_value": "5.849263 tCO2e/t",
+          "record_id": "record-009"
+        },
+        "unit": "tCO2e/t",
+        "value": "5.849263"
+      },
+      "carbon_price_paid_eur_per_tco2e": {
+        "candidates": [
+          {
+            "confidence": 0.9,
+            "document": "supplier_declaration",
+            "extractor": "ocr_adapter_boundary",
+            "field": "carbon_price_paid_eur_per_tco2e",
+            "location": "page 1 / carbon price",
+            "normalized_value": "0",
+            "raw_label": "원산지 탄소가격",
+            "raw_value": "EUR 0 / tCO2e",
+            "record_id": "record-014",
+            "unit": "EUR/tCO2e"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.9,
+          "document": "supplier_declaration",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / carbon price",
+          "raw_label": "원산지 탄소가격",
+          "raw_value": "EUR 0 / tCO2e",
+          "record_id": "record-014"
+        },
+        "unit": "EUR/tCO2e",
+        "value": "0"
+      },
+      "certificate_price_eur_per_tco2e": {
+        "candidates": [
+          {
+            "confidence": 1.0,
+            "document": "scenario_assumptions",
+            "extractor": "ocr_adapter_boundary",
+            "field": "certificate_price_eur_per_tco2e",
+            "location": "row 4",
+            "normalized_value": "87.5",
+            "raw_label": "CBAM 인증서 가격",
+            "raw_value": "EUR 87.50 / tCO2e",
+            "record_id": "record-012",
+            "unit": "EUR/tCO2e"
+          }
+        ],
+        "selected_from": {
+          "confidence": 1.0,
+          "document": "scenario_assumptions",
+          "extractor": "ocr_adapter_boundary",
+          "location": "row 4",
+          "raw_label": "CBAM 인증서 가격",
+          "raw_value": "EUR 87.50 / tCO2e",
+          "record_id": "record-012"
+        },
+        "unit": "EUR/tCO2e",
+        "value": "87.5"
+      },
+      "cn_code": {
+        "candidates": [
+          {
+            "confidence": 0.99,
+            "document": "commercial_invoice",
+            "extractor": "ocr_adapter_boundary",
+            "field": "cn_code",
+            "location": "page 1 / item",
+            "normalized_value": "73181552",
+            "raw_label": "CN code",
+            "raw_value": "7318.15.52",
+            "record_id": "record-008",
+            "unit": null
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.99,
+          "document": "commercial_invoice",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / item",
+          "raw_label": "CN code",
+          "raw_value": "7318.15.52",
+          "record_id": "record-008"
+        },
+        "unit": null,
+        "value": "73181552"
+      },
+      "default_intensity_tco2e_per_t": {
+        "candidates": [
+          {
+            "confidence": 0.94,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "field": "default_intensity_tco2e_per_t",
+            "location": "page 2 / conservative scenario",
+            "normalized_value": "7.311579",
+            "raw_label": "EU 기본값",
+            "raw_value": "7.311579 tCO2e/t",
+            "record_id": "record-011",
+            "unit": "tCO2e/t"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.94,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 2 / conservative scenario",
+          "raw_label": "EU 기본값",
+          "raw_value": "7.311579 tCO2e/t",
+          "record_id": "record-011"
+        },
+        "unit": "tCO2e/t",
+        "value": "7.311579"
+      },
+      "electricity_kwh": {
+        "candidates": [
+          {
+            "confidence": 0.72,
+            "document": "energy_memo",
+            "extractor": "ocr_adapter_boundary",
+            "field": "electricity_kwh",
+            "location": "line 2",
+            "normalized_value": "970000",
+            "raw_label": "전기사용량",
+            "raw_value": "970,000 kWh",
+            "record_id": "record-016",
+            "unit": "kWh"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.72,
+          "document": "energy_memo",
+          "extractor": "ocr_adapter_boundary",
+          "location": "line 2",
+          "raw_label": "전기사용량",
+          "raw_value": "970,000 kWh",
+          "record_id": "record-016"
+        },
+        "unit": "kWh",
+        "value": "970000"
+      },
+      "lng_nm3": {
+        "candidates": [
+          {
+            "confidence": 0.7,
+            "document": "energy_memo",
+            "extractor": "ocr_adapter_boundary",
+            "field": "lng_nm3",
+            "location": "line 4",
+            "normalized_value": "39300",
+            "raw_label": "LNG 사용량",
+            "raw_value": "39,300 Nm3",
+            "record_id": "record-017",
+            "unit": "Nm3"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.7,
+          "document": "energy_memo",
+          "extractor": "ocr_adapter_boundary",
+          "location": "line 4",
+          "raw_label": "LNG 사용량",
+          "raw_value": "39,300 Nm3",
+          "record_id": "record-017"
+        },
+        "unit": "Nm3",
+        "value": "39300"
+      },
+      "m12_intensity_tco2e_per_t": {
+        "candidates": [
+          {
+            "confidence": 0.98,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "field": "m12_intensity_tco2e_per_t",
+            "location": "page 1 / item M12 / specific embedded emissions",
+            "normalized_value": "6.088",
+            "raw_label": "M12 SEE",
+            "raw_value": "6.088 tCO2e/t",
+            "record_id": "record-007",
+            "unit": "tCO2e/t"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / item M12 / specific embedded emissions",
+          "raw_label": "M12 SEE",
+          "raw_value": "6.088 tCO2e/t",
+          "record_id": "record-007"
+        },
+        "unit": "tCO2e/t",
+        "value": "6.088"
+      },
+      "m12_mass_t": {
+        "candidates": [
+          {
+            "confidence": 0.98,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "field": "m12_mass_t",
+            "location": "page 1 / item M12 / net weight",
+            "normalized_value": "100",
+            "raw_label": "M12 순중량",
+            "raw_value": "100,000 kg",
+            "record_id": "record-006",
+            "unit": "t"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / item M12 / net weight",
+          "raw_label": "M12 순중량",
+          "raw_value": "100,000 kg",
+          "record_id": "record-006"
+        },
+        "unit": "t",
+        "value": "100"
+      },
+      "m5_intensity_tco2e_per_t": {
+        "candidates": [
+          {
+            "confidence": 0.98,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "field": "m5_intensity_tco2e_per_t",
+            "location": "page 1 / item M5 / specific embedded emissions",
+            "normalized_value": "5.584",
+            "raw_label": "M5 SEE",
+            "raw_value": "5.584 tCO2e/t",
+            "record_id": "record-005",
+            "unit": "tCO2e/t"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / item M5 / specific embedded emissions",
+          "raw_label": "M5 SEE",
+          "raw_value": "5.584 tCO2e/t",
+          "record_id": "record-005"
+        },
+        "unit": "tCO2e/t",
+        "value": "5.584"
+      },
+      "m5_mass_t": {
+        "candidates": [
+          {
+            "confidence": 0.98,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "field": "m5_mass_t",
+            "location": "page 1 / item M5 / net weight",
+            "normalized_value": "90",
+            "raw_label": "M5 순중량",
+            "raw_value": "90 MT",
+            "record_id": "record-004",
+            "unit": "t"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.98,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / item M5 / net weight",
+          "raw_label": "M5 순중량",
+          "raw_value": "90 MT",
+          "record_id": "record-004"
+        },
+        "unit": "t",
+        "value": "90"
+      },
+      "phase_in_factor": {
+        "candidates": [
+          {
+            "confidence": 1.0,
+            "document": "scenario_assumptions",
+            "extractor": "ocr_adapter_boundary",
+            "field": "phase_in_factor",
+            "location": "row 5",
+            "normalized_value": "1",
+            "raw_label": "노출도 적용계수",
+            "raw_value": "100%",
+            "record_id": "record-013",
+            "unit": "ratio"
+          }
+        ],
+        "selected_from": {
+          "confidence": 1.0,
+          "document": "scenario_assumptions",
+          "extractor": "ocr_adapter_boundary",
+          "location": "row 5",
+          "raw_label": "노출도 적용계수",
+          "raw_value": "100%",
+          "record_id": "record-013"
+        },
+        "unit": "ratio",
+        "value": "1"
+      },
+      "shipment_mass_t": {
+        "candidates": [
+          {
+            "confidence": 0.98,
+            "document": "commercial_invoice",
+            "extractor": "ocr_adapter_boundary",
+            "field": "shipment_mass_t",
+            "location": "page 1 / total net weight",
+            "normalized_value": "190",
+            "raw_label": "총 출하 중량",
+            "raw_value": "190,000 kg",
+            "record_id": "record-001",
+            "unit": "t"
+          },
+          {
+            "confidence": 0.96,
+            "document": "packing_list",
+            "extractor": "ocr_adapter_boundary",
+            "field": "shipment_mass_t",
+            "location": "page 1 / totals",
+            "normalized_value": "190",
+            "raw_label": "NET WT",
+            "raw_value": "190 MT",
+            "record_id": "record-002",
+            "unit": "t"
+          },
+          {
+            "confidence": 0.55,
+            "document": "operator_memo",
+            "extractor": "ocr_adapter_boundary",
+            "field": "shipment_mass_t",
+            "location": "line 3",
+            "normalized_value": "191",
+            "raw_label": "출하량",
+            "raw_value": "약 191톤?",
+            "record_id": "record-003",
+            "unit": "t"
+          }
+        ],
+        "selected_from": {
+          "confidence": 0.98,
+          "document": "commercial_invoice",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 1 / total net weight",
+          "raw_label": "총 출하 중량",
+          "raw_value": "190,000 kg",
+          "record_id": "record-001"
+        },
+        "unit": "t",
+        "value": "190"
+      },
+      "verification_reference": {
+        "candidates": [
+          {
+            "confidence": 1.0,
+            "document": "cbam_product_sheet",
+            "extractor": "ocr_adapter_boundary",
+            "field": "verification_reference",
+            "location": "page 2 / verification",
+            "normalized_value": null,
+            "raw_label": "검증서 번호",
+            "raw_value": "",
+            "record_id": "record-015",
+            "unit": null
+          }
+        ],
+        "selected_from": {
+          "confidence": 1.0,
+          "document": "cbam_product_sheet",
+          "extractor": "ocr_adapter_boundary",
+          "location": "page 2 / verification",
+          "raw_label": "검증서 번호",
+          "raw_value": "",
+          "record_id": "record-015"
+        },
+        "unit": null,
+        "value": null
+      }
+    },
+    "issues": [
+      {
+        "alternatives": [
+          "190",
+          "191"
+        ],
+        "code": "cross_document_conflict",
+        "field": "shipment_mass_t",
+        "message": "문서 간 값이 달라 원본 확인이 필요합니다.",
+        "selected": "190",
+        "severity": "review"
+      },
+      {
+        "alternatives": [
+          "5.849263",
+          "5.85"
+        ],
+        "code": "cross_document_conflict",
+        "field": "actual_intensity_tco2e_per_t",
+        "message": "문서 간 값이 달라 원본 확인이 필요합니다.",
+        "selected": "5.849263",
+        "severity": "review"
+      },
+      {
+        "code": "missing_required_evidence",
+        "field": "verification_reference",
+        "message": "필수 증빙 값이 비어 있습니다.",
+        "severity": "high"
+      }
+    ],
+    "notice": "All records are synthetic and intentionally include one conflicting memo value and one missing verification reference.",
+    "rejected_records": [],
+    "reproduction": {
+      "input_subset": [
+        "ocr_records"
+      ],
+      "inputs": {
+        "forest_pixels": {
+          "bytes": 914,
+          "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+        },
+        "legal_corpus": {
+          "bytes": 5908,
+          "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+        },
+        "legal_eval": {
+          "bytes": 665,
+          "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+        },
+        "legal_source_manifest": {
+          "bytes": 1055,
+          "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+        },
+        "ocr_records": {
+          "bytes": 3255,
+          "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+        }
+      },
+      "pipeline_version": "0.1.0",
+      "schema_version": "1.0.0"
+    },
+    "summary": {
+      "field_count": 14,
+      "issue_count": 3,
+      "status": "review"
+    }
+  },
+  "pipeline": [
+    "OCR-like raw records",
+    "normalization and provenance",
+    "cross-document checks",
+    "case-issue to article citation retrieval",
+    "CBAM exposure scenarios",
+    "independent synthetic NDVI baseline",
+    "human review packet"
+  ],
+  "project": "EcoGuard",
+  "reproduction": {
+    "inputs": {
+      "forest_pixels": {
+        "bytes": 914,
+        "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+      },
+      "legal_corpus": {
+        "bytes": 5908,
+        "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+      },
+      "legal_eval": {
+        "bytes": 665,
+        "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+      },
+      "legal_source_manifest": {
+        "bytes": 1055,
+        "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+      },
+      "ocr_records": {
+        "bytes": 3255,
+        "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+      }
+    },
+    "pipeline_version": "0.1.0",
+    "schema_version": "1.0.0"
+  }
+}

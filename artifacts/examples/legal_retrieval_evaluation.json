@@ -1,0 +1,374 @@
+{
+  "case_count": 5,
+  "cases": [
+    {
+      "expected_ids": [
+        "CBAM-ART8"
+      ],
+      "hit_at_k": true,
+      "query": "실제 배출량을 쓰려는데 검증서가 없으면 어떤 조항을 확인해야 하나",
+      "results": [
+        {
+          "article": "Article 8",
+          "celex": "32023R0956",
+          "id": "CBAM-ART8",
+          "matched_domain_anchors": [
+            "실제 배출량",
+            "배출",
+            "검증서"
+          ],
+          "matched_keywords": [
+            "검증",
+            "검증서",
+            "확인",
+            "실제 배출량"
+          ],
+          "paragraph": "1",
+          "rank": 1,
+          "regulation": "Regulation (EU) 2023/956",
+          "score": 68.519313,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "신고된 실제 내재배출량은 인정된 원칙에 따라 공인 검증인의 검증을 받아야 한다.",
+          "title": "Verification of embedded emissions",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+        },
+        {
+          "article": "Article 7",
+          "celex": "32023R0956",
+          "id": "CBAM-ART7",
+          "matched_domain_anchors": [
+            "실제 배출량",
+            "배출",
+            "검증서"
+          ],
+          "matched_keywords": [
+            "실제 배출량"
+          ],
+          "paragraph": "1-7",
+          "rank": 2,
+          "regulation": "Regulation (EU) 2023/956",
+          "score": 24.007081,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
+          "title": "Calculation of embedded emissions",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+        },
+        {
+          "article": "Article 10",
+          "celex": "32023R1115",
+          "id": "EUDR-ART10",
+          "matched_domain_anchors": [
+            "실제 배출량",
+            "배출",
+            "검증서"
+          ],
+          "matched_keywords": [
+            "검증"
+          ],
+          "paragraph": "1-2",
+          "rank": 3,
+          "regulation": "Regulation (EU) 2023/1115",
+          "score": 16.197225,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "사업자는 Article 9의 정보와 기타 문서를 검증·분석해 제품의 비준수 위험이 없거나 무시할 수준인지 평가해야 한다.",
+          "title": "Risk assessment",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+        }
+      ],
+      "retrieved_ids": [
+        "CBAM-ART8",
+        "CBAM-ART7",
+        "EUDR-ART10"
+      ]
+    },
+    {
+      "expected_ids": [
+        "CBAM-ART7"
+      ],
+      "hit_at_k": true,
+      "query": "제품의 내재배출량과 EU 기본값 계산 근거",
+      "results": [
+        {
+          "article": "Article 7",
+          "celex": "32023R0956",
+          "id": "CBAM-ART7",
+          "matched_domain_anchors": [
+            "내재배출량",
+            "배출"
+          ],
+          "matched_keywords": [
+            "내재배출량",
+            "기본값",
+            "계산"
+          ],
+          "paragraph": "1-7",
+          "rank": 1,
+          "regulation": "Regulation (EU) 2023/956",
+          "score": 76.425994,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "물품의 내재배출량은 Annex IV의 방법에 따라 실제 배출량 또는 적용 가능한 기본값으로 계산한다.",
+          "title": "Calculation of embedded emissions",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+        },
+        {
+          "article": "Article 6",
+          "celex": "32023R0956",
+          "id": "CBAM-ART6",
+          "matched_domain_anchors": [
+            "내재배출량",
+            "배출"
+          ],
+          "matched_keywords": [
+            "내재배출량"
+          ],
+          "paragraph": "2",
+          "rank": 2,
+          "regulation": "Regulation (EU) 2023/956",
+          "score": 34.826166,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "CBAM 신고에는 수입 물품의 수량, 내재배출량, 제출할 인증서 수량과 관련 근거가 포함되어야 한다.",
+          "title": "CBAM declaration content",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+        },
+        {
+          "article": "Article 9",
+          "celex": "32023R0956",
+          "id": "CBAM-ART9",
+          "matched_domain_anchors": [
+            "내재배출량",
+            "배출"
+          ],
+          "matched_keywords": [],
+          "paragraph": "1-5",
+          "rank": 3,
+          "regulation": "Regulation (EU) 2023/956",
+          "score": 21.355034,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "실제 배출량 기준에서는 제3국에서 탄소가격을 실제 지불했다는 기록과 독립 확인 증빙을 바탕으로 인증서 수 감축을 청구할 수 있다. 기본값 배출량에는 연간 기본 탄소가격 관련 조건이 적용된다.",
+          "title": "Carbon price paid in a third country",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+        }
+      ],
+      "retrieved_ids": [
+        "CBAM-ART7",
+        "CBAM-ART6",
+        "CBAM-ART9"
+      ]
+    },
+    {
+      "expected_ids": [
+        "CBAM-ART9"
+      ],
+      "hit_at_k": true,
+      "query": "원산지에서 이미 낸 탄소가격을 공제하려면 어떤 증빙이 필요한가",
+      "results": [
+        {
+          "article": "Article 9",
+          "celex": "32023R0956",
+          "id": "CBAM-ART9",
+          "matched_domain_anchors": [
+            "탄소가격",
+            "탄소",
+            "원산지"
+          ],
+          "matched_keywords": [
+            "원산지",
+            "탄소가격",
+            "공제",
+            "증빙"
+          ],
+          "paragraph": "1-5",
+          "rank": 1,
+          "regulation": "Regulation (EU) 2023/956",
+          "score": 87.659773,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "실제 배출량 기준에서는 제3국에서 탄소가격을 실제 지불했다는 기록과 독립 확인 증빙을 바탕으로 인증서 수 감축을 청구할 수 있다. 기본값 배출량에는 연간 기본 탄소가격 관련 조건이 적용된다.",
+          "title": "Carbon price paid in a third country",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+        }
+      ],
+      "retrieved_ids": [
+        "CBAM-ART9"
+      ]
+    },
+    {
+      "expected_ids": [
+        "EUDR-ART9"
+      ],
+      "hit_at_k": true,
+      "query": "EUDR 자료에서 생산지 좌표와 생산일이 빠졌다",
+      "results": [
+        {
+          "article": "Article 9",
+          "celex": "32023R1115",
+          "id": "EUDR-ART9",
+          "matched_domain_anchors": [
+            "eudr",
+            "생산지",
+            "좌표"
+          ],
+          "matched_keywords": [
+            "생산지",
+            "좌표",
+            "생산일"
+          ],
+          "paragraph": "1",
+          "rank": 1,
+          "regulation": "Regulation (EU) 2023/1115",
+          "score": 61.635309,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "실사 정보에는 제품 설명·수량·생산국과 함께 관련 원자재가 생산된 토지의 지리적 위치와 생산일 또는 기간이 포함된다. 다만 Article 4a(5)의 micro 또는 small primary operator에는 우편주소 대체 예외가 적용될 수 있다.",
+          "title": "Information requirement",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+        },
+        {
+          "article": "Article 4",
+          "celex": "32023R1115",
+          "id": "EUDR-ART4",
+          "matched_domain_anchors": [
+            "eudr",
+            "생산지",
+            "좌표"
+          ],
+          "matched_keywords": [
+            "EUDR"
+          ],
+          "paragraph": "1-3",
+          "rank": 2,
+          "regulation": "Regulation (EU) 2023/1115",
+          "score": 30.528542,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "일반 사업자는 관련 제품을 시장에 출시하거나 수출하기 전에 실사와 실사 선언 의무를 이행한다. micro 또는 small primary operator에는 Article 4a의 단순화 체계가 별도로 적용될 수 있다.",
+          "title": "Obligations of operators",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+        },
+        {
+          "article": "Article 9",
+          "celex": "32023R0956",
+          "id": "CBAM-ART9",
+          "matched_domain_anchors": [
+            "eudr",
+            "생산지",
+            "좌표"
+          ],
+          "matched_keywords": [],
+          "paragraph": "1-5",
+          "rank": 3,
+          "regulation": "Regulation (EU) 2023/956",
+          "score": 5.60269,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "실제 배출량 기준에서는 제3국에서 탄소가격을 실제 지불했다는 기록과 독립 확인 증빙을 바탕으로 인증서 수 감축을 청구할 수 있다. 기본값 배출량에는 연간 기본 탄소가격 관련 조건이 적용된다.",
+          "title": "Carbon price paid in a third country",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng"
+        }
+      ],
+      "retrieved_ids": [
+        "EUDR-ART9",
+        "EUDR-ART4",
+        "CBAM-ART9"
+      ]
+    },
+    {
+      "expected_ids": [
+        "EUDR-ART10"
+      ],
+      "hit_at_k": true,
+      "query": "산림 훼손 가능성을 어떻게 위험 평가해야 하는가",
+      "results": [
+        {
+          "article": "Article 10",
+          "celex": "32023R1115",
+          "id": "EUDR-ART10",
+          "matched_domain_anchors": [
+            "위험 평가",
+            "산림 훼손",
+            "산림"
+          ],
+          "matched_keywords": [
+            "위험 평가",
+            "산림"
+          ],
+          "paragraph": "1-2",
+          "rank": 1,
+          "regulation": "Regulation (EU) 2023/1115",
+          "score": 62.037913,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "사업자는 Article 9의 정보와 기타 문서를 검증·분석해 제품의 비준수 위험이 없거나 무시할 수준인지 평가해야 한다.",
+          "title": "Risk assessment",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+        },
+        {
+          "article": "Article 11",
+          "celex": "32023R1115",
+          "id": "EUDR-ART11",
+          "matched_domain_anchors": [
+            "위험 평가",
+            "산림 훼손",
+            "산림"
+          ],
+          "matched_keywords": [],
+          "paragraph": "1",
+          "rank": 2,
+          "regulation": "Regulation (EU) 2023/1115",
+          "score": 10.493061,
+          "source_checked_on": "2026-08-11",
+          "source_status": "Team-authored non-authoritative summary; verify against the pinned consolidated text before use.",
+          "summary_ko": "위험이 무시할 수준이 아니면 추가 정보·조사·독립 감사 등 적절한 완화 절차를 적용해야 한다.",
+          "title": "Risk mitigation",
+          "url": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+        }
+      ],
+      "retrieved_ids": [
+        "EUDR-ART10",
+        "EUDR-ART11"
+      ]
+    }
+  ],
+  "evaluation": "article-level citation retrieval",
+  "hit_rate_at_k": 1.0,
+  "k": 3,
+  "mean_reciprocal_rank": 1.0,
+  "reproduction": {
+    "input_subset": [
+      "legal_corpus",
+      "legal_eval",
+      "legal_source_manifest"
+    ],
+    "inputs": {
+      "forest_pixels": {
+        "bytes": 914,
+        "sha256": "0d195d3d38e4a04901866c3f7c9456c2a51f9b363eb35665707ed4d640a9c6f7"
+      },
+      "legal_corpus": {
+        "bytes": 5908,
+        "sha256": "6e18c91f9218662481149d01501de139cbb25db2e2bcf04385080f45bb80e757"
+      },
+      "legal_eval": {
+        "bytes": 665,
+        "sha256": "83b57d9d35e5fba31730b31e545810cff8b64d645876ce30dbdf43768a9f50e1"
+      },
+      "legal_source_manifest": {
+        "bytes": 1055,
+        "sha256": "94aded40ac37d86952c2fd6a8b5a8b7e4f089ffdc89b789dcb3ad03ae49725fc"
+      },
+      "ocr_records": {
+        "bytes": 3255,
+        "sha256": "66aa176df67eb01961f35c8c1eaff66bbcf3db81816f87caaa3ba516e52d9457"
+      }
+    },
+    "pipeline_version": "0.1.0",
+    "schema_version": "1.0.0"
+  },
+  "scope": "curated CBAM/EUDR article metadata; not legal advice"
+}

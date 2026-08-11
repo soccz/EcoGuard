@@ -1,0 +1,27 @@
+{
+  "source_checked_on": "2026-08-11",
+  "sources": [
+    {
+      "name": "CBAM Regulation (EU) 2023/956",
+      "celex": "32023R0956",
+      "eli": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng",
+      "consolidated_as_of": "2025-10-20",
+      "amending_acts": [
+        "Regulation (EU) 2025/2083"
+      ],
+      "scope_note": "Current consolidated text pinned for article metadata. The educational exposure formula does not implement the full statutory certificate obligation."
+    },
+    {
+      "name": "EUDR Regulation (EU) 2023/1115",
+      "celex": "32023R1115",
+      "eli": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng",
+      "consolidated_as_of": "2025-12-26",
+      "amending_acts": [
+        "Regulation (EU) 2024/3234",
+        "Regulation (EU) 2025/2650"
+      ],
+      "scope_note": "Current consolidated text pinned. Article 4a contains a simplified regime for micro or small primary operators."
+    }
+  ],
+  "summary_status": "All Korean summaries are team-authored, non-authoritative retrieval metadata."
+}

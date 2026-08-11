@@ -1,0 +1,125 @@
+{
+  "case_id": "ECO-SYN-2026-001",
+  "notice": "All records are synthetic and intentionally include one conflicting memo value and one missing verification reference.",
+  "records": [
+    {
+      "document": "commercial_invoice",
+      "location": "page 1 / total net weight",
+      "label": "총 출하 중량",
+      "value": "190,000 kg",
+      "confidence": 0.98
+    },
+    {
+      "document": "packing_list",
+      "location": "page 1 / totals",
+      "label": "NET WT",
+      "value": "190 MT",
+      "confidence": 0.96
+    },
+    {
+      "document": "operator_memo",
+      "location": "line 3",
+      "label": "출하량",
+      "value": "약 191톤?",
+      "confidence": 0.55
+    },
+    {
+      "document": "cbam_product_sheet",
+      "location": "page 1 / item M5 / net weight",
+      "label": "M5 순중량",
+      "value": "90 MT",
+      "confidence": 0.98
+    },
+    {
+      "document": "cbam_product_sheet",
+      "location": "page 1 / item M5 / specific embedded emissions",
+      "label": "M5 SEE",
+      "value": "5.584 tCO2e/t",
+      "confidence": 0.98
+    },
+    {
+      "document": "cbam_product_sheet",
+      "location": "page 1 / item M12 / net weight",
+      "label": "M12 순중량",
+      "value": "100,000 kg",
+      "confidence": 0.98
+    },
+    {
+      "document": "cbam_product_sheet",
+      "location": "page 1 / item M12 / specific embedded emissions",
+      "label": "M12 SEE",
+      "value": "6.088 tCO2e/t",
+      "confidence": 0.98
+    },
+    {
+      "document": "commercial_invoice",
+      "location": "page 1 / item",
+      "label": "CN code",
+      "value": "7318.15.52",
+      "confidence": 0.99
+    },
+    {
+      "document": "cbam_product_sheet",
+      "location": "page 2 / measured scenario",
+      "label": "실측 배출계수",
+      "value": "5.849263 tCO2e/t",
+      "confidence": 0.94
+    },
+    {
+      "document": "operator_memo",
+      "location": "line 7",
+      "label": "배출계수",
+      "value": "5.85 tCO2/t 정도",
+      "confidence": 0.68
+    },
+    {
+      "document": "cbam_product_sheet",
+      "location": "page 2 / conservative scenario",
+      "label": "EU 기본값",
+      "value": "7.311579 tCO2e/t",
+      "confidence": 0.94
+    },
+    {
+      "document": "scenario_assumptions",
+      "location": "row 4",
+      "label": "CBAM 인증서 가격",
+      "value": "EUR 87.50 / tCO2e",
+      "confidence": 1.0
+    },
+    {
+      "document": "scenario_assumptions",
+      "location": "row 5",
+      "label": "노출도 적용계수",
+      "value": "100%",
+      "confidence": 1.0
+    },
+    {
+      "document": "supplier_declaration",
+      "location": "page 1 / carbon price",
+      "label": "원산지 탄소가격",
+      "value": "EUR 0 / tCO2e",
+      "confidence": 0.9
+    },
+    {
+      "document": "cbam_product_sheet",
+      "location": "page 2 / verification",
+      "label": "검증서 번호",
+      "value": "",
+      "confidence": 1.0
+    },
+    {
+      "document": "energy_memo",
+      "location": "line 2",
+      "label": "전기사용량",
+      "value": "970,000 kWh",
+      "confidence": 0.72
+    },
+    {
+      "document": "energy_memo",
+      "location": "line 4",
+      "label": "LNG 사용량",
+      "value": "39,300 Nm3",
+      "confidence": 0.7
+    }
+  ]
+}
