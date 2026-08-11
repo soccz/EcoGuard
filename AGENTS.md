@@ -6,4 +6,6 @@
 - Preserve field-level provenance through preprocessing and label regulatory or pricing assumptions in every output.
 - Treat legal retrieval as decision support: cite official EUR-Lex references and never present output as legal advice.
 - Run `python -m unittest discover -s tests -v` and `python -m ecoguard reproduce --output artifacts/generated` before publishing.
+- Build release wheels from a clean source snapshot; never trust an in-place `build/` directory or an old generated artifact.
+- Freeze public test and artifact counts only after `scripts/verify_release.sh` passes on the final tree.
 - Keep competition-era full decks, static demo variants, and hard-coded scores out of the public tree and history.

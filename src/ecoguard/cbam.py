@@ -7,10 +7,11 @@ operand, reconciliation check, and arithmetic step inspectable.
 
 from __future__ import annotations
 
-from decimal import Decimal, ROUND_HALF_UP
+import re
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from typing import Any
 
-from .preprocessing import ITEM_COMPONENTS, ITEM_IDS
+from .preprocessing import ITEM_COMPONENTS, ITEM_IDS, validate_normalized_evidence
 
 
 MONEY = Decimal("0.01")
@@ -26,6 +27,29 @@ COMPONENT_LABELS = {
     "precursor_indirect": "precursor indirect",
 }
 
+EXPECTED_UNITS = {
+    "shipment_mass_t": "t",
+    "actual_intensity_tco2e_per_t": "tCO2e/t",
+    "default_intensity_tco2e_per_t": "tCO2e/t",
+    "certificate_price_eur_per_tco2e": "EUR/tCO2e",
+    "carbon_price_paid_eur_per_tco2e": "EUR/tCO2e",
+    "scenario_exposure_factor": "ratio",
+    "cn_code": None,
+}
+for _item_id in ITEM_IDS:
+    EXPECTED_UNITS.update(
+        {
+            f"{_item_id}_mass_t": "t",
+            f"{_item_id}_intensity_tco2e_per_t": "tCO2e/t",
+            f"{_item_id}_installation_id": None,
+            f"{_item_id}_production_process": None,
+            **{
+                f"{_item_id}_{component}_intensity_tco2e_per_t": "tCO2e/t"
+                for component in ITEM_COMPONENTS
+            },
+        }
+    )
+
 
 def _plain(value: Decimal) -> str:
     text = format(value, "f")
@@ -40,7 +64,11 @@ def _decimal(fields: dict[str, Any], name: str) -> Decimal:
     value = fields[name]["value"]
     if value is None:
         raise ValueError(f"required normalized field is missing: {name}")
-    parsed = Decimal(str(value))
+    _validate_unit(fields, name)
+    try:
+        parsed = Decimal(str(value))
+    except (InvalidOperation, ValueError) as exc:
+        raise ValueError(f"required normalized field is not numeric: {name}") from exc
     if not parsed.is_finite():
         raise ValueError(f"required normalized field is not finite: {name}")
     return parsed
@@ -49,13 +77,48 @@ def _decimal(fields: dict[str, Any], name: str) -> Decimal:
 def _text(fields: dict[str, Any], name: str) -> str:
     if name not in fields or fields[name]["value"] is None:
         raise ValueError(f"required normalized field is missing: {name}")
+    _validate_unit(fields, name)
     return str(fields[name]["value"])
+
+
+def _validate_case_inputs(
+    shipment_mass: Decimal,
+    actual_intensity: Decimal,
+    default_intensity: Decimal,
+    cn_code: str,
+) -> None:
+    if shipment_mass <= 0:
+        raise ValueError("shipment mass must be positive")
+    if actual_intensity < 0 or default_intensity < 0:
+        raise ValueError("emission intensities must be non-negative")
+    if not re.fullmatch(r"[0-9]{8}", cn_code):
+        raise ValueError("CN code must contain exactly eight digits")
+
+
+def _validate_unit(fields: dict[str, Any], name: str) -> None:
+    expected = EXPECTED_UNITS[name]
+    actual = fields[name].get("unit")
+    if actual != expected:
+        raise ValueError(
+            f"normalized field has invalid unit: {name}: expected {expected!r}, "
+            f"got {actual!r}"
+        )
 
 
 def _source(fields: dict[str, Any], name: str) -> dict[str, Any]:
     source = fields[name].get("selected_from")
     if not isinstance(source, dict) or not source.get("record_id"):
         raise ValueError(f"normalized field has no evidence reference: {name}")
+    if not all(
+        isinstance(source.get(key), str) and source[key].strip()
+        for key in ("document", "location")
+    ):
+        raise ValueError(f"normalized field has incomplete evidence reference: {name}")
+    for hash_name in ("line_sha256", "document_sha256"):
+        if not re.fullmatch(r"[0-9a-f]{64}", str(source.get(hash_name, ""))):
+            raise ValueError(
+                f"normalized field has invalid evidence hash: {name}: {hash_name}"
+            )
     return source
 
 
@@ -133,6 +196,7 @@ def _price_scenario(
     certificate_price: Decimal,
     third_country_price: Decimal,
     exposure_factor: Decimal,
+    embedded_emissions_source: dict[str, Any],
     input_sources: dict[str, dict[str, Any]],
     classification: str,
 ) -> dict[str, Any]:
@@ -183,7 +247,7 @@ def _price_scenario(
                         "name": "embedded_emissions",
                         "exact": _plain(embedded_emissions),
                         "unit": "tCO2e",
-                        "derived_from": "shipment.component_sum",
+                        **embedded_emissions_source,
                     },
                     {
                         "name": "scenario_exposure_factor",
@@ -227,6 +291,7 @@ def _price_scenario(
 
 def calculate_exposure(normalized: dict[str, Any]) -> dict[str, Any]:
     """Build a nested technical inventory and transparent sensitivity scenarios."""
+    validate_normalized_evidence(normalized, EXPECTED_UNITS)
     fields = normalized["fields"]
     shipment_mass = _decimal(fields, "shipment_mass_t")
     sheet_actual_intensity = _decimal(fields, "actual_intensity_tco2e_per_t")
@@ -234,11 +299,14 @@ def calculate_exposure(normalized: dict[str, Any]) -> dict[str, Any]:
     certificate_price = _decimal(fields, "certificate_price_eur_per_tco2e")
     exposure_factor = _decimal(fields, "scenario_exposure_factor")
     third_country_price = _decimal(fields, "carbon_price_paid_eur_per_tco2e")
+    cn_code = _text(fields, "cn_code")
 
-    if shipment_mass <= 0:
-        raise ValueError("shipment mass must be positive")
-    if sheet_actual_intensity < 0 or default_intensity < 0:
-        raise ValueError("emission intensities must be non-negative")
+    _validate_case_inputs(
+        shipment_mass,
+        sheet_actual_intensity,
+        default_intensity,
+        cn_code,
+    )
 
     items: list[dict[str, Any]] = []
     calculation_trace: list[dict[str, Any]] = []
@@ -343,7 +411,8 @@ def calculate_exposure(normalized: dict[str, Any]) -> dict[str, Any]:
         items.append(
             {
                 "item_id": item_name,
-                "cn_code": fields["cn_code"]["value"],
+                "cn_code": cn_code,
+                "cn_code_source": _source(fields, "cn_code"),
                 "installation_id": installation_id,
                 "installation_source": _source(fields, installation_field),
                 "production_process": production_process,
@@ -423,6 +492,7 @@ def calculate_exposure(normalized: dict[str, Any]) -> dict[str, Any]:
         certificate_price=certificate_price,
         third_country_price=third_country_price,
         exposure_factor=exposure_factor,
+        embedded_emissions_source={"derived_from": "shipment.component_sum"},
         input_sources=price_sources,
         classification="gross_price_sensitivity_scenario",
     )
@@ -434,6 +504,7 @@ def calculate_exposure(normalized: dict[str, Any]) -> dict[str, Any]:
             certificate_price=certificate_price,
             third_country_price=Decimal("0"),
             exposure_factor=Decimal("0.8"),
+            embedded_emissions_source={"derived_from": "shipment.component_sum"},
             input_sources={
                 "certificate_price": price_sources["certificate_price"],
                 "third_country_price": {
@@ -453,6 +524,7 @@ def calculate_exposure(normalized: dict[str, Any]) -> dict[str, Any]:
             certificate_price=certificate_price,
             third_country_price=Decimal("12.5"),
             exposure_factor=Decimal("0.8"),
+            embedded_emissions_source={"derived_from": "shipment.component_sum"},
             input_sources={
                 "certificate_price": price_sources["certificate_price"],
                 "third_country_price": {
@@ -469,22 +541,41 @@ def calculate_exposure(normalized: dict[str, Any]) -> dict[str, Any]:
     ]
 
     default_emissions = shipment_mass * default_intensity
+    default_emissions_step = _step(
+        "default_value_fixture.embedded_emissions",
+        "multiply",
+        "shipment mass × default intensity",
+        [
+            _operand(fields, "shipment_mass_t", shipment_mass, "t"),
+            _operand(
+                fields,
+                "default_intensity_tco2e_per_t",
+                default_intensity,
+                "tCO2e/t",
+            ),
+        ],
+        default_emissions,
+        "tCO2e",
+        display_quantum=EMISSIONS,
+    )
     default_scenario = _price_scenario(
         scenario_id="default_value_fixture",
         embedded_emissions=default_emissions,
         certificate_price=certificate_price,
         third_country_price=third_country_price,
         exposure_factor=exposure_factor,
+        embedded_emissions_source={"derived_from": default_emissions_step["step_id"]},
         input_sources=price_sources,
         classification="gross_price_sensitivity_scenario",
     )
+    default_scenario["calculation_trace"].insert(0, default_emissions_step)
     difference_emissions = default_emissions - emissions_total
-    difference_exposure = Decimal(default_scenario["exposure_eur"]) - Decimal(
-        published_scenario["exposure_eur"]
-    )
+    difference_exposure = Decimal(
+        default_scenario["calculation_trace"][-1]["result_exact"]
+    ) - Decimal(published_scenario["calculation_trace"][-1]["result_exact"])
 
     return {
-        "schema_version": "cbam-scenario/2.0",
+        "schema_version": "cbam-scenario/3.0",
         "case_id": normalized["case_id"],
         "classification": "gross_price_sensitivity_scenario",
         "statutory_calculator": False,
@@ -521,6 +612,7 @@ def calculate_exposure(normalized: dict[str, Any]) -> dict[str, Any]:
             name: _source(fields, name)
             for name in (
                 "shipment_mass_t",
+                "cn_code",
                 "actual_intensity_tco2e_per_t",
                 "default_intensity_tco2e_per_t",
                 "certificate_price_eur_per_tco2e",

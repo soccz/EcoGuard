@@ -1,5 +1,6 @@
 import copy
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -74,6 +75,26 @@ class EvidenceReportTests(unittest.TestCase):
         for forbidden in (".github.io", "Live Demo", "AUTO APPROVED", "amount due"):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, rendered)
+
+    def test_status_pills_meet_normal_text_contrast(self):
+        rendered = render_html(self.packet, self.svg)
+
+        def luminance(hex_color):
+            channels = [
+                int(hex_color[index : index + 2], 16) / 255 for index in (0, 2, 4)
+            ]
+            linear = [
+                value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+                for value in channels
+            ]
+            return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+        for variable in ("warn", "high", "info"):
+            with self.subTest(variable=variable):
+                match = re.search(rf"--{variable}:#([0-9a-f]{{6}})", rendered)
+                self.assertIsNotNone(match)
+                contrast = 1.05 / (luminance(match.group(1)) + 0.05)
+                self.assertGreaterEqual(contrast, 4.5)
 
 
 if __name__ == "__main__":

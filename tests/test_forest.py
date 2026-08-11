@@ -114,6 +114,22 @@ class ForestV2Tests(unittest.TestCase):
             "not a real-world annotation", self.result["reference"]["provenance"]
         )
 
+    def test_manifest_classification_and_top_level_contract_are_enforced(self):
+        pixels = PIXEL_PATH.read_text(encoding="utf-8")
+        reference = REFERENCE_PATH.read_text(encoding="utf-8")
+        mutations = (
+            ("classification", "production_satellite_result", "classification"),
+            ("unexpected", "value", "unsupported forest manifest"),
+        )
+        for key, value, message in mutations:
+            with self.subTest(key=key):
+                manifest = _manifest()
+                manifest[key] = value
+                with tempfile.TemporaryDirectory() as directory:
+                    case_path = _write_case(directory, pixels, reference, manifest)
+                    with self.assertRaisesRegex(ValueError, message):
+                        load_forest_case(case_path)
+
     def test_threshold_comparison_uses_unrounded_values(self):
         pixels = (
             "row,col,red_before,nir_before,red_after,nir_after\n"
@@ -153,6 +169,60 @@ class ForestV2Tests(unittest.TestCase):
         )
         self.assertEqual(render_change_svg(shuffled), render_change_svg(self.result))
 
+    def test_equivalent_decimal_notation_does_not_change_outputs(self):
+        pixels = PIXEL_PATH.read_text(encoding="utf-8").replace(
+            "0,0,0.18,0.72,0.19,0.70",
+            "0,0,0.1800,0.72000,0.1900,0.7000",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            equivalent = analyze_forest_case(
+                _write_case(
+                    directory,
+                    pixels,
+                    REFERENCE_PATH.read_text(encoding="utf-8"),
+                )
+            )
+        self.assertEqual(equivalent, self.result)
+        self.assertEqual(
+            build_regions_geojson(equivalent), build_regions_geojson(self.result)
+        )
+        self.assertEqual(render_change_svg(equivalent), render_change_svg(self.result))
+
+    def test_one_band_mutation_changes_mask_metrics_regions_and_visuals(self):
+        pixels = PIXEL_PATH.read_text(encoding="utf-8").replace(
+            "0,0,0.18,0.72,0.19,0.70",
+            "0,0,0.18,0.72,0.40,0.40",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            mutated = analyze_forest_case(
+                _write_case(
+                    directory,
+                    pixels,
+                    REFERENCE_PATH.read_text(encoding="utf-8"),
+                )
+            )
+        self.assertTrue(mutated["pixels"][0]["loss_flag"])
+        self.assertEqual(
+            mutated["evaluation"]["confusion_matrix"],
+            {"tp": 11, "fp": 2, "fn": 1, "tn": 22},
+        )
+        self.assertEqual(
+            mutated["evaluation"]["metrics"],
+            {
+                "precision": 0.846154,
+                "recall": 0.916667,
+                "f1": 0.88,
+                "iou": 0.785714,
+            },
+        )
+        self.assertEqual(mutated["summary"]["contiguous_region_count"], 2)
+        self.assertNotEqual(
+            build_regions_geojson(mutated), build_regions_geojson(self.result)
+        )
+        self.assertNotEqual(render_change_svg(mutated), render_change_svg(self.result))
+
     def test_connected_components_are_stable_and_connectivity_is_explicit(self):
         diagonal = {(0, 0), (1, 1), (2, 2)}
         self.assertEqual(
@@ -186,6 +256,8 @@ class ForestV2Tests(unittest.TestCase):
         self.assertIsNone(false_alarm["metrics"]["recall"])
         with self.assertRaises(ValueError):
             evaluate_binary_mask({(9, 9)}, set(), universe)
+        with self.assertRaisesRegex(ValueError, "must not be empty"):
+            evaluate_binary_mask(set(), set(), set())
 
     def test_geojson_is_complete_stable_and_rfc7946_shaped(self):
         geojson = build_regions_geojson(self.result)

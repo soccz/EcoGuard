@@ -11,20 +11,33 @@ from __future__ import annotations
 
 import json
 import math
-import re
 from hashlib import sha256
 from pathlib import Path
 from typing import Any, Iterable
 
-from .preprocessing import ALIASES
+from .preprocessing import (
+    EXTRACTOR_ID,
+    evidence_record_id,
+    match_alias,
+    raw_value,
+)
 
 
-ADAPTER_VERSION = "1.0.0"
-BLANK_MARKERS = {"", "-", "n/a", "na", "[blank]", "(blank)", "공란", "미제출"}
+ADAPTER_VERSION = "2.0.0"
+DOCUMENT_BUNDLE_SCHEMA_VERSION = "ocr-document-bundle/1.0"
+EXTRACTION_SCHEMA_VERSION = "2.0.0"
 
 
 def _digest(text: str) -> str:
     return sha256(text.encode("utf-8")).hexdigest()
+
+
+def _canonical_document_line(page: int, line: int, text: str, confidence: float) -> str:
+    return json.dumps(
+        [page, line, confidence, text],
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
 
 
 def _require_string(value: Any, name: str) -> str:
@@ -34,6 +47,8 @@ def _require_string(value: Any, name: str) -> str:
 
 
 def _confidence(value: Any, location: str) -> float:
+    if isinstance(value, bool):
+        raise ValueError(f"invalid line confidence at {location}")
     try:
         confidence = float(value)
     except (TypeError, ValueError) as exc:
@@ -43,25 +58,47 @@ def _confidence(value: Any, location: str) -> float:
     return confidence
 
 
+def _positive_index(item: Any, key: str) -> int:
+    if not isinstance(item, dict):
+        raise ValueError(f"{key} entry must be an object")
+    value = item.get(key)
+    if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+        raise ValueError(f"{key} must be a positive integer")
+    return value
+
+
+def _reject_extra_keys(item: dict[str, Any], allowed: set[str], label: str) -> None:
+    extras = sorted(set(item) - allowed)
+    if extras:
+        raise ValueError(f"unsupported {label} properties: {', '.join(extras)}")
+
+
 def _iter_lines(document: dict[str, Any]) -> Iterable[tuple[int, int, dict[str, Any]]]:
     seen_pages: set[int] = set()
-    ordered_pages = sorted(
-        document.get("pages", []), key=lambda item: int(item["page"])
-    )
+    pages = document.get("pages", [])
+    if not isinstance(pages, list):
+        raise ValueError(f"pages must be a list in {document['document_id']}")
+    ordered_pages = sorted(pages, key=lambda item: _positive_index(item, "page"))
     for page in ordered_pages:
-        page_number = int(page["page"])
-        if page_number < 1 or page_number in seen_pages:
+        _reject_extra_keys(page, {"page", "lines"}, "page")
+        page_number = _positive_index(page, "page")
+        if page_number in seen_pages:
             raise ValueError(
                 f"invalid or duplicate page {page_number} in {document['document_id']}"
             )
         seen_pages.add(page_number)
         seen_lines: set[int] = set()
-        ordered_lines = sorted(
-            page.get("lines", []), key=lambda item: int(item["line"])
-        )
+        lines = page.get("lines", [])
+        if not isinstance(lines, list) or not lines:
+            raise ValueError(
+                "lines must be a non-empty list in "
+                f"{document['document_id']} page {page_number}"
+            )
+        ordered_lines = sorted(lines, key=lambda item: _positive_index(item, "line"))
         for line in ordered_lines:
-            line_number = int(line["line"])
-            if line_number < 1 or line_number in seen_lines:
+            _reject_extra_keys(line, {"line", "text", "confidence"}, "line")
+            line_number = _positive_index(line, "line")
+            if line_number in seen_lines:
                 raise ValueError(
                     "invalid or duplicate line "
                     f"{line_number} on {document['document_id']} page {page_number}"
@@ -70,40 +107,22 @@ def _iter_lines(document: dict[str, Any]) -> Iterable[tuple[int, int, dict[str, 
             yield page_number, line_number, line
 
 
-def _match_alias(text: str) -> tuple[str, int, int] | None:
-    """Return the longest known label occurring in a line.
-
-    Longest-first matching prevents ``배출계수`` from shadowing
-    ``실측 배출계수``.  The fixture deliberately keeps one field per OCR line;
-    ambiguous multi-field lines are retained as unmatched evidence instead of
-    guessing.
-    """
-    matches: list[tuple[str, int, int]] = []
-    lowered = text.casefold()
-    for alias in ALIASES:
-        start = lowered.find(alias.casefold())
-        if start >= 0:
-            matches.append((alias, start, start + len(alias)))
-    if not matches:
-        return None
-    matches.sort(key=lambda row: (-len(row[0]), row[1], row[0]))
-    return matches[0]
-
-
-def _raw_value(text: str, alias_end: int) -> tuple[str, int, int]:
-    remainder = text[alias_end:]
-    stripped = remainder.lstrip(" \t:：=|–—-")
-    start = alias_end + len(remainder) - len(stripped)
-    value = stripped.strip()
-    if value.casefold() in BLANK_MARKERS:
-        value = ""
-    end = start + len(stripped.rstrip())
-    return value, start, end
-
-
 def extract_document_bundle(payload: dict[str, Any]) -> dict[str, Any]:
     """Convert a document-oriented OCR payload into candidate records."""
+    if not isinstance(payload, dict):
+        raise ValueError("document bundle must be an object")
+    _reject_extra_keys(
+        payload,
+        {"schema_version", "case_id", "notice", "documents"},
+        "document bundle",
+    )
+    if payload.get("schema_version") != DOCUMENT_BUNDLE_SCHEMA_VERSION:
+        raise ValueError(
+            "unsupported document bundle schema_version; expected "
+            f"{DOCUMENT_BUNDLE_SCHEMA_VERSION}"
+        )
     case_id = _require_string(payload.get("case_id"), "case_id")
+    _require_string(payload.get("notice"), "notice")
     documents = payload.get("documents")
     if not isinstance(documents, list) or not documents:
         raise ValueError("document bundle must contain at least one document")
@@ -114,13 +133,21 @@ def extract_document_bundle(payload: dict[str, Any]) -> dict[str, Any]:
     document_manifest: list[dict[str, Any]] = []
     line_count = 0
 
+    if any(not isinstance(document, dict) for document in documents):
+        raise ValueError("document entry must be an object")
     ordered_documents = sorted(
         documents,
         key=lambda item: str(item.get("document_id", "")),
     )
     for document in ordered_documents:
+        _reject_extra_keys(
+            document,
+            {"document_id", "document_type", "language", "pages"},
+            "document",
+        )
         document_id = _require_string(document.get("document_id"), "document_id")
         document_type = _require_string(document.get("document_type"), "document_type")
+        _require_string(document.get("language"), "language")
         if document_id in document_ids:
             raise ValueError(f"duplicate document_id: {document_id}")
         document_ids.add(document_id)
@@ -128,10 +155,17 @@ def extract_document_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         materialized_lines = list(_iter_lines(document))
         if not materialized_lines:
             raise ValueError(f"document has no OCR lines: {document_id}")
-        canonical_text = "\n".join(
-            f"{page}:{line_number}:{line['text']}"
-            for page, line_number, line in materialized_lines
-        )
+        canonical_rows = []
+        for page, line_number, line in materialized_lines:
+            location = f"{document_id} page {page} line {line_number}"
+            text = line.get("text")
+            if not isinstance(text, str):
+                raise ValueError(f"line text must be a string at {location}")
+            confidence = _confidence(line.get("confidence"), location)
+            canonical_rows.append(
+                _canonical_document_line(page, line_number, text, confidence)
+            )
+        canonical_text = "\n".join(canonical_rows)
         document_sha256 = _digest(canonical_text)
         matched_count = 0
 
@@ -143,7 +177,7 @@ def extract_document_bundle(payload: dict[str, Any]) -> dict[str, Any]:
                 raise ValueError(f"line text must be a string at {location}")
             confidence = _confidence(line.get("confidence"), location)
             line_sha256 = _digest(text)
-            match = _match_alias(text)
+            match, unmatched_reason = match_alias(text)
             if match is None:
                 unmatched.append(
                     {
@@ -151,20 +185,19 @@ def extract_document_bundle(payload: dict[str, Any]) -> dict[str, Any]:
                         "page": page,
                         "line": line_number,
                         "line_sha256": line_sha256,
-                        "reason": "no configured field alias",
+                        "confidence": confidence,
+                        "reason": unmatched_reason,
                         "text": text,
                     }
                 )
                 continue
 
             alias, alias_start, alias_end = match
-            value, value_start, value_end = _raw_value(text, alias_end)
+            value, value_start, value_end = raw_value(text, alias_end)
             matched_count += 1
             records.append(
                 {
-                    "record_id": "ev-"
-                    + re.sub(r"[^a-z0-9]+", "-", document_id.casefold()).strip("-")
-                    + f"-p{page:02d}-l{line_number:03d}",
+                    "record_id": evidence_record_id(document_id, page, line_number),
                     "document": document_id,
                     "document_type": document_type,
                     "location": f"page {page} / line {line_number}",
@@ -173,7 +206,7 @@ def extract_document_bundle(payload: dict[str, Any]) -> dict[str, Any]:
                     "label": alias,
                     "value": value,
                     "confidence": confidence,
-                    "extractor": "deterministic_alias_adapter_v1",
+                    "extractor": EXTRACTOR_ID,
                     "source_span": {
                         "alias_start": alias_start,
                         "alias_end": alias_end,
@@ -199,7 +232,7 @@ def extract_document_bundle(payload: dict[str, Any]) -> dict[str, Any]:
         )
 
     return {
-        "schema_version": "1.0.0",
+        "schema_version": EXTRACTION_SCHEMA_VERSION,
         "adapter_version": ADAPTER_VERSION,
         "case_id": case_id,
         "notice": payload.get("notice", ""),

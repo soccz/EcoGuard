@@ -11,7 +11,7 @@ from typing import Any, Sequence
 from .cbam import calculate_exposure
 from .forest import analyze_forest_case, build_regions_geojson
 from .ingestion import extract_document_bundle_file
-from .legal import LegalRetriever, load_json
+from .legal import LegalRetriever, load_json, validate_source_manifest
 from .pipeline import repository_root, reproduce
 from .preprocessing import normalize_file
 
@@ -112,13 +112,13 @@ def _emit(payload: Any, output: Path | None) -> None:
     output.write_text(serialized, encoding="utf-8")
 
 
-def _legal_corpus_path(root: Path | None) -> Path:
+def _legal_reference_path(root: Path | None, filename: str) -> Path:
     root_path = root.resolve() if root else repository_root()
-    candidate = root_path / "data/reference/legal_corpus.json"
+    candidate = root_path / "data/reference" / filename
     if candidate.is_file():
         return candidate
     if root is None:
-        resource = files("ecoguard.resources").joinpath("legal_corpus.json")
+        resource = files("ecoguard.resources").joinpath(filename)
         if resource.is_file():
             return Path(str(resource))
     raise FileNotFoundError(candidate)
@@ -150,7 +150,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         _emit(build_regions_geojson(result) if args.geojson else result, args.output)
         return 0
 
-    corpus = load_json(_legal_corpus_path(args.root))
+    corpus = load_json(_legal_reference_path(args.root, "legal_corpus.json"))
+    source_manifest = load_json(
+        _legal_reference_path(args.root, "source_manifest.json")
+    )
+    validate_source_manifest(corpus, source_manifest)
     response = LegalRetriever(corpus).retrieve(args.query, limit=args.limit)
     _emit(response, args.output)
     return 0

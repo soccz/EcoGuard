@@ -1,6 +1,6 @@
 # Architecture
 
-EcoGuard v0.2는 결과값보다 **evidence lineage와 계산 trace**를 먼저 설계합니다. 모든 운영 시스템 연동은 바깥 adapter로 두고, 공개 패키지는 합성 입력에서 시작하는 결정론적 core만 포함합니다.
+EcoGuard v0.3는 결과값보다 **evidence lineage와 계산 trace**를 먼저 설계합니다. 모든 운영 시스템 연동은 바깥 adapter로 두고, 공개 패키지는 합성 입력에서 시작하는 결정론적 core만 포함합니다.
 
 ```text
 synthetic OCR document bundle
@@ -43,10 +43,10 @@ synthetic OCR document bundle
 
 | Stage | Input contract | Output contract | Main invariant |
 |---|---|---|---|
-| ingestion | document bundle v1 | extracted records v1 | input order does not change records; every candidate has a source span and hash |
-| preprocessing | extracted records + normalization policy | normalized evidence v2 | no candidate is silently discarded; selection is reproducible |
+| ingestion | document bundle v1 | extracted records v2 | input order does not change records; every candidate has a source span and hash |
+| preprocessing | extracted records + normalization policy | normalized evidence v3 | no candidate is silently discarded; selection is reproducible |
 | legal | 8 article records + 34 eval cases | retrieval decision and citation trace | explicit instrument cannot leak to the other regulation |
-| CBAM | normalized typed fields | cbam-scenario/2.0 | component, direct/indirect, process/precursor and shipment totals reconcile |
+| CBAM | normalized typed fields | cbam-scenario/3.0 | component, direct/indirect, process/precursor and shipment totals reconcile |
 | forest | forest case v2 + band/reference CSV | mask evaluation + GeoJSON/SVG | grid and reference universe match exactly; output is row-major |
 | pipeline | all versioned fixtures | 11 public artifacts | two executions and wheel-installed execution are byte-identical |
 

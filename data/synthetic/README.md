@@ -12,7 +12,7 @@
 | Operator memo `약 191톤?` | 낮은 권위의 수기 메모와 확정 문서 충돌 |
 | Sheet `5.849263` / memo `5.85` | 허용오차 안의 반올림 변형 |
 | `검증서 번호 : [blank]` | 필수 증빙 누락 |
-| “배출계수와 배분근거 미첨부” | alias만 우연히 포함한 line의 parse failure |
+| “배출계수 : 배분근거 미첨부” | label은 있으나 숫자가 없는 line의 parse failure |
 | M5·M12 component intensity | 공정/전구물질 × 직접/간접 축의 산식 대사 |
 | 전기·LNG 사용량 | 배출계수·배분근거가 없을 때 계산하지 않는 경계 |
 

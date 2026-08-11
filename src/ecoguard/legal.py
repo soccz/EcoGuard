@@ -12,11 +12,27 @@ import math
 import re
 import unicodedata
 from collections import Counter, defaultdict
+from datetime import date
 from pathlib import Path
 from typing import Any, Iterable
 
 
-RETRIEVER_VERSION = "legal-bm25f-v2"
+RETRIEVER_VERSION = "legal-bm25f-v2.1"
+PINNED_SOURCE_ELI = {
+    "32023R0956": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng",
+    "32023R1115": "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng",
+    "32025R2547": "https://eur-lex.europa.eu/eli/reg_impl/2025/2547/oj/eng",
+    "32025R2620": "https://eur-lex.europa.eu/eli/reg_impl/2025/2620/oj/eng",
+}
+PINNED_SOURCE_CELEX = set(PINNED_SOURCE_ELI)
+CORPUS_SOURCE_CELEX = {
+    "CBAM": "32023R0956",
+    "EUDR": "32023R1115",
+}
+CORPUS_REGULATION_LABEL = {
+    "CBAM": "Regulation (EU) 2023/956",
+    "EUDR": "Regulation (EU) 2023/1115",
+}
 BM25_K1 = 1.2
 NGRAM_WEIGHT = 0.18
 DEFAULT_MIN_SCORE = 2.0
@@ -105,7 +121,7 @@ LEGAL_INTENT_CUES = (
 )
 
 ARTICLE_REFERENCE = re.compile(
-    r"(?:article|art\.?|제)\s*(\d+[a-z]?)\s*(?:조)?",
+    r"(?:article|art\.?)\s*(\d+[a-z]?)|제\s*(\d+[a-z]?)\s*조",
     re.IGNORECASE,
 )
 
@@ -134,6 +150,21 @@ def _normalize_text(text: str) -> str:
 
 def _words(text: str) -> list[str]:
     return re.findall(r"[0-9a-z가-힣]+", _normalize_text(text))
+
+
+def _contains_phrase(normalized_text: str, phrase: str) -> bool:
+    """Match ASCII aliases on token boundaries while retaining Korean compounds."""
+    normalized_phrase = _normalize_text(phrase)
+    if not normalized_phrase:
+        return False
+    if re.fullmatch(r"[0-9a-z ]+", normalized_phrase):
+        return bool(
+            re.search(
+                rf"(?<![0-9a-z]){re.escape(normalized_phrase)}(?![0-9a-z])",
+                normalized_text,
+            )
+        )
+    return normalized_phrase in normalized_text
 
 
 def _ngrams(text: str) -> list[str]:
@@ -195,44 +226,179 @@ def _entry_fields(entry: dict[str, Any]) -> dict[str, str]:
     }
 
 
+def _validate_concepts(identifier: str, concepts: Any) -> None:
+    if not isinstance(concepts, dict) or not concepts:
+        raise ValueError(f"concepts must be a non-empty object: {identifier}")
+    for concept, aliases in concepts.items():
+        if not concept or not isinstance(aliases, list) or not aliases:
+            raise ValueError(f"invalid concept aliases: {identifier}: {concept}")
+        if any(not isinstance(alias, str) or not alias.strip() for alias in aliases):
+            raise ValueError(f"blank concept alias: {identifier}: {concept}")
+
+
+def _validate_corpus_entry(entry: dict[str, Any]) -> str:
+    missing = sorted(REQUIRED_ENTRY_FIELDS - entry.keys())
+    if missing:
+        raise ValueError(
+            f"legal corpus entry is missing fields: {entry.get('id', '?')}: "
+            + ", ".join(missing)
+        )
+    identifier = entry["id"]
+    instrument = entry["instrument"]
+    if instrument not in INSTRUMENT_ALIASES:
+        raise ValueError(f"unsupported legal instrument: {instrument}")
+    identifier_match = re.fullmatch(rf"{instrument}-ART([0-9]+)", identifier)
+    if identifier_match is None:
+        raise ValueError(f"entry id and instrument disagree: {identifier}")
+    if entry["celex"] != CORPUS_SOURCE_CELEX[instrument]:
+        raise ValueError(f"entry instrument and CELEX disagree: {identifier}")
+    if entry["regulation"] != CORPUS_REGULATION_LABEL[instrument]:
+        raise ValueError(f"entry regulation label disagrees: {identifier}")
+    if entry["article"] != f"Article {identifier_match.group(1)}":
+        raise ValueError(f"entry id and article disagree: {identifier}")
+    if not entry["url"].startswith("https://eur-lex.europa.eu/eli/reg/"):
+        raise ValueError(f"legal source must be an EUR-Lex ELI URL: {identifier}")
+    if "non-authoritative" not in entry["source_status"]:
+        raise ValueError(f"team summary must be marked non-authoritative: {identifier}")
+    if not isinstance(entry["keywords"], list) or not entry["keywords"]:
+        raise ValueError(f"keywords must be a non-empty list: {identifier}")
+    _validate_concepts(identifier, entry["concepts"])
+    return identifier
+
+
 def _validate_corpus(entries: list[dict[str, Any]]) -> None:
     if not entries:
         raise ValueError("legal corpus must not be empty")
     identifiers: set[str] = set()
     for entry in entries:
-        missing = sorted(REQUIRED_ENTRY_FIELDS - entry.keys())
-        if missing:
-            raise ValueError(
-                f"legal corpus entry is missing fields: {entry.get('id', '?')}: "
-                + ", ".join(missing)
-            )
-        identifier = entry["id"]
+        identifier = _validate_corpus_entry(entry)
         if identifier in identifiers:
             raise ValueError(f"duplicate legal corpus id: {identifier}")
         identifiers.add(identifier)
-        instrument = entry["instrument"]
-        if instrument not in INSTRUMENT_ALIASES:
-            raise ValueError(f"unsupported legal instrument: {instrument}")
-        if not identifier.startswith(instrument + "-"):
-            raise ValueError(f"entry id and instrument disagree: {identifier}")
-        if not entry["url"].startswith("https://eur-lex.europa.eu/eli/reg/"):
-            raise ValueError(f"legal source must be an EUR-Lex ELI URL: {identifier}")
-        if "non-authoritative" not in entry["source_status"]:
+
+
+def _valid_iso_date(value: Any, field: str) -> str:
+    try:
+        date.fromisoformat(str(value))
+    except ValueError as exc:
+        raise ValueError(f"legal source manifest has invalid {field}") from exc
+    return str(value)
+
+
+def _source_role_keys(celex: str) -> set[str]:
+    if celex.startswith("32023"):
+        return {"consolidated_as_of", "amending_acts"}
+    return {"adopted_on", "official_journal_published_on"}
+
+
+def _validate_source_metadata(source: dict[str, Any], celex: str) -> None:
+    common_keys = {"name", "celex", "eli", "scope_note"}
+    if set(source) != common_keys | _source_role_keys(celex):
+        raise ValueError(f"legal source metadata is incomplete: {celex}")
+    for text_field in ("name", "scope_note"):
+        value = source[text_field]
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"legal source has invalid {text_field}: {celex}")
+    if "amending_acts" in source:
+        acts = source["amending_acts"]
+        if (
+            not isinstance(acts, list)
+            or not acts
+            or any(not isinstance(act, str) or not act.strip() for act in acts)
+        ):
+            raise ValueError(f"legal source has invalid amending_acts: {celex}")
+    for date_field in (
+        "consolidated_as_of",
+        "adopted_on",
+        "official_journal_published_on",
+    ):
+        if date_field in source:
+            _valid_iso_date(source[date_field], f"{date_field}: {celex}")
+
+
+def _legal_source_index(
+    manifest: dict[str, Any]
+) -> tuple[str, dict[str, dict[str, Any]]]:
+    if not isinstance(manifest, dict):
+        raise ValueError("legal source manifest must be an object")
+    required_manifest_keys = {"source_checked_on", "sources", "summary_status"}
+    if set(manifest) != required_manifest_keys:
+        raise ValueError("legal source manifest has missing or unsupported properties")
+    summary_status = manifest["summary_status"]
+    if not isinstance(summary_status, str) or "non-authoritative" not in summary_status:
+        raise ValueError("legal source manifest summary must be non-authoritative")
+    checked_on = _valid_iso_date(manifest.get("source_checked_on"), "source_checked_on")
+    sources = manifest.get("sources")
+    if not isinstance(sources, list) or not sources:
+        raise ValueError("legal source manifest must contain sources")
+    by_celex: dict[str, dict[str, Any]] = {}
+    for source in sources:
+        if not isinstance(source, dict):
+            raise ValueError("legal source manifest entries must be objects")
+        celex = source.get("celex")
+        eli = source.get("eli")
+        if not re.fullmatch(r"3[0-9]{4}[A-Z][0-9]{4}", str(celex)):
+            raise ValueError(f"legal source manifest has invalid CELEX: {celex}")
+        if celex in by_celex:
+            raise ValueError(f"duplicate legal source CELEX: {celex}")
+        if not isinstance(eli, str) or eli != PINNED_SOURCE_ELI.get(str(celex)):
+            raise ValueError(f"legal source manifest has invalid ELI: {celex}")
+        _validate_source_metadata(source, str(celex))
+        by_celex[str(celex)] = source
+    return checked_on, by_celex
+
+
+def validate_source_manifest(
+    entries: list[dict[str, Any]], manifest: dict[str, Any]
+) -> dict[str, Any]:
+    """Bind every corpus record to the pinned official-source metadata."""
+    _validate_corpus(entries)
+    checked_on, by_celex = _legal_source_index(manifest)
+    source_ids = set(by_celex)
+    if source_ids != PINNED_SOURCE_CELEX:
+        missing = sorted(PINNED_SOURCE_CELEX - source_ids)
+        unexpected = sorted(source_ids - PINNED_SOURCE_CELEX)
+        details = []
+        if missing:
+            details.append("missing " + ", ".join(missing))
+        if unexpected:
+            details.append("unexpected " + ", ".join(unexpected))
+        raise ValueError(
+            "legal source manifest boundary disagrees: " + "; ".join(details)
+        )
+
+    counts: Counter[str] = Counter()
+    for entry in entries:
+        identifier = entry["id"]
+        source = by_celex.get(entry["celex"])
+        if source is None:
             raise ValueError(
-                f"team summary must be marked non-authoritative: {identifier}"
+                f"legal corpus CELEX is absent from manifest: {identifier}"
             )
-        if not isinstance(entry["keywords"], list) or not entry["keywords"]:
-            raise ValueError(f"keywords must be a non-empty list: {identifier}")
-        concepts = entry["concepts"]
-        if not isinstance(concepts, dict) or not concepts:
-            raise ValueError(f"concepts must be a non-empty object: {identifier}")
-        for concept, aliases in concepts.items():
-            if not concept or not isinstance(aliases, list) or not aliases:
-                raise ValueError(f"invalid concept aliases: {identifier}: {concept}")
-            if any(
-                not isinstance(alias, str) or not alias.strip() for alias in aliases
-            ):
-                raise ValueError(f"blank concept alias: {identifier}: {concept}")
+        if entry["url"] != source["eli"]:
+            raise ValueError(f"legal corpus ELI disagrees with manifest: {identifier}")
+        if entry["source_checked_on"] != checked_on:
+            raise ValueError(
+                f"legal corpus source date disagrees with manifest: {identifier}"
+            )
+        counts[entry["celex"]] += 1
+
+    return {
+        "status": "verified",
+        "source_checked_on": checked_on,
+        "corpus_entry_count": len(entries),
+        "bound_sources": [
+            {
+                "celex": celex,
+                "eli": by_celex[celex]["eli"],
+                "corpus_entry_count": counts.get(celex, 0),
+                "binding_role": (
+                    "corpus_source" if counts.get(celex, 0) else "methodology_boundary"
+                ),
+            }
+            for celex in sorted(by_celex)
+        ],
+    }
 
 
 def _document_frequency(
@@ -307,20 +473,20 @@ class LegalRetriever:
         explicit_instruments: dict[str, list[str]] = {}
         for instrument, aliases in INSTRUMENT_ALIASES.items():
             matches = [
-                alias for alias in aliases if _normalize_text(alias) in normalized
+                alias for alias in aliases if _contains_phrase(normalized, alias)
             ]
             if matches:
                 explicit_instruments[instrument] = sorted(set(matches))
 
         intent_matches = sorted(
-            {cue for cue in LEGAL_INTENT_CUES if _normalize_text(cue) in normalized}
+            {cue for cue in LEGAL_INTENT_CUES if _contains_phrase(normalized, cue)}
         )
         concept_hits: list[dict[str, str]] = []
         concepts_by_instrument: dict[str, set[str]] = defaultdict(set)
         for entry in self.entries:
             for concept, aliases in entry["concepts"].items():
                 matches = sorted(
-                    {alias for alias in aliases if _normalize_text(alias) in normalized}
+                    {alias for alias in aliases if _contains_phrase(normalized, alias)}
                 )
                 if not matches:
                     continue
@@ -334,7 +500,9 @@ class LegalRetriever:
                     }
                 )
 
-        article_references = sorted(set(ARTICLE_REFERENCE.findall(normalized)))
+        article_references = sorted(
+            {latin or korean for latin, korean in ARTICLE_REFERENCE.findall(normalized)}
+        )
         instrument: str | None = None
         instrument_source: str | None = None
         gate_passed = False
@@ -497,7 +665,7 @@ class LegalRetriever:
                 {
                     alias
                     for alias in aliases
-                    if _normalize_text(alias) in normalized_query
+                    if _contains_phrase(normalized_query, alias)
                 }
             )
             if matches:
@@ -513,7 +681,7 @@ class LegalRetriever:
         matched_keywords = [
             keyword
             for keyword in entry.get("keywords", [])
-            if _normalize_text(keyword) in normalized_query
+            if _contains_phrase(normalized_query, keyword)
         ]
         field_scores = {
             field: round(word_fields[field] + ngram_fields[field], 6)
@@ -623,6 +791,32 @@ class LegalRetriever:
             }
 
         instrument = query_trace["instrument"]
+        requested_articles = set(query_trace["article_references"])
+        available_articles = {
+            article
+            for entry in self.entries
+            if entry["instrument"] == instrument
+            if (article := _article_number(entry["article"])) is not None
+        }
+        unavailable_articles = sorted(requested_articles - available_articles)
+        if unavailable_articles:
+            query_trace["available_article_references"] = sorted(available_articles)
+            query_trace["unavailable_article_references"] = unavailable_articles
+            return {
+                **base,
+                "decision": {
+                    "status": "abstained",
+                    "reason_code": "article_not_in_corpus",
+                    "instrument": instrument,
+                    "instrument_source": query_trace["instrument_source"],
+                    "min_score": min_score,
+                    "min_margin": min_margin,
+                    "top_score": None,
+                    "ranking_margin": None,
+                },
+                "results": [],
+            }
+
         scored = [
             self._score_entry(query_trace, index)
             for index, entry in enumerate(self.entries)
@@ -730,6 +924,93 @@ def _trace_complete(result: dict[str, Any]) -> bool:
     )
 
 
+def _validated_case_ids(
+    case: dict[str, Any],
+    field: str,
+    identifier: str,
+    known_ids: set[str],
+) -> list[str]:
+    identifiers = case.get(field, [])
+    if not isinstance(identifiers, list) or any(
+        not isinstance(value, str) or not value for value in identifiers
+    ):
+        raise ValueError(f"{field} must be a list of ids: {identifier}")
+    if len(identifiers) != len(set(identifiers)):
+        raise ValueError(f"{field} contains duplicates: {identifier}")
+    unknown = sorted(set(identifiers) - known_ids)
+    if unknown:
+        raise ValueError(
+            f"{field} contains ids outside the corpus: {identifier}: "
+            + ", ".join(unknown)
+        )
+    return identifiers
+
+
+def _validate_negative_case(
+    case: dict[str, Any], identifier: str, expected_ids: list[str]
+) -> None:
+    if expected_ids:
+        raise ValueError(f"negative case must not expect citations: {identifier}")
+    if case.get("expected_status") != "abstained":
+        raise ValueError(f"negative case must expect abstention: {identifier}")
+
+
+def _validate_retrieval_case(
+    case: dict[str, Any], identifier: str, expected_ids: list[str]
+) -> None:
+    if not expected_ids:
+        raise ValueError(f"retrieval case has no expected ids: {identifier}")
+    expected_instrument = case.get("expected_instrument")
+    if expected_instrument not in INSTRUMENT_ALIASES:
+        raise ValueError(f"retrieval case has invalid instrument: {identifier}")
+    if any(_instrument_from_id(value) != expected_instrument for value in expected_ids):
+        raise ValueError(f"expected ids and instrument disagree: {identifier}")
+    if case.get("expected_status") not in {"supported", "review"}:
+        raise ValueError(f"retrieval case has invalid expected status: {identifier}")
+
+
+def _validate_evaluation_case(
+    case: Any,
+    index: int,
+    known_ids: set[str],
+    seen_ids: set[str],
+) -> None:
+    if not isinstance(case, dict):
+        raise ValueError(f"legal evaluation case {index} must be an object")
+    identifier = case.get("id")
+    if not isinstance(identifier, str) or not identifier.strip():
+        raise ValueError(f"legal evaluation case {index} has a blank id")
+    if identifier in seen_ids:
+        raise ValueError(f"duplicate legal evaluation case id: {identifier}")
+    seen_ids.add(identifier)
+    query = case.get("query")
+    if not isinstance(query, str) or not query.strip():
+        raise ValueError(f"legal evaluation case has a blank query: {identifier}")
+    case_type = case.get("type")
+    if case_type not in {"positive", "negative", "distractor"}:
+        raise ValueError(f"unsupported legal evaluation case type: {case_type}")
+
+    expected_ids = _validated_case_ids(case, "expected_ids", identifier, known_ids)
+    forbidden_ids = _validated_case_ids(case, "forbidden_ids", identifier, known_ids)
+    if set(expected_ids) & set(forbidden_ids):
+        raise ValueError(f"expected and forbidden ids overlap: {identifier}")
+    if case_type == "negative":
+        _validate_negative_case(case, identifier, expected_ids)
+    else:
+        _validate_retrieval_case(case, identifier, expected_ids)
+
+
+def _validate_evaluation_cases(
+    cases: list[dict[str, Any]], retriever: LegalRetriever
+) -> None:
+    if not isinstance(cases, list) or not cases:
+        raise ValueError("legal evaluation cases must be a non-empty list")
+    known_ids = {entry["id"] for entry in retriever.entries}
+    seen_ids: set[str] = set()
+    for index, case in enumerate(cases, start=1):
+        _validate_evaluation_case(case, index, known_ids, seen_ids)
+
+
 def evaluate(
     corpus: list[dict[str, Any]],
     cases: list[dict[str, Any]],
@@ -740,6 +1021,7 @@ def evaluate(
     if k < 1:
         raise ValueError("k must be at least 1")
     retriever = LegalRetriever(corpus)
+    _validate_evaluation_cases(cases, retriever)
     rows: list[dict[str, Any]] = []
     positive_count = 0
     retrieval_case_count = 0
@@ -759,8 +1041,6 @@ def evaluate(
 
     for case in cases:
         case_type = case["type"]
-        if case_type not in {"positive", "negative", "distractor"}:
-            raise ValueError(f"unsupported legal evaluation case type: {case_type}")
         expected = set(case.get("expected_ids", []))
         forbidden = set(case.get("forbidden_ids", []))
         response = retriever.retrieve(case["query"], limit=k)
@@ -779,8 +1059,6 @@ def evaluate(
                 positive_count += 1
             else:
                 distractor_count += 1
-            if not expected:
-                raise ValueError(f"positive case has no expected ids: {case['id']}")
             matching_ranks = [
                 index + 1
                 for index, identifier in enumerate(ids)
@@ -939,8 +1217,7 @@ def retrieve_issue_citations(
     return {
         "case_id": normalized["case_id"],
         "method": (
-            "rule-mapped issue query + field-weighted BM25F article "
-            "citation retrieval"
+            "rule-mapped issue query + field-weighted BM25F article citation retrieval"
         ),
         "retriever_version": RETRIEVER_VERSION,
         "corpus_sha256": retriever.corpus_hash,

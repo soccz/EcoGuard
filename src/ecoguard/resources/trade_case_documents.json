@@ -122,7 +122,7 @@
         {
           "page": 1,
           "lines": [
-            {"line": 1, "text": "설비 에너지 메모 — 배출계수와 배분근거 미첨부", "confidence": 0.73},
+            {"line": 1, "text": "배출계수 : 배분근거 미첨부", "confidence": 0.73},
             {"line": 2, "text": "전기사용량 : 970,000 kWh", "confidence": 0.72},
             {"line": 3, "text": "LNG 사용량 : 39,300 Nm3", "confidence": 0.70}
           ]

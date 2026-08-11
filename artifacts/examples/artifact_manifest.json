@@ -22,60 +22,60 @@
     },
     "legal_source_manifest": {
       "bytes": 1914,
-      "sha256": "4f6742db459e0003f85f928ee40ff4c005f6d6dab217ebd074f203bbe64d0f5d"
+      "sha256": "a9d3e08294d7d6cbb5c2494088e78f8b4adedc7fced1b9132033bc8daa6a8ae6"
     },
     "normalization_policy": {
       "bytes": 836,
       "sha256": "d9f52ac2b6272686ccb9741a053ee2c98f6c1f4d196bc7c0169485e4bb71383a"
     },
     "trade_case_documents": {
-      "bytes": 5383,
-      "sha256": "be5b3def3d0cd3d617201aa9f93fa318277c7d5f32ae12d6888529f7a06e140e"
+      "bytes": 5354,
+      "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
     }
   },
   "outputs": {
     "cbam_exposure": {
-      "bytes": 71130,
-      "sha256": "5b7b48c2ba8a520219a0f5cb29248b3ffda63780d093fa3814530dac4c56f8ff"
+      "bytes": 76338,
+      "sha256": "2aefe95a42ddc783ea2eb398a09850d9ea44a18db642c2b9f769f75206657088"
     },
     "evidence_report_html": {
-      "bytes": 35712,
-      "sha256": "dcf60ea450bad46604549ccbcef800ffd36863ff63998ecbcc247d389b6c8039"
+      "bytes": 35752,
+      "sha256": "8bd1f573ec6dd7aaebeed5bfb1d98d51e811fe58efd3407582ac1f9c57d43471"
     },
     "evidence_report_json": {
-      "bytes": 798481,
-      "sha256": "9734ba427611ed1bd05213142ad67640306efc227b630fb61c1f09e6c7e56db4"
+      "bytes": 818918,
+      "sha256": "49e62a973c513e651f4327505f4db79c579a6f0db802ba31cf0311b92e141855"
     },
     "extracted_records": {
-      "bytes": 28152,
-      "sha256": "615368c5d383997cd956df04d6f1a9a9aa6ce8b9f9563b82e5a02fa3f604e773"
+      "bytes": 28297,
+      "sha256": "5c9109efa2f7257bad152002f8721b362f291d65dd0252c82d281ce3559c962b"
     },
     "forest_change": {
       "bytes": 12421,
-      "sha256": "ec8b81ae2f63416418615232400acd9175d34cbc69275af16c342b3c0d09e5c6"
+      "sha256": "cb73fd17f22542b879138058ccb5f49f7c258e653556ae9e44f1a45dc2a51d86"
     },
     "forest_change_geojson": {
       "bytes": 34477,
       "sha256": "301f210bd85057097cdd40031eef89318a333a30bc29710bbcb7b73ae6374ace"
     },
     "forest_change_svg": {
-      "bytes": 11861,
-      "sha256": "a4f142a15aa3b0c47fa322d9cd0b12c06f6070895d29b40010d89794b8f39856"
+      "bytes": 11901,
+      "sha256": "2c9cd1ec17dfbfa33302fd0f330d326053e972669cba487ab0d5b83f4a5e2c5e"
     },
     "legal_issue_citations": {
-      "bytes": 34619,
-      "sha256": "61947203ff88c8d229dd46f51d1d5ad10399945300c264ada04b9e3d4d56eb3f"
+      "bytes": 35565,
+      "sha256": "81e5ec2212e0a242a2ddd424986c0258f7a2eb9be4e1732b1e054452b1c16e3d"
     },
     "legal_retrieval_evaluation": {
-      "bytes": 526182,
-      "sha256": "d31097cde025eec48d221d0d16eb830eb39bd7dc8eca810df38603e695fca6e4"
+      "bytes": 527086,
+      "sha256": "a4cb8afe84f8f49696f98a08b5c386a2e69a9a2435552767322c7b568bbd78cc"
     },
     "normalized_evidence": {
-      "bytes": 77544,
-      "sha256": "ad87af9f79e057e402107266976e26b4f63f082cf3223cc20dfce2a25d2c5be9"
+      "bytes": 89613,
+      "sha256": "4cace214a403429af5beb46e20338f8a87be0cdd2b91deca84b6c8f995b7643f"
     }
   },
-  "pipeline_version": "0.2.0",
+  "pipeline_version": "0.3.0",
   "schema_version": "artifact-manifest/1.0",
   "verification": "Re-run `python -m ecoguard reproduce` and compare SHA-256 values or execute `./scripts/verify_release.sh` for a wheel-installed exact diff."
 }

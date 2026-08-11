@@ -9,6 +9,7 @@ from ecoguard.legal import (
     evaluate,
     load_json,
     retrieve_issue_citations,
+    validate_source_manifest,
 )
 from ecoguard.preprocessing import load_policy, normalize_records
 
@@ -21,7 +22,71 @@ class LegalRetrievalV2Tests(unittest.TestCase):
     def setUpClass(cls):
         cls.corpus = load_json(ROOT / "data/reference/legal_corpus.json")
         cls.cases = load_json(ROOT / "data/reference/legal_eval.json")
+        cls.source_manifest = load_json(ROOT / "data/reference/source_manifest.json")
         cls.retriever = LegalRetriever(cls.corpus)
+
+    def test_corpus_is_bound_to_pinned_source_manifest(self):
+        binding = validate_source_manifest(self.corpus, self.source_manifest)
+        self.assertEqual(binding["status"], "verified")
+        self.assertEqual(binding["corpus_entry_count"], 8)
+        self.assertEqual(
+            {
+                source["celex"]: source["corpus_entry_count"]
+                for source in binding["bound_sources"]
+            },
+            {
+                "32023R0956": 4,
+                "32023R1115": 4,
+                "32025R2547": 0,
+                "32025R2620": 0,
+            },
+        )
+        self.assertEqual(
+            {
+                source["celex"]: source["binding_role"]
+                for source in binding["bound_sources"]
+            },
+            {
+                "32023R0956": "corpus_source",
+                "32023R1115": "corpus_source",
+                "32025R2547": "methodology_boundary",
+                "32025R2620": "methodology_boundary",
+            },
+        )
+
+        mutations = []
+        wrong_celex = copy.deepcopy(self.source_manifest)
+        wrong_celex["sources"][0]["celex"] = "32023R9999"
+        mutations.append(wrong_celex)
+        wrong_eli = copy.deepcopy(self.source_manifest)
+        wrong_eli["sources"][0]["eli"] = "https://example.invalid/fake"
+        mutations.append(wrong_eli)
+        swapped_eli = copy.deepcopy(self.source_manifest)
+        swapped_eli["sources"][0]["eli"], swapped_eli["sources"][3]["eli"] = (
+            swapped_eli["sources"][3]["eli"],
+            swapped_eli["sources"][0]["eli"],
+        )
+        mutations.append(swapped_eli)
+        wrong_date = copy.deepcopy(self.source_manifest)
+        wrong_date["source_checked_on"] = "1900-01-01"
+        mutations.append(wrong_date)
+        missing_boundary_source = copy.deepcopy(self.source_manifest)
+        missing_boundary_source["sources"] = [
+            source
+            for source in missing_boundary_source["sources"]
+            if source["celex"] != "32025R2547"
+        ]
+        mutations.append(missing_boundary_source)
+        missing_scope = copy.deepcopy(self.source_manifest)
+        del missing_scope["sources"][0]["scope_note"]
+        mutations.append(missing_scope)
+        missing_summary = copy.deepcopy(self.source_manifest)
+        del missing_summary["summary_status"]
+        mutations.append(missing_summary)
+        for manifest in mutations:
+            with self.subTest(manifest=manifest):
+                with self.assertRaises(ValueError):
+                    validate_source_manifest(self.corpus, manifest)
 
     def test_corpus_keeps_eight_article_records_and_paragraph_metadata(self):
         expected = {
@@ -46,6 +111,23 @@ class LegalRetrievalV2Tests(unittest.TestCase):
                 )
                 self.assertIn("non-authoritative", entry["source_status"])
                 self.assertTrue(entry["concepts"])
+
+    def test_corpus_instrument_cannot_be_bound_to_another_regulation(self):
+        corpus = copy.deepcopy(self.corpus)
+        corpus[0]["celex"] = "32023R1115"
+        corpus[0]["url"] = "https://eur-lex.europa.eu/eli/reg/2023/1115/2025-12-26/eng"
+        with self.assertRaisesRegex(ValueError, "instrument and CELEX"):
+            validate_source_manifest(corpus, self.source_manifest)
+
+        wrong_article = copy.deepcopy(self.corpus)
+        wrong_article[0]["article"] = "Article 999"
+        with self.assertRaisesRegex(ValueError, "id and article"):
+            validate_source_manifest(wrong_article, self.source_manifest)
+
+        wrong_label = copy.deepcopy(self.corpus)
+        wrong_label[0]["regulation"] = "Totally different law"
+        with self.assertRaisesRegex(ValueError, "regulation label"):
+            validate_source_manifest(wrong_label, self.source_manifest)
 
     def test_eval_fixture_has_requested_case_classes(self):
         counts = {
@@ -133,6 +215,31 @@ class LegalRetrievalV2Tests(unittest.TestCase):
         self.assertEqual(
             ambiguous["decision"]["reason_code"],
             "ambiguous_instrument",
+        )
+
+    def test_unknown_explicit_article_abstains_instead_of_substituting(self):
+        for query in ("CBAM Article 99", "EUDR Article 99"):
+            with self.subTest(query=query):
+                response = self.retriever.retrieve(query)
+                self.assertEqual(response["decision"]["status"], "abstained")
+                self.assertEqual(
+                    response["decision"]["reason_code"], "article_not_in_corpus"
+                )
+                self.assertEqual(response["results"], [])
+                self.assertEqual(
+                    response["query_trace"]["unavailable_article_references"],
+                    ["99"],
+                )
+
+    def test_ascii_instrument_alias_requires_token_boundaries(self):
+        response = self.retriever.retrieve(
+            "noncbam 신고 수량 근거가 필요하다",
+            min_score=0,
+        )
+        self.assertEqual(response["query_trace"]["explicit_instruments"], {})
+        self.assertNotEqual(
+            response["query_trace"]["instrument_source"],
+            "explicit",
         )
 
     def test_search_remains_a_list_compatibility_wrapper(self):
@@ -259,6 +366,33 @@ class LegalRetrievalV2Tests(unittest.TestCase):
         self.assertTrue(multi["hit_at_k"])
         self.assertEqual(multi["recall_at_k"], 0.5)
         self.assertEqual(multi["reciprocal_rank"], 1.0)
+
+    def test_evaluation_rejects_duplicate_unknown_and_self_contradictory_labels(self):
+        invalid_cases = []
+
+        duplicate = copy.deepcopy(self.cases)
+        duplicate[1]["id"] = duplicate[0]["id"]
+        invalid_cases.append((duplicate, "duplicate"))
+
+        unknown = copy.deepcopy(self.cases)
+        unknown[0]["expected_ids"] = ["CBAM-ART999"]
+        invalid_cases.append((unknown, "outside the corpus"))
+
+        overlapping = copy.deepcopy(self.cases)
+        overlapping[0]["forbidden_ids"] = overlapping[0]["expected_ids"][:]
+        invalid_cases.append((overlapping, "overlap"))
+
+        negative_with_target = copy.deepcopy(self.cases)
+        negative = next(
+            case for case in negative_with_target if case["type"] == "negative"
+        )
+        negative["expected_ids"] = ["EUDR-ART4"]
+        invalid_cases.append((negative_with_target, "must not expect"))
+
+        for cases, message in invalid_cases:
+            with self.subTest(message=message):
+                with self.assertRaisesRegex(ValueError, message):
+                    evaluate(self.corpus, cases)
 
     def test_normalization_issues_keep_supported_and_unmapped_boundaries(self):
         raw = extract_document_bundle_file(

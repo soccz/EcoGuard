@@ -26,7 +26,7 @@ def build_evidence_packet(
     else:
         decision_reason = "교육용 PoC는 자동 승인하지 않으며 사람이 최종 검토합니다."
     return {
-        "schema_version": "evidence-packet/2.0",
+        "schema_version": "evidence-packet/3.0",
         "project": "EcoGuard",
         "case_id": normalized["case_id"],
         "classification": "synthetic educational proof-of-concept",
@@ -39,7 +39,9 @@ def build_evidence_packet(
             "source_line_count": extraction["summary"]["line_count"],
             "extracted_candidate_count": extraction["summary"]["matched_line_count"],
             "normalized_field_count": normalized["summary"]["field_count"],
-            "review_issue_count": issue_count,
+            "issue_count": issue_count,
+            "high_issue_count": high_count,
+            "review_issue_count": review_count,
             "cbam_trace_step_count": len(
                 cbam["technical_inventory"]["calculation_trace"]
             ),
@@ -235,7 +237,7 @@ def render_html(packet: dict[str, Any], forest_svg: str) -> str:
   <title>EcoGuard evidence report — {_escape(packet["case_id"])}</title>
   <style>
     :root {{ --ink:#123c35; --muted:#526c65; --line:#d8e6e1; --mint:#04a887;
-      --soft:#f2f7f4; --warn:#b86f00; --high:#d34132; --info:#3478a3; }}
+      --soft:#f2f7f4; --warn:#8a5300; --high:#d34132; --info:#3478a3; }}
     * {{ box-sizing:border-box; }}
     body {{ margin:0; color:var(--ink); background:#edf4f1;
       font:15px/1.62 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }}
@@ -290,7 +292,7 @@ def render_html(packet: dict[str, Any], forest_svg: str) -> str:
       <div class="metric"><span>Documents</span><b>{extraction['summary']['document_count']}</b></div>
       <div class="metric"><span>OCR lines</span><b>{extraction['summary']['line_count']}</b></div>
       <div class="metric"><span>Field candidates</span><b>{extraction['summary']['matched_line_count']}</b></div>
-      <div class="metric"><span>Review issues</span><b>{len(normalized['issues'])}</b></div>
+      <div class="metric"><span>Validation issues</span><b>{len(normalized['issues'])}</b></div>
     </div>
     <p>판단 상태: <strong>HUMAN REVIEW REQUIRED</strong> — {_escape(packet['decision']['reason'])}</p>
   </section>

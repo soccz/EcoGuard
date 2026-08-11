@@ -13,7 +13,9 @@
   ],
   "properties": {
     "policy_id": {"type": "string", "minLength": 1},
-    "selection_strategy": {"type": "string", "minLength": 1},
+    "selection_strategy": {
+      "const": "validity > document authority > confidence > stable input order"
+    },
     "default_source_authority": {"type": "integer", "minimum": 0},
     "source_authority": {
       "type": "object",
@@ -21,6 +23,36 @@
     },
     "field_overrides": {
       "type": "object",
+      "propertyNames": {
+        "enum": [
+          "actual_intensity_tco2e_per_t",
+          "carbon_price_paid_eur_per_tco2e",
+          "certificate_price_eur_per_tco2e",
+          "cn_code",
+          "default_intensity_tco2e_per_t",
+          "electricity_kwh",
+          "lng_nm3",
+          "m12_installation_id",
+          "m12_intensity_tco2e_per_t",
+          "m12_mass_t",
+          "m12_precursor_direct_intensity_tco2e_per_t",
+          "m12_precursor_indirect_intensity_tco2e_per_t",
+          "m12_process_direct_intensity_tco2e_per_t",
+          "m12_process_indirect_intensity_tco2e_per_t",
+          "m12_production_process",
+          "m5_installation_id",
+          "m5_intensity_tco2e_per_t",
+          "m5_mass_t",
+          "m5_precursor_direct_intensity_tco2e_per_t",
+          "m5_precursor_indirect_intensity_tco2e_per_t",
+          "m5_process_direct_intensity_tco2e_per_t",
+          "m5_process_indirect_intensity_tco2e_per_t",
+          "m5_production_process",
+          "scenario_exposure_factor",
+          "shipment_mass_t",
+          "verification_reference"
+        ]
+      },
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,

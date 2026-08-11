@@ -122,6 +122,17 @@ def _positive_int(value: Any, field: str) -> int:
     return value
 
 
+def _require_exact_keys(value: dict[str, Any], expected: set[str], field: str) -> None:
+    if set(value) != expected:
+        raise ValueError(f"{field} has missing or unsupported properties")
+
+
+def _require_decimal_string(value: Any, field: str) -> str:
+    if not isinstance(value, str):
+        raise ValueError(f"{field} must be a decimal string")
+    return value
+
+
 def _bounded_threshold(
     value: Any,
     field: str,
@@ -267,30 +278,67 @@ def _load_grid(manifest: dict[str, Any]) -> GridSpec:
         raise ValueError(f"manifest is missing required object: {exc.args[0]}") from exc
     if not isinstance(grid, dict) or not isinstance(transform, dict):
         raise ValueError("grid and geojson_transform must be objects")
+    _require_exact_keys(
+        grid,
+        {"rows", "cols", "connectivity", "cell_width_m", "cell_height_m"},
+        "grid",
+    )
+    _require_exact_keys(
+        transform,
+        {
+            "kind",
+            "top_left_lon",
+            "top_left_lat",
+            "pixel_width_deg",
+            "pixel_height_deg",
+            "row_direction",
+        },
+        "geojson_transform",
+    )
 
     rows = _positive_int(grid.get("rows"), "grid.rows")
     cols = _positive_int(grid.get("cols"), "grid.cols")
     connectivity = grid.get("connectivity")
     if type(connectivity) is not int or connectivity not in {4, 8}:
         raise ValueError("grid.connectivity must be 4 or 8")
-    cell_width_m = _positive_decimal(grid.get("cell_width_m"), "grid.cell_width_m")
-    cell_height_m = _positive_decimal(grid.get("cell_height_m"), "grid.cell_height_m")
+    cell_width_m = _positive_decimal(
+        _require_decimal_string(grid.get("cell_width_m"), "grid.cell_width_m"),
+        "grid.cell_width_m",
+    )
+    cell_height_m = _positive_decimal(
+        _require_decimal_string(grid.get("cell_height_m"), "grid.cell_height_m"),
+        "grid.cell_height_m",
+    )
 
     if transform.get("kind") != "synthetic_wgs84":
         raise ValueError("geojson_transform.kind must be synthetic_wgs84")
     if transform.get("row_direction") != "south":
         raise ValueError("geojson_transform.row_direction must be south")
     top_left_lon = _decimal(
-        transform.get("top_left_lon"), "geojson_transform.top_left_lon"
+        _require_decimal_string(
+            transform.get("top_left_lon"), "geojson_transform.top_left_lon"
+        ),
+        "geojson_transform.top_left_lon",
     )
     top_left_lat = _decimal(
-        transform.get("top_left_lat"), "geojson_transform.top_left_lat"
+        _require_decimal_string(
+            transform.get("top_left_lat"), "geojson_transform.top_left_lat"
+        ),
+        "geojson_transform.top_left_lat",
     )
     pixel_width_deg = _positive_decimal(
-        transform.get("pixel_width_deg"), "geojson_transform.pixel_width_deg"
+        _require_decimal_string(
+            transform.get("pixel_width_deg"),
+            "geojson_transform.pixel_width_deg",
+        ),
+        "geojson_transform.pixel_width_deg",
     )
     pixel_height_deg = _positive_decimal(
-        transform.get("pixel_height_deg"), "geojson_transform.pixel_height_deg"
+        _require_decimal_string(
+            transform.get("pixel_height_deg"),
+            "geojson_transform.pixel_height_deg",
+        ),
+        "geojson_transform.pixel_height_deg",
     )
     east = top_left_lon + pixel_width_deg * cols
     south = top_left_lat - pixel_height_deg * rows
@@ -320,6 +368,22 @@ def load_forest_case(path: str | Path) -> ForestCase:
         manifest = json.load(handle)
     if not isinstance(manifest, dict):
         raise ValueError("forest case manifest must be a JSON object")
+    allowed_keys = {
+        "schema_version",
+        "case_id",
+        "classification",
+        "relation_to_trade_case",
+        "files",
+        "grid",
+        "thresholds",
+        "geojson_transform",
+        "reference",
+    }
+    extra_keys = sorted(set(manifest) - allowed_keys)
+    if extra_keys:
+        raise ValueError(
+            f"unsupported forest manifest properties: {', '.join(extra_keys)}"
+        )
     if manifest.get("schema_version") != SCHEMA_VERSION:
         raise ValueError(
             f"unsupported forest schema_version; expected {SCHEMA_VERSION}"
@@ -328,29 +392,47 @@ def load_forest_case(path: str | Path) -> ForestCase:
     for field in ("case_id", "classification", "relation_to_trade_case"):
         if not isinstance(manifest.get(field), str) or not manifest[field].strip():
             raise ValueError(f"manifest.{field} must be a non-empty string")
+    if manifest["classification"] != "synthetic_reference_mask_evaluation":
+        raise ValueError(
+            "manifest.classification must be synthetic_reference_mask_evaluation"
+        )
     reference = manifest.get("reference")
-    if (
-        not isinstance(reference, dict)
-        or not isinstance(reference.get("provenance"), str)
-        or not reference["provenance"].strip()
-    ):
-        raise ValueError("manifest.reference.provenance must be a non-empty string")
+    if not isinstance(reference, dict):
+        raise ValueError("manifest.reference must be an object")
+    _require_exact_keys(reference, {"label", "provenance"}, "manifest.reference")
+    for field in ("label", "provenance"):
+        if not isinstance(reference.get(field), str) or not reference[field].strip():
+            raise ValueError(f"manifest.reference.{field} must be a non-empty string")
     files = manifest.get("files")
     if not isinstance(files, dict):
         raise ValueError("manifest.files must be an object")
+    extra_files = sorted(set(files) - {"pixels", "reference_mask"})
+    if extra_files:
+        raise ValueError(
+            f"unsupported manifest.files properties: {', '.join(extra_files)}"
+        )
 
     grid = _load_grid(manifest)
     thresholds = manifest.get("thresholds")
     if not isinstance(thresholds, dict):
         raise ValueError("manifest.thresholds must be an object")
+    _require_exact_keys(
+        thresholds,
+        {"forest_ndvi_min", "ndvi_decrease_min"},
+        "manifest.thresholds",
+    )
     forest_threshold = _bounded_threshold(
-        thresholds.get("forest_ndvi_min"),
+        _require_decimal_string(
+            thresholds.get("forest_ndvi_min"), "thresholds.forest_ndvi_min"
+        ),
         "thresholds.forest_ndvi_min",
         minimum=Decimal("-1"),
         maximum=Decimal("1"),
     )
     loss_threshold = _bounded_threshold(
-        thresholds.get("ndvi_decrease_min"),
+        _require_decimal_string(
+            thresholds.get("ndvi_decrease_min"), "thresholds.ndvi_decrease_min"
+        ),
         "thresholds.ndvi_decrease_min",
         minimum=Decimal("0"),
         maximum=Decimal("2"),
@@ -456,6 +538,8 @@ def evaluate_binary_mask(
     predicted = frozenset(predicted_mask)
     reference = frozenset(reference_mask)
     all_cells = frozenset(universe)
+    if not all_cells:
+        raise ValueError("evaluation universe must not be empty")
     if not predicted <= all_cells or not reference <= all_cells:
         raise ValueError("prediction and reference masks must be subsets of the grid")
     tp = len(predicted & reference)
@@ -773,7 +857,7 @@ def _legacy_svg(result: dict[str, Any]) -> str:
     for pixel in result["pixels"]:
         x = 20 + pixel["col"] * (cell + gap)
         y = 58 + pixel["row"] * (cell + gap)
-        fill = "#f05a47" if pixel["loss_flag"] else "#2da57b"
+        fill = "#b83a30" if pixel["loss_flag"] else "#08775c"
         label = "LOSS" if pixel["loss_flag"] else "OK"
         blocks.append(
             f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="10" '
@@ -790,7 +874,7 @@ def _legacy_svg(result: dict[str, Any]) -> str:
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img" '
-        f'aria-label="Synthetic NDVI change grid">'
+        f'aria-label="Synthetic NDVI change grid" font-family="Paperlogy, sans-serif">'
         '<rect width="100%" height="100%" rx="18" fill="#f2f7f4"/>'
         '<text x="20" y="30" font-size="17" font-weight="700" fill="#123c35">'
         "Synthetic NDVI change evidence</text>"
@@ -818,8 +902,8 @@ def render_change_svg(result: dict[str, Any]) -> str:
     height = rows * (cell + gap) + 165
     grid_top = 105
     palette = {
-        "tp": ("#168f6a", "white"),
-        "fp": ("#e8890c", "white"),
+        "tp": ("#08775c", "white"),
+        "fp": ("#e8890c", "#123c35"),
         "fn": ("#7c3aed", "white"),
         "tn": ("#dbe7e3", "#123c35"),
     }
@@ -857,7 +941,7 @@ def render_change_svg(result: dict[str, Any]) -> str:
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
         f'viewBox="0 0 {width} {height}" role="img" '
-        f'aria-labelledby="forest-title forest-desc">'
+        f'aria-labelledby="forest-title forest-desc" font-family="Paperlogy, sans-serif">'
         f'<title id="forest-title">Synthetic forest reference-mask evaluation — {case_id}</title>'
         '<desc id="forest-desc">Grid cells compare threshold predictions with a synthetic '
         "reference mask using true positive, false positive, false negative and true negative classes.</desc>"

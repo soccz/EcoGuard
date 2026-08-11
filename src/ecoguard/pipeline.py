@@ -11,13 +11,18 @@ from typing import Any
 from .cbam import calculate_exposure
 from .forest import analyze_forest_case, build_regions_geojson, render_change_svg
 from .ingestion import extract_document_bundle_file
-from .legal import evaluate, load_json, retrieve_issue_citations
+from .legal import (
+    evaluate,
+    load_json,
+    retrieve_issue_citations,
+    validate_source_manifest,
+)
 from .preprocessing import load_policy, normalize_records
 from .report import build_evidence_packet, render_html
 
 
-PIPELINE_VERSION = "0.2.0"
-SCHEMA_VERSION = "2.0.0"
+PIPELINE_VERSION = "0.3.0"
+SCHEMA_VERSION = "3.0.0"
 INPUT_SPECS = (
     (
         "trade_case_documents",
@@ -156,7 +161,10 @@ def reproduce(
 
     corpus = load_json(input_paths["legal_corpus"])
     evaluation_cases = load_json(input_paths["legal_eval"])
+    legal_source_manifest = load_json(input_paths["legal_source_manifest"])
+    source_binding = validate_source_manifest(corpus, legal_source_manifest)
     legal_evaluation = evaluate(corpus, evaluation_cases, k=3)
+    legal_evaluation["source_binding"] = source_binding
     legal_evaluation["reproduction"] = _stage_reproduction(
         reproduction,
         "legal_corpus",
@@ -164,6 +172,7 @@ def reproduce(
         "legal_source_manifest",
     )
     legal_issue_citations = retrieve_issue_citations(normalized, corpus, limit=3)
+    legal_issue_citations["source_binding"] = source_binding
     legal_issue_citations["reproduction"] = _stage_reproduction(
         reproduction,
         "trade_case_documents",

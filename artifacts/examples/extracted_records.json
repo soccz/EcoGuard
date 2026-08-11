@@ -1,5 +1,5 @@
 {
-  "adapter_version": "1.0.0",
+  "adapter_version": "2.0.0",
   "case_id": "ECO-SYN-2026-001",
   "documents": [
     {
@@ -9,7 +9,7 @@
       "line_count": 20,
       "matched_line_count": 19,
       "page_count": 2,
-      "sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd"
+      "sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de"
     },
     {
       "document_id": "commercial_invoice",
@@ -18,7 +18,7 @@
       "line_count": 4,
       "matched_line_count": 2,
       "page_count": 1,
-      "sha256": "a26a3b3b8f7b0616ff06c8a85b049f946a225e43277ca2abf2f17d4eba21ea20"
+      "sha256": "3374e2d1cfb7a781aacff33c3b646772a7cde660f3dfe6680911c1847a085563"
     },
     {
       "document_id": "energy_memo",
@@ -27,7 +27,7 @@
       "line_count": 3,
       "matched_line_count": 3,
       "page_count": 1,
-      "sha256": "d38171e368b4320c9f371ef173066802a4de944e6958fbe2ad49636619f06125"
+      "sha256": "abdfd290318319e1e2a13b8f45e963bee7a3d77d6f6ac303d32ee3ba40c7bac9"
     },
     {
       "document_id": "operator_memo",
@@ -36,7 +36,7 @@
       "line_count": 3,
       "matched_line_count": 2,
       "page_count": 1,
-      "sha256": "40871b851aba571ca581ee4888f7b80beb78b8acf1e68e2b26594edb963aff92"
+      "sha256": "718a6630ab37d128358f1546f61fa7b2544b1a177a812e0732d22b975c735312"
     },
     {
       "document_id": "packing_list",
@@ -45,7 +45,7 @@
       "line_count": 2,
       "matched_line_count": 1,
       "page_count": 1,
-      "sha256": "ca73ed9d8a01f1f327a482f5c6ee47fb4494581875412bcba11b6bdef74250fe"
+      "sha256": "cd7d7eccd750bb790e33ecde722730bd6b006b8fe2f12ea4ed41fddb0aaad68a"
     },
     {
       "document_id": "scenario_assumptions",
@@ -54,7 +54,7 @@
       "line_count": 3,
       "matched_line_count": 2,
       "page_count": 1,
-      "sha256": "8f93fc69fc7163a2f0f4c03f821bd31442a95130a159086451ed224ad13aed7e"
+      "sha256": "8ba55aa433fbdd1c4a5b615fe2d55d3bd32524b49ec6bcdc35eb6885966c5ba0"
     },
     {
       "document_id": "supplier_declaration",
@@ -63,7 +63,7 @@
       "line_count": 2,
       "matched_line_count": 1,
       "page_count": 1,
-      "sha256": "8f49b30f633ba2e788a642406536b2b90a8df978cc5fb0d00bbb342fd088d093"
+      "sha256": "8aa4edce59ce56d3f917ef032a2cd79eed6294a0a3cd586b20650ec361e3dd90"
     }
   ],
   "notice": "All document text, identifiers and values are synthetic. The bundle intentionally contains one material mass conflict, one rounded-equivalent intensity and one blank verification reference.",
@@ -71,9 +71,9 @@
     {
       "confidence": 0.99,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M5 설비 ID",
       "line": 2,
       "line_sha256": "371acdc9366991a84fab402cfce5007d0e2b1d2d22a1d3678596415b91f2d036",
@@ -92,9 +92,9 @@
     {
       "confidence": 0.99,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M5 생산공정",
       "line": 3,
       "line_sha256": "8182427501d7c5f4e798edf48919859e1a4489126be3307ea14192cc8996a49d",
@@ -113,9 +113,9 @@
     {
       "confidence": 0.98,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M5 순중량",
       "line": 4,
       "line_sha256": "cc10613da91a9ffed04930be0d988ae4f9a34fce613f580510ad0adf977a1e8d",
@@ -134,9 +134,9 @@
     {
       "confidence": 0.97,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M5 공정 직접배출",
       "line": 5,
       "line_sha256": "1afb604e7aec173c5d8e957eaa4e4b6b263160508c5c61b9527b9683d09ec656",
@@ -155,9 +155,9 @@
     {
       "confidence": 0.97,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M5 공정 간접배출",
       "line": 6,
       "line_sha256": "861c3832ab24326b3c2e0c01d3502338eeb757daf6930fff779b55d85c07ab43",
@@ -176,9 +176,9 @@
     {
       "confidence": 0.97,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M5 전구물질 직접배출",
       "line": 7,
       "line_sha256": "f2dc41361291de5cf2d24b304e07f4bc9238f48973e0206aeb242b6d8474b2af",
@@ -197,9 +197,9 @@
     {
       "confidence": 0.97,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M5 전구물질 간접배출",
       "line": 8,
       "line_sha256": "5b0d39c499c74d95a0474e50d4cc19fa8390e58fa03c216faff7c3b1224ae522",
@@ -218,9 +218,9 @@
     {
       "confidence": 0.98,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M5 SEE",
       "line": 9,
       "line_sha256": "ba488d7adbd45604093b294ff46c3eb1ec6ba5ebbf870f95c008b056cfe870a6",
@@ -239,9 +239,9 @@
     {
       "confidence": 0.99,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M12 설비 ID",
       "line": 10,
       "line_sha256": "9b7d927a8f883814e4b5e5718ad862b56f4431f303d3703fdeb9d5d3ab29b27e",
@@ -260,9 +260,9 @@
     {
       "confidence": 0.99,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M12 생산공정",
       "line": 11,
       "line_sha256": "ede0d7a35fab8d65058c14f8a188691adb682626ff2ab46f1e89759dfe66de67",
@@ -281,9 +281,9 @@
     {
       "confidence": 0.98,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M12 순중량",
       "line": 12,
       "line_sha256": "ee59c628f4817216197db9df87feb2ec210e915e5266cb8e05d3a602dacfac6f",
@@ -302,9 +302,9 @@
     {
       "confidence": 0.97,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M12 공정 직접배출",
       "line": 13,
       "line_sha256": "2b7bd310beb36f7db383827d5292ca2409217d92af9de7f76349b76109b94840",
@@ -323,9 +323,9 @@
     {
       "confidence": 0.97,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M12 공정 간접배출",
       "line": 14,
       "line_sha256": "6c5094dceb862f40a2fa58c32a3c8ebf8fbebcb276c1563657cb184bb54d66db",
@@ -344,9 +344,9 @@
     {
       "confidence": 0.97,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M12 전구물질 직접배출",
       "line": 15,
       "line_sha256": "69a9e8033357398194d6cf15232516441cb791788ca089d6a8a905fb6f38b34a",
@@ -365,9 +365,9 @@
     {
       "confidence": 0.97,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M12 전구물질 간접배출",
       "line": 16,
       "line_sha256": "1d0a914e8d61076d5774b492c69fefa2c97f739b5cc4107385f5269dfec49471",
@@ -386,9 +386,9 @@
     {
       "confidence": 0.98,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "M12 SEE",
       "line": 17,
       "line_sha256": "de9db2c849d40d37978b12b39619fe9ff7c7ad270251fef3bf64d42861762cf0",
@@ -407,9 +407,9 @@
     {
       "confidence": 0.94,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "실측 배출계수",
       "line": 1,
       "line_sha256": "de88e377f9c8c0694a09134e81fbe32b7df69f614a053adbb32023e5b8e4573d",
@@ -428,9 +428,9 @@
     {
       "confidence": 0.94,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "EU 기본값",
       "line": 2,
       "line_sha256": "550d2882142255aa60a036aea803471bb3d6c00feb0e834e88055c543bb42ee5",
@@ -449,9 +449,9 @@
     {
       "confidence": 1.0,
       "document": "cbam_product_sheet",
-      "document_sha256": "b29c31d9882d83535b0564fe984897fb5d67508c1313a8f10249e7c3e801c4dd",
+      "document_sha256": "75842408779fa9f9d8b6deac515b2aab4986417a088ca732f1c28b8e97a297de",
       "document_type": "cbam_product_sheet",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "검증서 번호",
       "line": 3,
       "line_sha256": "72b7cdee9b3280fea79ef47c18ef77b952d758168ef9a943c393e24dc3f49fac",
@@ -470,9 +470,9 @@
     {
       "confidence": 0.99,
       "document": "commercial_invoice",
-      "document_sha256": "a26a3b3b8f7b0616ff06c8a85b049f946a225e43277ca2abf2f17d4eba21ea20",
+      "document_sha256": "3374e2d1cfb7a781aacff33c3b646772a7cde660f3dfe6680911c1847a085563",
       "document_type": "commercial_invoice",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "CN code",
       "line": 3,
       "line_sha256": "118bb03055e414335b9d6c0970beea2c43e0967b9b18774ebd28c0c888f2f09e",
@@ -491,9 +491,9 @@
     {
       "confidence": 0.98,
       "document": "commercial_invoice",
-      "document_sha256": "a26a3b3b8f7b0616ff06c8a85b049f946a225e43277ca2abf2f17d4eba21ea20",
+      "document_sha256": "3374e2d1cfb7a781aacff33c3b646772a7cde660f3dfe6680911c1847a085563",
       "document_type": "commercial_invoice",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "총 출하 중량",
       "line": 4,
       "line_sha256": "ff7eec69ab36783f3cb2822deb1f2975e44accfb09eaf994fd6b083abc66feed",
@@ -512,30 +512,30 @@
     {
       "confidence": 0.73,
       "document": "energy_memo",
-      "document_sha256": "d38171e368b4320c9f371ef173066802a4de944e6958fbe2ad49636619f06125",
+      "document_sha256": "abdfd290318319e1e2a13b8f45e963bee7a3d77d6f6ac303d32ee3ba40c7bac9",
       "document_type": "energy_memo",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "배출계수",
       "line": 1,
-      "line_sha256": "9c9ca048a962257611bd48974a2229a425284c9f32b09c7f886848005d125b80",
+      "line_sha256": "6cc9aa812bdd31273302913a9a9638f155272c2181f166eec0d6e23f6788adb5",
       "location": "page 1 / line 1",
       "page": 1,
-      "raw_line": "설비 에너지 메모 — 배출계수와 배분근거 미첨부",
+      "raw_line": "배출계수 : 배분근거 미첨부",
       "record_id": "ev-energy-memo-p01-l001",
       "source_span": {
-        "alias_end": 16,
-        "alias_start": 12,
-        "value_end": 26,
-        "value_start": 16
+        "alias_end": 4,
+        "alias_start": 0,
+        "value_end": 15,
+        "value_start": 7
       },
-      "value": "와 배분근거 미첨부"
+      "value": "배분근거 미첨부"
     },
     {
       "confidence": 0.72,
       "document": "energy_memo",
-      "document_sha256": "d38171e368b4320c9f371ef173066802a4de944e6958fbe2ad49636619f06125",
+      "document_sha256": "abdfd290318319e1e2a13b8f45e963bee7a3d77d6f6ac303d32ee3ba40c7bac9",
       "document_type": "energy_memo",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "전기사용량",
       "line": 2,
       "line_sha256": "0d296cdfc2732a3f9c9c26c878d86f96ab1c6c0484502703fdf6fefccf91a936",
@@ -554,9 +554,9 @@
     {
       "confidence": 0.7,
       "document": "energy_memo",
-      "document_sha256": "d38171e368b4320c9f371ef173066802a4de944e6958fbe2ad49636619f06125",
+      "document_sha256": "abdfd290318319e1e2a13b8f45e963bee7a3d77d6f6ac303d32ee3ba40c7bac9",
       "document_type": "energy_memo",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "LNG 사용량",
       "line": 3,
       "line_sha256": "dc78680b236793cf4557e9a776add13951e4328a6e44435392f7d06b4d809369",
@@ -575,9 +575,9 @@
     {
       "confidence": 0.55,
       "document": "operator_memo",
-      "document_sha256": "40871b851aba571ca581ee4888f7b80beb78b8acf1e68e2b26594edb963aff92",
+      "document_sha256": "718a6630ab37d128358f1546f61fa7b2544b1a177a812e0732d22b975c735312",
       "document_type": "operator_memo",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "출하량",
       "line": 2,
       "line_sha256": "f37f77589a5154b49fc5f1f09e1cf205de8fec9d34b2768b61bc0454ef916738",
@@ -596,9 +596,9 @@
     {
       "confidence": 0.68,
       "document": "operator_memo",
-      "document_sha256": "40871b851aba571ca581ee4888f7b80beb78b8acf1e68e2b26594edb963aff92",
+      "document_sha256": "718a6630ab37d128358f1546f61fa7b2544b1a177a812e0732d22b975c735312",
       "document_type": "operator_memo",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "배출계수",
       "line": 3,
       "line_sha256": "3d587ac90e13a60f89f80dfa364f05265b8ab86437f70064dad5c3d6a41c9fc6",
@@ -617,9 +617,9 @@
     {
       "confidence": 0.96,
       "document": "packing_list",
-      "document_sha256": "ca73ed9d8a01f1f327a482f5c6ee47fb4494581875412bcba11b6bdef74250fe",
+      "document_sha256": "cd7d7eccd750bb790e33ecde722730bd6b006b8fe2f12ea4ed41fddb0aaad68a",
       "document_type": "packing_list",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "NET WT",
       "line": 2,
       "line_sha256": "80942254761524015789fa358b74e66ec6e546991dab6b0414995db6636d077d",
@@ -638,9 +638,9 @@
     {
       "confidence": 1.0,
       "document": "scenario_assumptions",
-      "document_sha256": "8f93fc69fc7163a2f0f4c03f821bd31442a95130a159086451ed224ad13aed7e",
+      "document_sha256": "8ba55aa433fbdd1c4a5b615fe2d55d3bd32524b49ec6bcdc35eb6885966c5ba0",
       "document_type": "scenario_assumptions",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "CBAM 인증서 가격",
       "line": 2,
       "line_sha256": "68842af855c19641ecd013861e23872e27fd069de16bf8a5ce42da9f78324c1b",
@@ -659,9 +659,9 @@
     {
       "confidence": 1.0,
       "document": "scenario_assumptions",
-      "document_sha256": "8f93fc69fc7163a2f0f4c03f821bd31442a95130a159086451ed224ad13aed7e",
+      "document_sha256": "8ba55aa433fbdd1c4a5b615fe2d55d3bd32524b49ec6bcdc35eb6885966c5ba0",
       "document_type": "scenario_assumptions",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "시나리오 노출계수",
       "line": 3,
       "line_sha256": "75e6255a43d2c2f4b5fc0b6246066032894dbf109d55d7bc639d562b40519a05",
@@ -680,9 +680,9 @@
     {
       "confidence": 0.9,
       "document": "supplier_declaration",
-      "document_sha256": "8f49b30f633ba2e788a642406536b2b90a8df978cc5fb0d00bbb342fd088d093",
+      "document_sha256": "8aa4edce59ce56d3f917ef032a2cd79eed6294a0a3cd586b20650ec361e3dd90",
       "document_type": "supplier_declaration",
-      "extractor": "deterministic_alias_adapter_v1",
+      "extractor": "deterministic_alias_adapter_v2",
       "label": "원산지 탄소가격",
       "line": 2,
       "line_sha256": "173d667cc9bd4a53ec70f9d76a574c9007340703cac41d723553d529a6ae6769",
@@ -732,21 +732,21 @@
       },
       "legal_source_manifest": {
         "bytes": 1914,
-        "sha256": "4f6742db459e0003f85f928ee40ff4c005f6d6dab217ebd074f203bbe64d0f5d"
+        "sha256": "a9d3e08294d7d6cbb5c2494088e78f8b4adedc7fced1b9132033bc8daa6a8ae6"
       },
       "normalization_policy": {
         "bytes": 836,
         "sha256": "d9f52ac2b6272686ccb9741a053ee2c98f6c1f4d196bc7c0169485e4bb71383a"
       },
       "trade_case_documents": {
-        "bytes": 5383,
-        "sha256": "be5b3def3d0cd3d617201aa9f93fa318277c7d5f32ae12d6888529f7a06e140e"
+        "bytes": 5354,
+        "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
       }
     },
-    "pipeline_version": "0.2.0",
-    "schema_version": "2.0.0"
+    "pipeline_version": "0.3.0",
+    "schema_version": "3.0.0"
   },
-  "schema_version": "1.0.0",
+  "schema_version": "2.0.0",
   "summary": {
     "document_count": 7,
     "extraction_coverage": 0.8108,
@@ -756,6 +756,7 @@
   },
   "unmatched_lines": [
     {
+      "confidence": 0.99,
       "document_id": "cbam_product_sheet",
       "line": 1,
       "line_sha256": "dcc42128bdc19c3d09c336bbba6f07ac2c173caf0ce20a03b47e4d8da3cb3467",
@@ -764,6 +765,7 @@
       "text": "CBAM PRODUCT DATA SHEET · SYNTHETIC"
     },
     {
+      "confidence": 0.99,
       "document_id": "commercial_invoice",
       "line": 1,
       "line_sha256": "bd69412366670517596d7573aa664fc442e15349511305f1c55f9df7d0aa7eb4",
@@ -772,6 +774,7 @@
       "text": "COMMERCIAL INVOICE · SYNTHETIC TRAINING RECORD"
     },
     {
+      "confidence": 0.99,
       "document_id": "commercial_invoice",
       "line": 2,
       "line_sha256": "d875d9b4ca5a75274e349468321bcb770adb7e3c474bf5885ab5ac64f10c06f0",
@@ -780,6 +783,7 @@
       "text": "Invoice No. SYN-INV-2026-001"
     },
     {
+      "confidence": 0.74,
       "document_id": "operator_memo",
       "line": 1,
       "line_sha256": "c9e45dd53462f65338263430e3eef5ed52ddff1632b2b3f99983d985bfd4a37c",
@@ -788,6 +792,7 @@
       "text": "현장 메모 — 숫자는 확정 문서와 다시 대조할 것"
     },
     {
+      "confidence": 0.99,
       "document_id": "packing_list",
       "line": 1,
       "line_sha256": "6d1be836f58beaebcd1bc4ae6df9b376a19b47351d6041ee37a7ba57a58a389e",
@@ -796,6 +801,7 @@
       "text": "PACKING LIST · SYNTHETIC"
     },
     {
+      "confidence": 1.0,
       "document_id": "scenario_assumptions",
       "line": 1,
       "line_sha256": "52a1aee37e00651f924a2d2a5560402014982ce7b488363df5aaf24f2d1838c3",
@@ -804,6 +810,7 @@
       "text": "SCENARIO ASSUMPTIONS · NOT REGULATORY CONSTANTS"
     },
     {
+      "confidence": 0.99,
       "document_id": "supplier_declaration",
       "line": 1,
       "line_sha256": "2ae8a90a7e12f78abc8d46bd8adad066743c281b8a3de815e8f8a792d8c24fcd",

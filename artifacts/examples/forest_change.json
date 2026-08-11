@@ -507,19 +507,19 @@
       },
       "legal_source_manifest": {
         "bytes": 1914,
-        "sha256": "4f6742db459e0003f85f928ee40ff4c005f6d6dab217ebd074f203bbe64d0f5d"
+        "sha256": "a9d3e08294d7d6cbb5c2494088e78f8b4adedc7fced1b9132033bc8daa6a8ae6"
       },
       "normalization_policy": {
         "bytes": 836,
         "sha256": "d9f52ac2b6272686ccb9741a053ee2c98f6c1f4d196bc7c0169485e4bb71383a"
       },
       "trade_case_documents": {
-        "bytes": 5383,
-        "sha256": "be5b3def3d0cd3d617201aa9f93fa318277c7d5f32ae12d6888529f7a06e140e"
+        "bytes": 5354,
+        "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
       }
     },
-    "pipeline_version": "0.2.0",
-    "schema_version": "2.0.0"
+    "pipeline_version": "0.3.0",
+    "schema_version": "3.0.0"
   },
   "schema_version": "2.0.0",
   "summary": {
