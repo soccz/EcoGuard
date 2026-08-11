@@ -16,7 +16,6 @@ PYTHONPATH="$repo_dir/src" python3 -m compileall -q src tests
 python3 -m pip wheel \
   --disable-pip-version-check \
   --no-deps \
-  --no-build-isolation \
   --wheel-dir "$verify_dir/wheel" \
   "$repo_dir"
 
