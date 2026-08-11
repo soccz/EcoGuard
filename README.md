@@ -17,6 +17,16 @@
 
 > OCR 이미지 인식 모델, 법률 LLM, 법정 CBAM 계산기, 운영 위성 모델을 주장하지 않습니다. 공개 코드가 증명하는 범위와 증명하지 않는 범위를 각 산출물에 함께 기록합니다.
 
+## 자료별 역할과 읽는 순서
+
+| 자료 | 답하는 질문 | 포함한 내용 |
+|---|---|---|
+| **이 GitHub 저장소** | 기술 주장을 다시 실행하고 검증할 수 있는가? | 합성 입력, Python 패키지, 테스트, schema, golden artifact, 재현 명령 |
+| [**상세 프로젝트 보고서**](https://soccz.github.io/projects/ecoguard/) | 어떤 대회를 준비했고, 왜 이 문제로 좁혔으며, 무엇을 배우고 발표했는가? | 수상 기록, CarbonCast→EcoGuard 발전 과정, 현업·법무 피드백, 화면, 회고와 한계 |
+| [**공개용 4쪽 발췌본**](presentation/EcoGuard_Selected_Excerpt.pdf) | 발표의 핵심을 짧게 훑을 수 있는가? | OCR 이후 전처리, 조문 근거, CBAM·산림 기술 경계와 proof journey |
+
+과정과 발표 맥락을 먼저 보려면 상세 보고서부터, 구현 근거를 확인하려면 아래 재현 명령부터 읽으면 됩니다. 원본 Live Demo는 공개하지 않습니다.
+
 ## 한 번에 재현하기
 
 Python 3.11 이상과 표준 라이브러리만 있으면 런타임에 네트워크가 필요하지 않습니다.
@@ -29,6 +39,9 @@ source .venv/bin/activate
 python -m pip install -e .
 ./scripts/reproduce.sh
 ```
+
+위 예시는 Bash가 있는 POSIX 환경 기준입니다. 다른 환경에서는 마지막 명령 대신
+`python -m ecoguard reproduce --output artifacts/generated`를 실행할 수 있습니다.
 
 더 강한 배포 검증:
 
@@ -58,7 +71,7 @@ python -m pip install -e .
 |---|---|---|---|
 | Document ingestion | 7개 문서, 37개 OCR line | 30개 후보, document/page/line/character span, line·document SHA-256 | 이미지 OCR 정확도는 평가하지 않음 |
 | Preprocessing | 후보값 + 선택 정책 | 26개 정규 필드, kg→t, 별칭, 문서 권위, 후보 순위, 검증 이슈 3건(high 1·review 2), tolerance observation 1건 | 운영 정책이나 자동 승인 기준이 아님 |
-| Legal retrieval | CBAM/EUDR 조문 메타데이터 8건 + 공식 source manifest | corpus 2개 기본법과 methodology boundary 2개 시행법의 CELEX·ELI·확인일 binding, BM25F score trace, instrument/intent gate, structured abstention, 평가 34건 | LLM 생성 답변·법률 자문이 아님 |
+| Legal retrieval | CBAM/EUDR 조문 메타데이터 8건 + 공식 EUR-Lex 원문 식별자를 고정한 팀 작성 source manifest | corpus 2개 기본법과 methodology boundary 2개 시행법의 CELEX·ELI·확인일 binding, BM25F score trace, instrument/intent gate, structured abstention, 평가 34건 | 온라인 원문 내용 검증·LLM 생성 답변·법률 자문이 아님 |
 | CBAM | 품목별 공정/전구물질 × 직접/간접 구성요소 | 11-step 산식 DAG, leaf provenance, SEE·중량·축별 양방향 대사, 3개 가격 민감도 | 법정 인증서 의무액이 아님 |
 | Forest | 6×6 합성 red/NIR + 별도 reference mask | NDVI, confusion matrix, Precision/Recall/F1/IoU, connected region, 36-cell GeoJSON/SVG | 실제 위성 모델 정확도·EUDR 판정이 아님 |
 | Evidence packet | 모든 중간 산출물 | JSON/HTML 보고서 + 입력/출력 SHA-256 manifest | 사람이 최종 검토함 |
@@ -241,6 +254,7 @@ docs/                  # methodology, architecture, journey and limitations
 
 ## 프로젝트 과정과 공개 자료
 
+- [상세 프로젝트 보고서: 대회 준비·발표·회고](https://soccz.github.io/projects/ecoguard/)
 - [개발 과정: 기술보다 증명이 더 어려웠다](docs/DEVELOPMENT_JOURNEY.md)
 - [재현 방법론](docs/METHODOLOGY.md)
 - [기술 구조](docs/ARCHITECTURE.md)
