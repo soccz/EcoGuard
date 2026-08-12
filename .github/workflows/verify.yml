@@ -63,7 +63,7 @@ jobs:
           export SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)"
           mkdir -p release-source
           git archive --format=tar HEAD | tar -xf - -C release-source
-          python -m pip wheel --disable-pip-version-check --no-deps --wheel-dir dist release-source
+          python -m pip wheel --disable-pip-version-check --no-deps --wheel-dir dist ./release-source
 
       - name: Publish verified tag artifacts
         env:
