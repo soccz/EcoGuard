@@ -64,11 +64,11 @@ EcoGuard는 Team UniHana 3명이 2026 하나 청년 금융인재 양성 프로�
 
 이 과정을 거치고 나니 전처리는 보조 기능이 아니었습니다. 법률 검색, CBAM 계산, 환경 변화 분석이 의미를 갖게 하는 공통 기반이었습니다.
 
-## 대회 당시 개발과 공개 v0.4 재현본
+## 대회 당시 개발과 공개 v0.5 재현본
 
 대회에서 저장소 소유자 [@soccz](https://github.com/soccz)는 핵심 기술 엔진의 단독 개발 책임자로 CBAM 계산·가격 민감도, 산림 변화 분석, 데이터 처리·검증 로직을 설계하고 구현했습니다. 이 엔진들은 3인 팀이 함께 준비한 발표용 서비스 흐름 안에서 시연됐으며, 대상은 팀의 공동 성과입니다. 다른 참여자의 세부 역할은 이 기술 저장소에서 평가하거나 공개하지 않습니다.
 
-현재 저장소는 당시 서비스 전체를 그대로 공개한 것이 아닙니다. 원본 Live Demo, 발표용 웹 구현, 실데이터와 비공개 코드는 제외하고, @soccz가 담당한 기술을 공개 가능한 합성 입력·명시적 schema·결정론적 테스트로 다시 구성했습니다. 따라서 대회 화면과 현재 v0.4의 수치를 직접 동일시하지 않으며, 저장소에서 실제로 재현되는 주장만 기술 성과로 제시합니다.
+현재 저장소는 당시 서비스 전체를 그대로 공개한 것이 아닙니다. 원본 Live Demo, 발표용 웹 구현, 실데이터와 비공개 코드는 제외하고, @soccz가 담당한 기술을 공개 가능한 합성 입력·명시적 schema·결정론적 테스트로 다시 구성했습니다. 따라서 대회 화면과 현재 v0.5의 수치를 직접 동일시하지 않으며, 저장소에서 실제로 재현되는 주장만 기술 성과로 제시합니다.
 
 ## 공개본에서 증명을 코드로 바꾼 방식
 
@@ -82,8 +82,9 @@ EcoGuard는 Team UniHana 3명이 2026 하나 청년 금융인재 양성 프로�
 - Legal retrieval을 34개 positive/negative/distractor 회귀셋으로 확장
 - Forest prediction을 별도 reference mask와 비교해 FP·FN도 공개
 - wheel 설치 후 저장소 밖에서 실행하고 golden artifact와 byte diff
-- v0.4에서 clean worktree·tracked-only snapshot을 강제하고, 동일 commit에서 두 번 만든 wheel의 SHA-256까지 비교
-- Python 3.11·3.12·3.13 GitHub Actions matrix와 검증 후 tag release 생성
+- v0.5에서 clean worktree·tracked-only snapshot을 강제하고, 동일 commit에서 두 번 만든 wheel의 SHA-256까지 비교
+- OCR·geospatial·Legal holdout·CBAM coverage를 core 증거 packet과 별도 benchmark로 재현
+- Python 3.11·3.12·3.13·3.14 GitHub Actions matrix와 검증 후 tag release 생성
 
 이 변경은 기능을 더 많이 보이게 하기 위한 것이 아니라, “왜 이 숫자를 믿어도 되는가”라는 질문에 source line부터 답하기 위한 것입니다.
 

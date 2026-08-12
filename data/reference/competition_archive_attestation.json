@@ -1,0 +1,40 @@
+{
+  "attestation_version": "1.0",
+  "created_on": "2026-08-12",
+  "scope": "Team-held competition archive identifiers; source files remain private",
+  "limitations": [
+    "SHA-256 permits later controlled byte matching but does not independently prove authorship or creation time",
+    "Filesystem modified_at values are descriptive metadata, not trusted timestamps",
+    "No private deck, participant data, production endpoint or original source file is published here"
+  ],
+  "custodian_attestation": {
+    "github_identity": "soccz",
+    "statement": "I was the sole developer responsible for the competition core engines: CBAM calculation, forest analysis, and data processing/validation. The three-person team jointly produced and presented the award-winning project."
+  },
+  "records": [
+    {
+      "archive_id": "carboncast-cbam-python-2026-04",
+      "artifact_class": "competition-era Python source",
+      "bytes": 7402,
+      "filesystem_modified_at": "2026-04-15T15:38:41+09:00",
+      "sha256": "727536095420d4e172ffc2295c59987f46a9a62aa7a55cdb880bba2e0e577488",
+      "public_mapping": "The current CBAM module replaces this early scenario engine with a typed component DAG, provenance validation, reconciliation and explicit non-statutory boundaries."
+    },
+    {
+      "archive_id": "synthetic-trade-document-generator-ko-2026-07",
+      "artifact_class": "competition-era synthetic document generator",
+      "bytes": 36525,
+      "filesystem_modified_at": "2026-07-03T17:16:55+09:00",
+      "sha256": "26ff3b6a44c621e415b15a24fbd793fa747e22f363b1e7e4f2f7c103029f1808",
+      "public_mapping": "The current synthetic document bundle preserves the coherent multi-document case while exposing machine-readable line, confidence and field-reference contracts."
+    },
+    {
+      "archive_id": "final-presentation-v4-2026-07",
+      "artifact_class": "competition-era final presentation PDF",
+      "bytes": 2869482,
+      "filesystem_modified_at": "2026-07-21T18:04:11+09:00",
+      "sha256": "0f8417c331919b9af1c9c758c556d995c45659b29b1e6a3474b0f4b13e427909",
+      "public_mapping": "The public four-page case study and screenshots document the presentation story without publishing the full original deck or private media."
+    }
+  ]
+}

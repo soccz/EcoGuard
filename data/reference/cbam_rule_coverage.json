@@ -1,0 +1,1000 @@
+{
+  "schema_version": "cbam-rule-coverage/1.0",
+  "as_of": "2026-08-12",
+  "title": "EcoGuard selected CBAM requirement-to-code coverage map",
+  "claims": {
+    "complete_statutory_coverage": false,
+    "legal_advice": false,
+    "statutory_calculator": false,
+    "payable_amount": false
+  },
+  "scope": {
+    "assessment_type": "selected_requirement_mapping",
+    "code_surface": "src/ecoguard/cbam.py at the v0.5.0 calculation boundary",
+    "purpose": "Separate implemented technical arithmetic from selected statutory rules that remain partial or absent.",
+    "excluded_claims": [
+      "This is not an exhaustive inventory of Regulation (EU) 2023/956 or its delegated and implementing acts.",
+      "A partial arithmetic match does not establish legal eligibility, filing correctness, or an amount payable.",
+      "The matrix does not replace review by qualified CBAM, customs, emissions-verification, tax, or legal professionals."
+    ]
+  },
+  "sources": [
+    {
+      "source_id": "cbam-consolidated-2025-10-20",
+      "title": "Regulation (EU) 2023/956 establishing a carbon border adjustment mechanism, consolidated text",
+      "celex": "02023R0956-20251020",
+      "base_celex": "32023R0956",
+      "eli": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng",
+      "authority": "EUR-Lex",
+      "source_kind": "consolidated_documentation_text",
+      "version_note": "Consolidated as of 2025-10-20 and incorporating Regulation (EU) 2025/2083; EUR-Lex states that the consolidated text is a documentation tool and the Official Journal acts are authentic.",
+      "checked_on": "2026-08-12"
+    },
+    {
+      "source_id": "cbam-amendment-2025-2083",
+      "title": "Regulation (EU) 2025/2083 simplifying and strengthening the carbon border adjustment mechanism",
+      "celex": "32025R2083",
+      "eli": "https://eur-lex.europa.eu/eli/reg/2025/2083/oj/eng",
+      "authority": "EUR-Lex",
+      "source_kind": "official_journal_legal_act",
+      "version_note": "Official Journal act of 2025-10-08, published 2025-10-17; used to bind the 2025-10-20 consolidation and the amended de minimis and declaration rules.",
+      "checked_on": "2026-08-12"
+    },
+    {
+      "source_id": "cbam-methods-2025-2547",
+      "title": "Commission Implementing Regulation (EU) 2025/2547 on methods for calculating embedded emissions",
+      "celex": "32025R2547",
+      "eli": "https://eur-lex.europa.eu/eli/reg_impl/2025/2547/oj/eng",
+      "authority": "EUR-Lex",
+      "source_kind": "official_journal_legal_act",
+      "version_note": "Adopted 2025-12-10, published 2025-12-22, and entered into force on the third day following publication.",
+      "checked_on": "2026-08-12"
+    },
+    {
+      "source_id": "cbam-verification-2025-2546",
+      "title": "Commission Implementing Regulation (EU) 2025/2546 on verification of declared embedded emissions",
+      "celex": "32025R2546",
+      "eli": "https://eur-lex.europa.eu/eli/reg_impl/2025/2546/oj/eng",
+      "authority": "EUR-Lex",
+      "source_kind": "official_journal_legal_act",
+      "version_note": "Adopted 2025-12-10, published 2025-12-22, and applicable from 2026-01-01.",
+      "checked_on": "2026-08-12"
+    },
+    {
+      "source_id": "cbam-price-2025-2548",
+      "title": "Commission Implementing Regulation (EU) 2025/2548 on calculation and publication of CBAM certificate prices",
+      "celex": "32025R2548",
+      "eli": "https://eur-lex.europa.eu/eli/reg_impl/2025/2548/oj/eng",
+      "authority": "EUR-Lex",
+      "source_kind": "official_journal_legal_act",
+      "version_note": "Adopted 2025-12-10, published 2025-12-22, and applicable from 2026-01-01; the 2026 price uses quarterly, volume-weighted auction clearing prices.",
+      "checked_on": "2026-08-12"
+    },
+    {
+      "source_id": "cbam-free-allocation-2025-2620",
+      "title": "Commission Implementing Regulation (EU) 2025/2620 on the free allocation adjustment",
+      "celex": "32025R2620",
+      "eli": "https://eur-lex.europa.eu/eli/reg_impl/2025/2620/oj/eng",
+      "authority": "EUR-Lex",
+      "source_kind": "official_journal_legal_act",
+      "version_note": "Adopted 2025-12-16, published 2025-12-22, and applicable from 2026-01-01.",
+      "checked_on": "2026-08-12"
+    },
+    {
+      "source_id": "cbam-default-values-2025-2621",
+      "title": "Commission Implementing Regulation (EU) 2025/2621 establishing CBAM default values",
+      "celex": "32025R2621",
+      "eli": "https://eur-lex.europa.eu/eli/reg_impl/2025/2621/oj/eng",
+      "authority": "EUR-Lex",
+      "source_kind": "official_journal_legal_act",
+      "version_note": "Adopted 2025-12-16, published 2025-12-31, in force from the third day following publication, applicable from 2026-01-01, and due for revision by 2027 at the latest.",
+      "checked_on": "2026-08-12"
+    }
+  ],
+  "summary": {
+    "requirement_count": 15,
+    "status_counts": {
+      "implemented": 0,
+      "not_implemented": 7,
+      "partial": 8
+    },
+    "interpretation": "No selected statutory pathway is represented as fully implemented. Partial means a traceable technical subset or arithmetic analogy only."
+  },
+  "requirements": [
+    {
+      "requirement_id": "CBAM-SCOPE-001",
+      "title": "Goods, origin, territory, and exemption scope",
+      "regulatory_requirement": "Determine whether the imported goods, their origin and destination, and any territorial or activity exemption place the import within CBAM scope.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Articles 2 and 2a; Annexes I, III, and VII"
+        },
+        {
+          "source_id": "cbam-amendment-2025-2083",
+          "provision": "Article 1 amendments to Articles 2 and 2a"
+        }
+      ],
+      "implementation": {
+        "status": "not_implemented",
+        "code_refs": [
+          "src/ecoguard/cbam.py:_validate_case_inputs",
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [],
+        "missing_behavior": [
+          "No Annex I goods lookup or greenhouse-gas mapping",
+          "No origin or exempt-country decision",
+          "No electricity, hydrogen, military-use, inward-processing, or territorial exception handling"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Eight-character CN-code string"
+        ],
+        "missing": [
+          "Country of origin",
+          "Import territory and customs procedure",
+          "Importer identity and exemption facts",
+          "Authoritative Annex I and Annex III versioned tables"
+        ]
+      },
+      "formula": {
+        "official_rule": "A legal classification decision across the regulation's goods, origin, territory, and exemption conditions.",
+        "ecoguard_behavior": "Only checks that a supplied CN code contains eight digits.",
+        "relationship": "no_implementation"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_units_cn_and_evidence_hash_are_validated_at_calculation_boundary",
+        "tests/test_regulatory_coverage.py::RegulatoryCoverageTests::test_no_selected_statutory_pathway_is_claimed_complete"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Customs classification and origin",
+          "Annex versioning and exemptions",
+          "Importer-specific scope facts"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-DEMINIMIS-002",
+      "title": "Single mass-based de minimis threshold",
+      "regulatory_requirement": "Aggregate relevant annual imports per importer and decide whether the single mass-based threshold applies, including the consequence of exceeding it during the year.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 2a; Annex VII"
+        },
+        {
+          "source_id": "cbam-amendment-2025-2083",
+          "provision": "Article 1 insertion of Article 2a"
+        }
+      ],
+      "implementation": {
+        "status": "not_implemented",
+        "code_refs": [
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [],
+        "missing_behavior": [
+          "No importer-level calendar-year aggregation",
+          "No versioned Annex VII threshold",
+          "No electricity or hydrogen exception",
+          "No retroactive all-import treatment after the threshold is exceeded"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "One synthetic shipment mass"
+        ],
+        "missing": [
+          "Importer identifier",
+          "Calendar-year import ledger",
+          "Versioned single mass-based threshold",
+          "Goods category needed for threshold exceptions"
+        ]
+      },
+      "formula": {
+        "official_rule": "Compare importer-level cumulative annual net mass across covered CN codes with the applicable Annex VII threshold.",
+        "ecoguard_behavior": "Validates only that one shipment mass is positive and reconciles with two fixture items.",
+        "relationship": "no_implementation"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_component_see_mass_and_weighted_intensity_mismatches_are_rejected",
+        "tests/test_regulatory_coverage.py::RegulatoryCoverageTests::test_absent_obligations_are_machine_readable"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Threshold version and effective date",
+          "Importer aggregation",
+          "Electricity and hydrogen treatment"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-DECLARATION-003",
+      "title": "Annual declaration quantity and embedded-emissions fields",
+      "regulatory_requirement": "The annual declaration includes total quantity by type of goods, total embedded emissions, and the certificate quantity after applicable reductions and adjustments.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 6(1)-(2)"
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "code_refs": [
+          "src/ecoguard/cbam.py:calculate_exposure",
+          "src/ecoguard/cbam.py:_step"
+        ],
+        "implemented_behavior": [
+          "Reconciles two synthetic item masses to a shipment total",
+          "Produces a traceable technical embedded-emissions total"
+        ],
+        "missing_behavior": [
+          "No authorised declarant, registry submission, calendar-year grouping, or filing deadline",
+          "No legally adjusted certificate quantity",
+          "No declaration format or installation-country aggregation"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Shipment and item mass",
+          "CN-code string",
+          "Synthetic item intensities"
+        ],
+        "missing": [
+          "Import date and reporting year",
+          "Authorised declarant and registry account",
+          "Country and installation grouping",
+          "Legally adjusted certificate quantity"
+        ]
+      },
+      "formula": {
+        "official_rule": "Report annual totals by goods type and the certificate quantity after Article 9 and Article 31 adjustments.",
+        "ecoguard_behavior": "Sums fixture item masses and technical component emissions for one case.",
+        "relationship": "aligned_subset"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_component_see_mass_and_weighted_intensity_mismatches_are_rejected",
+        "tests/test_cbam.py::CbamTests::test_calculation_trace_is_complete_topological_and_arithmetic"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Declaration grouping and deadlines",
+          "Registry format",
+          "Adjusted certificate quantity"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-CN-MAPPING-004",
+      "title": "CN-code mapping to covered goods and production boundaries",
+      "regulatory_requirement": "Map the CN code to Annex I coverage, greenhouse gases, aggregated goods category, functional unit, and production-process system boundaries.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Annex I; Article 7(7)"
+        },
+        {
+          "source_id": "cbam-methods-2025-2547",
+          "provision": "Articles 3-4; Annex I"
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "code_refs": [
+          "src/ecoguard/cbam.py:_validate_case_inputs",
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [
+          "Rejects a CN-code value that is not exactly eight digits",
+          "Preserves the supplied CN-code provenance"
+        ],
+        "missing_behavior": [
+          "No authoritative CN lookup",
+          "No aggregated-goods-category or greenhouse-gas mapping",
+          "No sector-specific functional units or system boundaries"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Eight-digit CN-code string"
+        ],
+        "missing": [
+          "Versioned Annex I mapping",
+          "Aggregated goods category",
+          "Sector-specific composition and functional-unit data"
+        ]
+      },
+      "formula": {
+        "official_rule": "Select system boundaries and functional units from the official category mapping before emissions are attributed.",
+        "ecoguard_behavior": "Uses one supplied code as a descriptor without a legal classification lookup.",
+        "relationship": "technical_control_only"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_units_cn_and_evidence_hash_are_validated_at_calculation_boundary",
+        "tests/test_regulatory_coverage.py::RegulatoryCoverageTests::test_partial_rows_name_present_and_missing_inputs"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "CN classification",
+          "Sector system boundaries",
+          "Functional units"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-ACTUAL-EMISSIONS-005",
+      "title": "Actual specific embedded emissions",
+      "regulatory_requirement": "Calculate actual embedded emissions using the applicable system boundaries, attributed direct and eligible indirect emissions, activity level, and official monitoring rules.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 7(1)-(2); Annex IV points 2 and 3"
+        },
+        {
+          "source_id": "cbam-methods-2025-2547",
+          "provision": "Chapter 2, especially Articles 2-10 and Annexes I-II"
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "code_refs": [
+          "src/ecoguard/cbam.py:calculate_exposure",
+          "src/ecoguard/cbam.py:_step"
+        ],
+        "implemented_behavior": [
+          "Multiplies imported item mass by supplied component intensity",
+          "Reconciles component intensity with supplied item intensity and shipment weighted intensity",
+          "Preserves exact decimal arithmetic and operand provenance"
+        ],
+        "missing_behavior": [
+          "Does not derive attributed emissions from installation monitoring data",
+          "Does not determine activity level or official reporting period",
+          "Does not apply sector system boundaries, measurement uncertainty, biomass, waste gas, carbon capture, or allocation rules"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Synthetic mass",
+          "Precomputed direct and indirect component intensities",
+          "Installation and production-process labels"
+        ],
+        "missing": [
+          "Installation monitoring plan and source streams",
+          "Activity data and official calculation factors",
+          "Production output by functional unit and reporting period",
+          "Applicable sector methodology"
+        ]
+      },
+      "formula": {
+        "official_rule": "For simple goods, specific emissions are attributed emissions divided by activity level; complex-goods rules add eligible precursor emissions before division.",
+        "ecoguard_behavior": "Imported technical inventory equals the sum of item mass multiplied by supplied component intensities.",
+        "relationship": "arithmetic_analogy_only"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_calculation_trace_is_complete_topological_and_arithmetic",
+        "tests/test_cbam.py::CbamTests::test_direct_indirect_and_process_precursor_axes_reconcile",
+        "tests/test_cbam.py::CbamTests::test_every_evidence_leaf_and_item_descriptor_keeps_provenance"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Installation monitoring methodology",
+          "Attribution and activity level",
+          "Sector-specific emissions boundaries"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-PRECURSOR-006",
+      "title": "Complex goods and precursor attribution",
+      "regulatory_requirement": "For complex goods, include eligible precursor emissions using the required production process, reporting-period, installation, and weighted-average rules.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Annex IV point 3"
+        },
+        {
+          "source_id": "cbam-methods-2025-2547",
+          "provision": "Articles 13-15; Annex II equations for complex goods"
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "code_refs": [
+          "src/ecoguard/preprocessing.py:ITEM_COMPONENTS",
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [
+          "Separately traces synthetic precursor-direct and precursor-indirect intensity components",
+          "Reconciles precursor plus process axes to the technical total"
+        ],
+        "missing_behavior": [
+          "No precursor eligibility by Annex I, origin, or exemption",
+          "No precursor mass-consumption or reporting-period calculation",
+          "No weighted average across supplying installations",
+          "No actual-versus-default selection per precursor"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Precomputed precursor intensity components"
+        ],
+        "missing": [
+          "Precursor CN codes and origin",
+          "Precursor quantities consumed in production",
+          "Supplier-installation and reporting-period ledger",
+          "Evidence for installation-specific allocation"
+        ]
+      },
+      "formula": {
+        "official_rule": "Complex-goods specific emissions add eligible precursor mass multiplied by precursor specific emissions to attributed emissions, then divide by activity level.",
+        "ecoguard_behavior": "Adds pre-supplied precursor intensity components to process components and multiplies the resulting intensity by imported item mass.",
+        "relationship": "arithmetic_analogy_only"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_m5_and_m12_expose_all_four_components",
+        "tests/test_cbam.py::CbamTests::test_direct_indirect_and_process_precursor_axes_reconcile"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Precursor eligibility",
+          "Supplier-installation averaging",
+          "Mixed actual and default values"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-INDIRECT-007",
+      "title": "Indirect-emissions eligibility and electricity methodology",
+      "regulatory_requirement": "Include indirect emissions only where the regulation and category rules require them, using official default electricity values unless the criteria for actual electricity emissions are met.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 7(1), 7(4); Annex II; Annex IV points 4.3 and 6"
+        },
+        {
+          "source_id": "cbam-methods-2025-2547",
+          "provision": "Articles 3, 8, and 11; sector boundaries in Annex I"
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "code_refs": [
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [
+          "Separately totals supplied process-indirect and precursor-indirect intensity components",
+          "Retains electricity quantity as unused evidence rather than inventing an emission factor"
+        ],
+        "missing_behavior": [
+          "No Annex II eligibility decision",
+          "No official electricity emission-factor lookup",
+          "No actual-electricity criteria, direct technical link, or power-purchase-agreement evidence",
+          "No conversion of retained electricity quantity into emissions"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Precomputed indirect intensity components",
+          "Unused synthetic electricity quantity"
+        ],
+        "missing": [
+          "Applicable Annex II category",
+          "Official electricity default value",
+          "Grid and generation-source evidence",
+          "Power-purchase-agreement and technical-link evidence"
+        ]
+      },
+      "formula": {
+        "official_rule": "Apply category-specific indirect-emissions eligibility and the official default or qualifying actual electricity method.",
+        "ecoguard_behavior": "Always includes supplied indirect components in the technical inventory and makes no legal eligibility decision.",
+        "relationship": "arithmetic_analogy_only"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_direct_indirect_and_process_precursor_axes_reconcile",
+        "tests/test_cbam.py::CbamTests::test_energy_memo_values_do_not_enter_inventory_or_price_calculation"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Annex II applicability",
+          "Electricity factors",
+          "Actual-electricity eligibility evidence"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-DEFAULTS-008",
+      "title": "Official default values",
+      "regulatory_requirement": "Use the applicable Commission default value or a permitted alternative, with the required geography, goods type, mark-up, and indirect-emissions treatment.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 7(2)-(4); Annex IV point 4"
+        },
+        {
+          "source_id": "cbam-methods-2025-2547",
+          "provision": "Articles 11-12 and 15"
+        },
+        {
+          "source_id": "cbam-default-values-2025-2621",
+          "provision": "Articles 1-2; Annexes I-IV"
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "code_refs": [
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [
+          "Multiplies shipment mass by a provenance-bearing fixture default intensity",
+          "Reports an explicit comparison with the synthetic actual-data inventory"
+        ],
+        "missing_behavior": [
+          "No Commission default-value dataset or version",
+          "No goods-country-region selection or mark-up",
+          "No permitted alternative-default decision",
+          "No statutory treatment of defaults in certificate reductions or free allocation"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Synthetic default intensity"
+        ],
+        "missing": [
+          "Official versioned default-value table",
+          "Exporting country or region",
+          "Goods-category lookup",
+          "Applicable mark-up and alternative-default evidence"
+        ]
+      },
+      "formula": {
+        "official_rule": "Select the legally applicable value from Implementing Regulation 2025/2621 and apply the methods and conditions in Annex IV and Implementing Regulation 2025/2547.",
+        "ecoguard_behavior": "Calculates shipment mass multiplied by a supplied educational default intensity.",
+        "relationship": "arithmetic_analogy_only"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_default_value_trace_derives_emissions_from_evidence",
+        "tests/test_cbam.py::CbamTests::test_v3_golden_inventory_and_legacy_comparison"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Default-value version and selection",
+          "Mark-up",
+          "Alternative-default eligibility"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-RECORDS-009",
+      "title": "Regulatory records for embedded-emissions calculations",
+      "regulatory_requirement": "Keep sufficiently detailed calculation records and verification material for the period and content required by Article 7 and Annex V.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 7(5)-(6); Annex V"
+        },
+        {
+          "source_id": "cbam-methods-2025-2547",
+          "provision": "Article 10; Annex IV reporting templates"
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "code_refs": [
+          "src/ecoguard/cbam.py:_operand",
+          "src/ecoguard/cbam.py:_step",
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [
+          "Records local evidence identifiers, document locations, hashes, units, formulas, and derived-step links",
+          "Keeps a deterministic technical calculation trace"
+        ],
+        "missing_behavior": [
+          "No Annex V completeness assessment",
+          "No operator emissions report or official template",
+          "No four-year retention control or registry storage",
+          "No regulatory access, amendment, or audit workflow"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Synthetic line and document provenance",
+          "Technical calculation operands and hashes"
+        ],
+        "missing": [
+          "Official monitoring plan and operator report",
+          "Annex V bookkeeping fields",
+          "Retention and access-control metadata",
+          "Verification report"
+        ]
+      },
+      "formula": {
+        "official_rule": "Maintain the prescribed calculation and verification records in sufficient detail for review and for the statutory retention period.",
+        "ecoguard_behavior": "Creates local provenance and arithmetic traces without claiming Annex V bookkeeping compliance.",
+        "relationship": "technical_control_only"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_every_evidence_leaf_and_item_descriptor_keeps_provenance",
+        "tests/test_cbam.py::CbamTests::test_calculation_revalidates_candidate_against_retained_source_lines"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Annex V completeness",
+          "Record retention",
+          "Operator report and registry workflow"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-VERIFICATION-010",
+      "title": "Accredited verification of actual emissions",
+      "regulatory_requirement": "Actual embedded emissions in the declaration are verified by an accredited verifier under Annex VI and the applicable verification rules.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 8; Annex VI"
+        },
+        {
+          "source_id": "cbam-verification-2025-2546",
+          "provision": "Articles 2-6 and Annex"
+        }
+      ],
+      "implementation": {
+        "status": "not_implemented",
+        "code_refs": [
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [],
+        "missing_behavior": [
+          "No verifier accreditation check",
+          "No verification engagement, risk analysis, site visit, or opinion",
+          "No five-percent materiality-level evaluation or expert-judgement pathway",
+          "No Commission verification-report template"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Local source-document hashes"
+        ],
+        "missing": [
+          "Accredited verifier identity and scope",
+          "Verification report and opinion",
+          "Materiality and non-conformity assessment",
+          "Site-visit evidence"
+        ]
+      },
+      "formula": {
+        "official_rule": "A qualified verifier performs the prescribed assurance process and issues the required verification report.",
+        "ecoguard_behavior": "Local hash and provenance validation is not emissions verification and does not satisfy Article 8.",
+        "relationship": "no_implementation"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_output_is_explicitly_non_statutory_and_has_no_payable_field",
+        "tests/test_regulatory_coverage.py::RegulatoryCoverageTests::test_absent_obligations_are_machine_readable"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Verifier accreditation",
+          "Materiality and assurance",
+          "Verification report format"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-THIRD-COUNTRY-PRICE-011",
+      "title": "Reduction for a carbon price paid in a third country",
+      "regulatory_requirement": "Reduce certificates only under the applicable actual-payment or yearly-default pathway, accounting for rebates, evidence, independent certification, currency conversion, and the conversion to certificate quantity.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 9(1)-(5)"
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "code_refs": [
+          "src/ecoguard/cbam.py:_price_scenario",
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [
+          "Subtracts a supplied third-country price from a supplied certificate price with a zero floor for educational price sensitivity",
+          "Preserves the supplied price evidence reference"
+        ],
+        "missing_behavior": [
+          "No eligibility decision between actual-payment and yearly-default pathways",
+          "No rebate, compensation, refund, or effective-payment calculation",
+          "No independent certification or payment evidence",
+          "No yearly exchange rate or conversion into certificate quantity",
+          "Applies the same illustrative subtraction to the default-value scenario without claiming statutory validity"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Synthetic EUR per tCO2e third-country price"
+        ],
+        "missing": [
+          "Third-country law and payment records",
+          "Rebate and compensation evidence",
+          "Independent certifier information",
+          "Yearly exchange rate and applicable conversion methodology",
+          "Actual-versus-yearly-default pathway classification"
+        ]
+      },
+      "formula": {
+        "official_rule": "Convert an eligible effectively paid or yearly default carbon price into a reduction in certificates under Article 9 and its applicable implementing rules.",
+        "ecoguard_behavior": "Sensitivity exposure equals technical emissions times a scenario factor times the non-negative difference between two supplied unit prices.",
+        "relationship": "arithmetic_analogy_only"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_three_price_sensitivity_scenarios_reproduce_exactly",
+        "tests/test_cbam.py::CbamTests::test_zero_floor_prevents_negative_exposure",
+        "tests/test_cbam.py::CbamTests::test_all_pricing_leaf_inputs_are_evidence_or_explicit_assumptions"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Effective-payment eligibility",
+          "Rebates and evidence",
+          "Currency and certificate conversion",
+          "Later Article 9 implementing acts"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-CERTIFICATE-PRICE-012",
+      "title": "Official CBAM certificate price",
+      "regulatory_requirement": "Use the Commission-calculated and published CBAM certificate price, including the 2026 quarterly and later weekly methodology applicable to the import period.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 21"
+        },
+        {
+          "source_id": "cbam-price-2025-2548",
+          "provision": "Articles 1-4"
+        }
+      ],
+      "implementation": {
+        "status": "not_implemented",
+        "code_refs": [
+          "src/ecoguard/cbam.py:_price_scenario",
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [],
+        "missing_behavior": [
+          "No EU ETS auction feed or Commission-published price lookup",
+          "No import-quarter or calendar-week selection",
+          "No volume-weighted auction average or official cent rounding",
+          "No versioned price publication record"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Synthetic certificate price assumption"
+        ],
+        "missing": [
+          "Import date or quarter",
+          "Commission-published CBAM certificate price",
+          "Auction volumes and clearing prices",
+          "Price-publication version"
+        ]
+      },
+      "formula": {
+        "official_rule": "For 2026, calculate a quarterly volume-weighted average of qualifying EU ETS auction clearing prices; apply the later weekly rule where required.",
+        "ecoguard_behavior": "Accepts one evidence-bearing educational unit price and never labels it an official certificate price.",
+        "relationship": "no_implementation"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_all_pricing_leaf_inputs_are_evidence_or_explicit_assumptions",
+        "tests/test_regulatory_coverage.py::RegulatoryCoverageTests::test_absent_obligations_are_machine_readable"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Applicable price period",
+          "Official publication source",
+          "Auction methodology and rounding"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-FREE-ALLOCATION-013",
+      "title": "Free allocation adjustment",
+      "regulatory_requirement": "Adjust the number of certificates to reflect EU ETS free allocation under Article 31 and the actual-value or default-value method in Implementing Regulation 2025/2620.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Articles 6(2)(c), 22, and 31"
+        },
+        {
+          "source_id": "cbam-free-allocation-2025-2620",
+          "provision": "Articles 1-4 and Annex"
+        }
+      ],
+      "implementation": {
+        "status": "not_implemented",
+        "code_refs": [
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [],
+        "missing_behavior": [
+          "No specific embedded free allocation",
+          "No actual-value or default-value adjustment method",
+          "No precursor free-allocation averaging",
+          "No electricity zero-adjustment rule"
+        ]
+      },
+      "inputs": {
+        "present": [],
+        "missing": [
+          "Applicable EU ETS benchmark and free-allocation data",
+          "Actual or default embedded-free-allocation inputs",
+          "Precursor free-allocation data",
+          "Goods-specific adjustment parameters"
+        ]
+      },
+      "formula": {
+        "official_rule": "Apply the Article 31 free-allocation adjustment using Implementing Regulation 2025/2620 and its Annex.",
+        "ecoguard_behavior": "The analyst-defined scenario exposure factor is not a free-allocation factor and no official adjustment is calculated.",
+        "relationship": "no_implementation"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_output_is_explicitly_non_statutory_and_has_no_payable_field",
+        "tests/test_regulatory_coverage.py::RegulatoryCoverageTests::test_scenario_factor_is_not_mislabeled_as_free_allocation"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Free-allocation benchmarks",
+          "Actual versus default method",
+          "Precursor adjustment"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-CERTIFICATE-COUNT-014",
+      "title": "Statutory number of certificates to surrender",
+      "regulatory_requirement": "Determine the certificate quantity from declared and verified embedded emissions after the eligible third-country carbon-price reduction and free-allocation adjustment.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Articles 6(2)(c), 9, 22(1), and 31"
+        }
+      ],
+      "implementation": {
+        "status": "not_implemented",
+        "code_refs": [
+          "src/ecoguard/cbam.py:_price_scenario",
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [],
+        "missing_behavior": [
+          "No verified statutory embedded-emissions basis",
+          "No eligible Article 9 certificate reduction",
+          "No Article 31 free-allocation adjustment",
+          "No certificate-count output"
+        ]
+      },
+      "inputs": {
+        "present": [
+          "Synthetic technical emissions and price assumptions"
+        ],
+        "missing": [
+          "Verified declaration emissions",
+          "Eligible Article 9 reduction",
+          "Article 31 adjustment",
+          "Registry certificate holdings"
+        ]
+      },
+      "formula": {
+        "official_rule": "Compute the certificate count after the legally applicable emissions, Article 9, and Article 31 steps.",
+        "ecoguard_behavior": "Returns gross educational euro exposure and explicitly sets statutory_calculator and statutory_obligation to false.",
+        "relationship": "no_implementation"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_output_is_explicitly_non_statutory_and_has_no_payable_field",
+        "tests/test_regulatory_coverage.py::RegulatoryCoverageTests::test_no_selected_statutory_pathway_is_claimed_complete"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Certificate-count sequence",
+          "Interaction of reductions and adjustments",
+          "Declaration and verification basis"
+        ]
+      }
+    },
+    {
+      "requirement_id": "CBAM-SURRENDER-015",
+      "title": "Registry surrender and quarterly account balance",
+      "regulatory_requirement": "Surrender certificates through the CBAM registry by the applicable deadline and maintain the required quarterly account balance from the applicable year.",
+      "citations": [
+        {
+          "source_id": "cbam-consolidated-2025-10-20",
+          "provision": "Article 22"
+        }
+      ],
+      "implementation": {
+        "status": "not_implemented",
+        "code_refs": [
+          "src/ecoguard/cbam.py:calculate_exposure"
+        ],
+        "implemented_behavior": [],
+        "missing_behavior": [
+          "No CBAM registry integration",
+          "No certificate purchase, holding, surrender, or removal workflow",
+          "No annual deadline or quarterly balance control",
+          "No account reconciliation"
+        ]
+      },
+      "inputs": {
+        "present": [],
+        "missing": [
+          "Authorised declarant account",
+          "Certificate purchase and holding ledger",
+          "Import-period emissions ledger",
+          "Registry submission and surrender events"
+        ]
+      },
+      "formula": {
+        "official_rule": "Maintain the required registry balance and surrender the legally determined number of certificates by the prescribed dates.",
+        "ecoguard_behavior": "Produces offline JSON for an educational scenario and performs no external registry action.",
+        "relationship": "no_implementation"
+      },
+      "tests": [
+        "tests/test_cbam.py::CbamTests::test_output_is_explicitly_non_statutory_and_has_no_payable_field",
+        "tests/test_regulatory_coverage.py::RegulatoryCoverageTests::test_absent_obligations_are_machine_readable"
+      ],
+      "expert_review": {
+        "required": true,
+        "topics": [
+          "Registry workflow",
+          "Annual surrender deadline",
+          "Quarterly balance requirement"
+        ]
+      }
+    }
+  ],
+  "technical_controls_outside_statutory_coverage": [
+    {
+      "control_id": "TECH-PROVENANCE",
+      "classification": "implemented_non_statutory_control",
+      "description": "Every technical inventory leaf keeps selected source, location, and hash evidence, and every derived value names its prior step.",
+      "code_refs": [
+        "src/ecoguard/cbam.py:_source",
+        "src/ecoguard/cbam.py:_operand",
+        "src/ecoguard/cbam.py:_step"
+      ]
+    },
+    {
+      "control_id": "TECH-INPUT-BOUNDARY",
+      "classification": "implemented_non_statutory_control",
+      "description": "The calculation boundary rejects missing, non-finite, negative, unit-inconsistent, and provenance-invalid fixture inputs.",
+      "code_refs": [
+        "src/ecoguard/cbam.py:_decimal",
+        "src/ecoguard/cbam.py:_validate_case_inputs",
+        "src/ecoguard/preprocessing.py:validate_normalized_evidence"
+      ]
+    },
+    {
+      "control_id": "TECH-RECONCILIATION",
+      "classification": "implemented_non_statutory_control",
+      "description": "Mass, component intensity, weighted intensity, and two independent component axes must reconcile before a scenario is returned.",
+      "code_refs": [
+        "src/ecoguard/cbam.py:calculate_exposure"
+      ]
+    }
+  ]
+}

@@ -1,7 +1,8 @@
 # EcoGuard
 
-[![Python 3.11–3.13 verification](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml)
-[![Release v0.4.1](https://img.shields.io/badge/release-v0.4.1-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.4.1)
+[![Python 3.11–3.14 verification](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml)
+[![Release v0.5.0](https://img.shields.io/badge/release-v0.5.0-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.5.0)
+[![CodeQL](https://github.com/soccz/EcoGuard/actions/workflows/codeql.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/codeql.yml)
 
 **비정형 무역자료를 계산 가능한 값으로 바꾸는 것보다, 그 값이 어디에서 왔고 왜 선택됐는지 증명하는 일이 더 어려웠습니다.** EcoGuard는 이 증명 과정을 코드로 재구성한 무역금융 교육용 PoC입니다.
 
@@ -9,31 +10,33 @@
 
 ## 이 저장소의 기술 저자와 공개 범위
 
-저장소 소유자 [**@soccz**](https://github.com/soccz)는 대회에서 **핵심 기술 엔진의 단독 개발 책임자**로 참여해 CBAM 계산·가격 민감도, 산림 변화 분석, 데이터 처리·검증 로직을 설계하고 구현했습니다. 현재 v0.4 공개본의 Python 패키지, schema, 테스트와 재현 산출물도 이 개발 범위를 제3자가 검증할 수 있도록 @soccz가 정리한 것입니다.
+저장소 소유자 [**@soccz**](https://github.com/soccz)는 대회에서 **핵심 기술 엔진의 단독 개발 책임자**로 참여해 CBAM 계산·가격 민감도, 산림 변화 분석, 데이터 처리·검증 로직을 설계하고 구현했습니다. 현재 v0.5 공개본의 Python 패키지, schema, benchmark, 테스트와 재현 산출물도 이 개발 범위를 제3자가 검증할 수 있도록 @soccz가 정리한 것입니다.
 
 이 문장은 팀 전체 결과를 개인 성과로 바꾸려는 설명이 아닙니다. 대회 수상과 프로젝트 결과는 3인 팀의 공동 성과입니다. 다른 참여자의 세부 역할, 원본 Live Demo와 발표용 웹 구현은 이 기술 저장소의 공개·평가 범위에 넣지 않습니다.
 
-### 대회 당시 기술과 공개 v0.4의 차이
+### 대회 당시 기술과 공개 v0.5의 차이
 
 | 시점 | 실제 범위 | 이 저장소와의 관계 |
 |---|---|---|
 | **2026 대회 당시** | @soccz가 핵심 엔진을 설계·구현하고, 팀이 이를 발표용 서비스 흐름으로 구성해 시연 | 원본 서비스·전체 소스·실데이터·비공개 Demo는 포함하지 않음 |
-| **공개 v0.4 재현본** | OCR 이후 정규화와 provenance, Legal retrieval 기준선, CBAM trace, 합성 NDVI 평가를 dependency-free Python으로 재구성 | 합성 입력·고정 정책·테스트·golden artifact로 공개 기술 주장만 재현 |
+| **공개 v0.5 재현본** | OCR engine-output adapter, 정규화와 provenance, Legal retrieval·blind-style holdout, CBAM trace·규칙 coverage, 합성 NDVI·geospatial 평가를 dependency-free Python으로 재구성 | 합성 입력·고정 정책·정량 benchmark·golden artifact로 공개 기술 주장만 재현 |
 
 즉, 이 저장소는 대회 당시 운영 백엔드의 그대로인 복원본이 아니라, 당시 @soccz가 담당한 핵심 개발을 **공개 가능한 입력과 더 엄격한 검증 계약으로 재구성한 기술 증거**입니다.
 
 ```text
+Tesseract TSV / provider-neutral JSON / pdftotext 출력
+  → 공통 document bundle + field-level benchmark
 7개 합성 문서의 OCR line payload
   → label 추출 + 원문 span/SHA-256
   → 단위·별칭 정규화 + 후보 선택 trace
   → 문서 간 충돌·누락 validation ledger
   → CBAM/EUDR 조문 retrieval + 기권 평가
   → CBAM component 산식 DAG + 가격 민감도
-  → NDVI mask + reference 평가 + GeoJSON
+  → NDVI mask + geotransform·cloud/nodata·spatial holdout + GeoJSON
   → 사람이 검토하는 JSON/HTML evidence packet
 ```
 
-> OCR 이미지 인식 모델, 법률 LLM, 법정 CBAM 계산기, 운영 위성 모델을 주장하지 않습니다. 공개 코드가 증명하는 범위와 증명하지 않는 범위를 각 산출물에 함께 기록합니다.
+> OCR 이미지 인식 모델, 법률 LLM, 법정 CBAM 계산기, 운영 위성 모델을 주장하지 않습니다. 공개 코드는 **외부 OCR 출력 이후의 정규화**, **citation retrieval**, **비법정 기술 인벤토리**, **합성 지리공간 검증 plumbing**을 재현합니다.
 
 ## 자료별 역할과 읽는 순서
 
@@ -48,12 +51,12 @@
 ## 한 번에 재현하기
 
 Python 3.11 이상과 표준 라이브러리만 있으면 런타임에 네트워크가 필요하지 않습니다.
-아래 명령은 검증된 `v0.4.1` 릴리스 태그를 고정합니다. `main`은 다음 변경이
+아래 명령은 검증된 `v0.5.0` 릴리스 태그를 고정합니다. `main`은 다음 변경이
 먼저 들어올 수 있는 개발 브랜치이므로 동일 결과를 인용하거나 검증할 때는 태그를
 사용합니다.
 
 ```bash
-git clone --branch v0.4.1 --depth 1 https://github.com/soccz/EcoGuard.git
+git clone --branch v0.5.0 --depth 1 https://github.com/soccz/EcoGuard.git
 cd EcoGuard
 python3 -m venv .venv
 source .venv/bin/activate
@@ -62,7 +65,12 @@ python -m pip install -e .
 ```
 
 위 예시는 Bash가 있는 POSIX 환경 기준입니다. 다른 환경에서는 마지막 명령 대신
-`python -m ecoguard reproduce --output artifacts/generated`를 실행할 수 있습니다.
+다음 두 명령을 실행할 수 있습니다.
+
+```bash
+python -m ecoguard reproduce --output artifacts/generated
+python -m ecoguard benchmark --root . --output artifacts/generated-benchmarks
+```
 
 더 강한 배포 검증:
 
@@ -77,30 +85,44 @@ python -m pip install -e .
 이 명령은 다음을 한 번에 확인합니다.
 
 1. 전체 단위·회귀·통합·Draft 2020-12 schema 테스트
-2. source tree compile + Ruff + Black
-3. tracked 수정·non-ignored 미추적 파일이 없는 clean worktree 확인
-4. clean HEAD를 Git archive로 두 번 내보내 파일 mode·timestamp까지 정규화
-5. commit timestamp를 `SOURCE_DATE_EPOCH`으로 고정해 wheel을 두 번 build하고 SHA-256 일치 확인
-6. wheel package resource 8개 allow-list 검사
-7. 임시 virtualenv 설치 후 전체 테스트 재실행
-8. 저장소 밖의 빈 작업 디렉터리에서 실행
-9. `artifacts/examples/`와 생성 결과의 byte-for-byte diff
+2. Hypothesis 속성 테스트와 branch coverage 85% gate
+3. source tree compile + Ruff + Black
+4. tracked 수정·non-ignored 미추적 파일이 없는 clean worktree 확인
+5. clean HEAD를 Git archive로 두 번 내보내 파일 mode·timestamp까지 정규화
+6. commit timestamp를 `SOURCE_DATE_EPOCH`으로 고정해 wheel을 두 번 build하고 SHA-256 일치 확인
+7. wheel package resource 8개 allow-list 검사
+8. 임시 virtualenv 설치 후 전체 테스트 재실행
+9. 저장소 밖의 빈 작업 디렉터리에서 core pipeline 실행
+10. core 11개와 benchmark 6개 artifact의 byte-for-byte diff
 
-GitHub Actions에서도 같은 스크립트를 Python 3.11·3.12·3.13에서 실행합니다. 태그
-릴리스는 세 버전의 검증이 모두 성공한 뒤에만 생성됩니다.
+GitHub Actions에서도 같은 스크립트를 Python 3.11·3.12·3.13·3.14에서 실행합니다. 태그
+릴리스는 네 버전의 검증이 모두 성공한 뒤에만 생성됩니다. Release에는 wheel·PDF와
+`SHA256SUMS.txt`를 함께 싣고, GitHub artifact attestation으로 두 배포 자산의 build
+provenance를 서명합니다. 내려받은 wheel은 `gh attestation verify <wheel> -R
+soccz/EcoGuard`로 확인할 수 있습니다.
 
 `make test`, `make reproduce`, `make verify`도 같은 진입점을 제공합니다.
+`make test`를 현재 환경에서 직접 실행하려면 먼저 개발 extra를 설치합니다.
+
+```bash
+python -m pip install -e '.[dev]'
+```
+
+`make verify`는 격리된 임시
+환경에 고정된 개발 의존성을 스스로 설치합니다.
 
 ## 현재 공개본이 실제로 검증하는 것
 
 | 단계 | 공개 입력 | 결정론적 출력과 검증 | 경계 |
 |---|---|---|---|
-| Document ingestion | 7개 문서, 37개 OCR line | 30개 후보, document/page/line/character span, line·document SHA-256 | 이미지 OCR 정확도는 평가하지 않음 |
+| OCR adapter benchmark | 합성 Tesseract TSV + field reference | TSV/generic JSON/pdftotext → 공통 bundle, field P/R/F1와 mismatch/missing/spurious | OCR engine 자체 성능이 아니라 adapter·평가 경로 회귀셋 |
+| Document ingestion | 7개 문서, 37개 OCR line | 30개 후보, document/page/line/character span, line·document SHA-256 | 실제 기업 문서 정확도는 평가하지 않음 |
 | Preprocessing | 후보값 + 선택 정책 | 26개 정규 필드, kg→t, 별칭, 문서 권위, 후보 순위, 검증 이슈 3건(high 1·review 2), tolerance observation 1건 | 운영 정책이나 자동 승인 기준이 아님 |
-| Legal retrieval | CBAM/EUDR 조문 메타데이터 8건 + 공식 EUR-Lex 원문 식별자를 고정한 팀 작성 source manifest | corpus 2개 기본법과 methodology boundary 2개 시행법의 CELEX·ELI·확인일 binding, BM25F score trace, instrument/intent gate, structured abstention, 평가 34건 | 온라인 원문 내용 검증·LLM 생성 답변·법률 자문이 아님 |
-| CBAM | 품목별 공정/전구물질 × 직접/간접 구성요소 | 11-step 산식 DAG, leaf provenance, SEE·중량·축별 양방향 대사, 3개 가격 민감도 | 법정 인증서 의무액이 아님 |
-| Forest | 6×6 합성 red/NIR + 별도 reference mask | NDVI, confusion matrix, Precision/Recall/F1/IoU, connected region, 36-cell GeoJSON/SVG | 실제 위성 모델 정확도·EUDR 판정이 아님 |
+| Legal retrieval | 조문 8건 + 개발 34건 + 별도 blind-style 36건 | official identifier binding, BM25F trace, instrument/intent gate, abstention, holdout threshold report | maintainer 작성 post-hoc holdout이며 외부 blind 검증·LLM 생성·법률 자문이 아님 |
+| CBAM | 품목별 공정/전구물질 × 직접/간접 구성요소 + 공식 EUR-Lex 규칙 coverage map | 11-step DAG, leaf provenance, 양방향 대사, 3개 가격 민감도; 선정 규칙 15개 중 partial 8·미구현 7 | 구현 완료 statutory pathway 0개, 법정 인증서 의무액이 아님 |
+| Forest | 6×6 NDVI 회귀셋 + 4×6 geospatial benchmark | reference metrics, affine area, EPSG contract, cloud/nodata, acquisition·seasonality, deterministic tile holdout, native-CRS GeoJSON | 실제 Sentinel/Landsat·CNN 정확도·EUDR 판정이 아님 |
 | Evidence packet | 모든 중간 산출물 | JSON/HTML 보고서 + 입력/출력 SHA-256 manifest | 사람이 최종 검토함 |
+| Integration API | normalized evidence 또는 legal query | loopback WSGI health/CBAM/legal JSON boundary | 인증 없는 로컬 예제; 운영 배포 금지 |
 
 고정 회귀 fixture의 대표 결과:
 
@@ -114,6 +136,13 @@ CBAM inventory    direct 970.50 + indirect 140.86 = 1,111.36 tCO2e
                    process 731.36 + precursor 380.00 = 1,111.36 tCO2e
 Forest reference  TP 11 · FP 1 · FN 1 · TN 23
                    F1 0.916667 · IoU 0.846154
+OCR adapter       TP 2 · FP 2 · FN 2 · mismatch/missing/spurious each 1
+                   P/R/F1 0.5 (intentional error fixture, not OCR accuracy)
+Legal holdout     16 positive + 8 distractor + 12 negative
+                   Recall@3/MRR/negative abstention 1.0 (maintainer-authored)
+Geospatial holdout valid 9 pixels · TP 4 · FP 1 · FN 1 · TN 3
+                   F1 0.8 · masked 4/24 (synthetic plumbing only)
+CBAM coverage     15 selected rules · partial 8 · not implemented 7 · complete 0
 ```
 
 Legal의 1.0은 의도적으로 고정한 작은 회귀셋이 기대 citation을 회수한다는 뜻입니다. 일반 EU 법률 검색 성능으로 해석하지 않습니다. Forest 지표도 실제 영상 성능이 아니라 metric code가 오탐·미탐을 드러내는지 확인하는 합성 reference 결과입니다.
@@ -123,6 +152,16 @@ Legal의 1.0은 의도적으로 고정한 작은 회귀셋이 기대 citation을
 ## 1. OCR 이후의 데이터 전처리
 
 현업 자료는 완성된 표보다 자유로운 메모, 서로 다른 단위, 약칭, 빈칸에 가깝다는 피드백에서 출발했습니다. 합성 fixture에는 다음과 같은 line이 함께 들어 있습니다.
+
+### OCR 결과를 실제 입력 경계로 바꾸기
+
+`ocr_adapter.py`는 Tesseract-compatible TSV, provider-neutral JSON, `pdftotext` plain text를 `ocr-document-bundle/1.0`으로 변환합니다. 좌표·confidence·중복·NaN을 fail-closed로 검사하며, 정답 field와 비교해 precision/recall/F1 및 value mismatch·missing·spurious를 분리합니다.
+
+```bash
+PYTHONPATH=src python3 scripts/benchmark_ocr.py
+```
+
+기본 합성 fixture는 일부러 오인식·누락·가짜 field를 넣어 P/R/F1 0.5가 나오게 했습니다. 높은 숫자를 홍보하는 평가가 아니라 **오류가 어느 층에서 생겼는지 재현하는 테스트**입니다. [입력 계약과 로컬 OCR 연결법](docs/OCR_BENCHMARK.md)을 별도로 문서화했습니다.
 
 ```text
 총 출하 중량 : 190,000 kg
@@ -161,6 +200,8 @@ parse 가능 여부 > 문서 권위 > confidence > 안정적인 입력 순서
 
 평가셋은 positive 16건, hard-negative 10건, 인접 조문 distractor 8건입니다. `CBAM` 단독, 공동인증서, 일반 지도 표시, 농장 체험처럼 법률 질문으로 뒷받침되지 않는 질의는 기권하는지 함께 테스트합니다.
 
+개발 평가와 별개로 36건의 **maintainer-authored post-hoc blind-style holdout**도 분리했습니다. 개발 query 재사용과 긴 corpus 문구 복사를 검사하고, positive 16·distractor 8·negative 12의 threshold 결과를 별도 artifact로 고정합니다. 외부 평가자가 봉인한 blind test나 일반 법률 검색 성능으로 부르지 않습니다.
+
 ```bash
 ecoguard legal-search \
   "실제 배출량을 쓰려는데 검증서가 없으면 어떤 조항을 확인해야 하나"
@@ -194,6 +235,8 @@ process 731.36 + precursor 380.00
 
 전기 970,000kWh와 LNG 39,300Nm³도 원문 증거로 보존하지만, 배출계수와 공정 배분근거가 없으므로 임의로 CO₂e로 변환하지 않습니다. 결과는 `statutory_calculator: false`이며 공식 CBAM factor, 무상할당 조정, Article 9 적격성, 인증서 의무량을 구현하지 않습니다.
 
+[`cbam_rule_coverage.json`](data/reference/cbam_rule_coverage.json)은 2026-08-12에 확인한 EUR-Lex 기본·시행 규칙 중 15개 요구사항을 코드와 대조합니다. 결과는 **partial 8, not implemented 7, implemented 0**입니다. 계산을 더 완성된 것처럼 보이게 하지 않고, 상품·원산지 scope, 공인 검증, 공식 인증서 가격, 무상할당 조정, 신고·납부 절차 등 빠진 법정 입력과 로직을 기계가 읽을 수 있게 공개합니다.
+
 ## 4. 산림 변화 평가 코드
 
 대회 당시 산림 화면의 모델 가중치·평가 데이터는 공개 성과로 재현할 수 없었습니다. 따라서 정확도 수치를 옮겨 적지 않고, 공개 가능한 합성 band와 독립 reference mask로 평가 경로를 새로 만들었습니다.
@@ -209,6 +252,40 @@ loss = NDVI_before ≥ 0.45 and ΔNDVI ≤ −0.25
 - zero denominator metric은 임의의 0이나 1 대신 `null`
 - TP/FP/FN/TN SVG와 RFC 7946 형태의 36-cell GeoJSON
 - CSV 행 순서를 뒤집어도 결과가 동일한 회귀 테스트
+
+### 지리공간 입력 plumbing
+
+추가 4×6 합성 benchmark는 단순 배열을 실제 raster 계약처럼 다룰 때 필요한 경계를 검사합니다.
+
+- EPSG:32652와 6계수 affine transform, 10m pixel·100m² 면적
+- before/after acquisition time, 동일 season과 날짜 차이 정책
+- nodata·cloud·shadow를 NDVI와 평가 전에 제외
+- clipped row-major tiling과 tile 단위 train/holdout 분리
+- valid holdout 9 pixel만으로 TP=4·FP=1·FN=1·TN=3 계산
+- native projected polygon을 유지하고 `rfc7946_wgs84: false` 명시
+
+```bash
+python -m ecoguard.geospatial \
+  data/benchmarks/forest/synthetic_geospatial_case.json \
+  --summary /tmp/forest-summary.json \
+  --geojson /tmp/forest-cells.geojson
+```
+
+[산림 benchmark 문서](docs/FOREST_BENCHMARK.md)는 Sentinel-2와 Landsat 공식 STAC/terms를 opt-in metadata로만 연결합니다. 저장소는 영상·credential을 내려받지 않으며 실제 장면을 쓸 때 필요한 scene ID, asset hash, band scale, QA, reprojection, co-registration, reference license를 명시합니다.
+
+## 5. 속성 테스트·로컬 API·공급망 경계
+
+- Hypothesis가 지원 단위의 동등 표기, 명시적 범위·복합단위 거절, provenance 없는 산식 변조 거절, 모든 binary mask의 confusion partition을 반복 생성합니다.
+- source branch coverage 전체 85% 이상을 release gate로 강제합니다.
+- `ecoguard-api`는 `/health`, `/v1/cbam/calculate`, `/v1/legal/retrieve`만 제공하는 표준 라이브러리 WSGI 예제입니다. 1MB body·8,000자 query cap, UTF-8·중복-key 거절 strict JSON, fail-closed evidence 검증, `human_review_required`를 고정합니다.
+- 두 clean Git archive에서 만든 wheel byte가 같아야 하며 CodeQL, Dependabot, CODEOWNERS, security policy를 함께 둡니다.
+
+```bash
+ecoguard-api --host 127.0.0.1 --port 8765
+curl http://127.0.0.1:8765/health
+```
+
+인증·저장소·TLS가 없는 로컬 통합 예제이므로 외부에 공개해서는 안 됩니다. 운영에 필요한 OIDC/mTLS, 문서 저장·보존, 법령 갱신, idempotency, audit log, monitoring은 [운영 경계](docs/OPERATIONS.md)에 분리했습니다.
 
 ## 단계를 따로 실행하기
 
@@ -227,6 +304,8 @@ ecoguard cbam-calculate /tmp/normalized.json \
 
 ecoguard forest-analyze data/synthetic/forest_case.json \
   --geojson --output /tmp/forest.geojson
+
+ecoguard benchmark --root . --output artifacts/generated-benchmarks
 ```
 
 ## 생성되는 증거 패킷
@@ -248,25 +327,35 @@ artifacts/generated/
 
 `artifact_manifest.json`에는 8개 입력과 나머지 10개 산출물의 byte 수·SHA-256이 기록됩니다. timestamp와 절대경로는 golden output에 넣지 않습니다.
 
+별도 `artifacts/benchmarks/`에는 OCR field 평가, geospatial summary/GeoJSON, legal blind-style 평가, CBAM 규칙 coverage와 10개 입력·5개 출력 SHA-256 manifest가 있습니다. 두 묶음 모두 release verifier가 committed golden과 byte 단위로 비교합니다.
+
 ## 저장소 구조
 
 ```text
 src/ecoguard/
+├── ocr_adapter.py     # OCR engine output → common document bundle + field metrics
 ├── ingestion.py       # document line → field candidate + source span/hash
 ├── preprocessing.py   # normalization, selection policy, validation ledger
 ├── legal.py           # BM25F retrieval, abstention and evaluation
+├── regulatory.py      # legal holdout and official-rule coverage validation
 ├── cbam.py            # component DAG, reconciliation and sensitivity
 ├── forest.py          # NDVI prediction, reference metrics, GeoJSON/SVG
+├── geospatial.py      # CRS/affine/mask/time/tile/holdout benchmark
+├── api.py             # local-only WSGI integration example
+├── jsonio.py          # duplicate-key/non-finite rejecting UTF-8 JSON boundary
+├── benchmark.py       # benchmark orchestration and hash manifest
 ├── pipeline.py        # deterministic orchestration and manifests
 └── report.py          # human-review JSON/HTML packet
 
 data/
 ├── synthetic/         # trade documents, band grid, reference mask
-└── reference/         # normalization policy, legal corpus/eval/source manifest
+├── benchmarks/        # OCR, geospatial and legal holdout fixtures
+└── reference/         # normalization/legal/CBAM coverage + competition attestation
 
 tests/                 # unit, adversarial, determinism, CLI and integration tests
 schemas/               # machine-readable public input contract
 artifacts/examples/    # committed byte-stable golden outputs
+artifacts/benchmarks/  # committed benchmark evidence and manifest
 docs/                  # methodology, architecture, journey and limitations
 ```
 
@@ -274,9 +363,9 @@ docs/                  # methodology, architecture, journey and limitations
 
 | 상태 | 범위 |
 |---|---|
-| Implemented and tested | document-line extraction, preprocessing/lineage, BM25F retrieval/eval, component CBAM sensitivity, synthetic NDVI reference evaluation, reports/manifests |
-| Simulated with synthetic inputs | OCR service output, document confidence, 기업·거래·설비, 가격·집약도, band/reference mask |
-| Not implemented / proposed | OCR vision model, LLM answer generation, 전체 EU 법령 corpus, Hana 내부 연동, 법정 CBAM 의무 계산, 운영 위성/CNN/XAI, 자동 금융 승인 |
+| Implemented and tested | OCR output adapters/field evaluation, preprocessing/lineage, BM25F retrieval/holdout, component CBAM sensitivity and coverage map, synthetic NDVI/geospatial evaluation, local API, reports/manifests |
+| Simulated with synthetic inputs | OCR engine output, document confidence, 기업·거래·설비, 가격·집약도, raster CRS/time/QA, band/reference mask |
+| Not implemented / proposed | OCR vision model, LLM answer generation, 전체 EU 법령 corpus, Hana 내부 연동, 법정 CBAM 의무 계산, 실제 위성 수집·reprojection·CNN/XAI, 자동 금융 승인 |
 
 ## 프로젝트 과정과 공개 자료
 
@@ -286,6 +375,13 @@ docs/                  # methodology, architecture, journey and limitations
 - [기술 구조](docs/ARCHITECTURE.md)
 - [한계와 다음 검증](docs/LIMITATIONS.md)
 - [주장-입력-코드-테스트-산출물 검증표](docs/VALIDATION.md)
+- [OCR adapter와 field benchmark](docs/OCR_BENCHMARK.md)
+- [Legal blind-style 평가 경계](docs/LEGAL_BLIND_EVAL.md)
+- [CBAM 공식 규칙 coverage 경계](docs/CBAM_COVERAGE.md)
+- [산림 geospatial benchmark](docs/FOREST_BENCHMARK.md)
+- [대회 보관 자료와 공개 재구성의 provenance](docs/COMPETITION_PROVENANCE.md)
+- [로컬 API와 운영 전 필수 경계](docs/OPERATIONS.md)
+- [변경 기록](CHANGELOG.md) · [기여 규칙](CONTRIBUTING.md) · [보안 정책](SECURITY.md)
 - [공식 법령 출처와 버전](data/reference/README.md)
 - [공개용 4쪽 프로젝트 case study](presentation/EcoGuard_Selected_Excerpt.pdf)
 - [생성된 evidence report 예시](artifacts/examples/ecoguard_evidence_report.html)

@@ -4,11 +4,12 @@ from __future__ import annotations
 
 import csv
 import html
-import json
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation, localcontext
 from pathlib import Path
 from typing import Any, Iterable
+
+from .jsonio import strict_json_file
 
 
 Cell = tuple[int, int]
@@ -364,8 +365,7 @@ def _load_grid(manifest: dict[str, Any]) -> GridSpec:
 def load_forest_case(path: str | Path) -> ForestCase:
     """Load and fully validate a manifest-based synthetic forest case."""
     manifest_path = Path(path)
-    with manifest_path.open(encoding="utf-8") as handle:
-        manifest = json.load(handle)
+    manifest = strict_json_file(manifest_path)
     if not isinstance(manifest, dict):
         raise ValueError("forest case manifest must be a JSON object")
     allowed_keys = {

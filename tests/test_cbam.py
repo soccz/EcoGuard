@@ -72,7 +72,22 @@ class CbamTests(unittest.TestCase):
                     del normalized["schema_version"]
                 else:
                     normalized["schema_version"] = schema_version
-                with self.assertRaisesRegex(ValueError, "normalized evidence schema"):
+                with self.assertRaisesRegex(ValueError, "normalized evidence"):
+                    calculate_exposure(normalized)
+
+        for mutate in (
+            lambda payload: payload.update(officially_approved=True),
+            lambda payload: payload["fields"]["shipment_mass_t"].update(official=True),
+            lambda payload: payload["fields"]["shipment_mass_t"]["candidates"][
+                0
+            ].update(approved=True),
+            lambda payload: payload["source_lines"][0].update(compliant=True),
+            lambda payload: payload.pop("validation_ledger"),
+        ):
+            with self.subTest(mutate=mutate):
+                normalized = self._normalized_copy()
+                mutate(normalized)
+                with self.assertRaises(ValueError):
                     calculate_exposure(normalized)
 
     def test_v3_golden_inventory_and_legacy_comparison(self):

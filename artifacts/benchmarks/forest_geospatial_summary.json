@@ -1,0 +1,265 @@
+{
+  "benchmark": {
+    "benchmark_id": "ECO-FOREST-GEO-SYN-2026-001",
+    "claim_boundary": {
+      "demonstrates": [
+        "strict offline CRS and affine geotransform contract validation",
+        "native projected pixel polygons and affine-determinant area accounting",
+        "nodata, cloud, and shadow exclusion before NDVI evaluation",
+        "acquisition timestamp and declared seasonality policy validation",
+        "deterministic clipped tiling and tile-level spatial holdout plumbing",
+        "reference provenance and valid-holdout-only binary metric accounting"
+      ],
+      "does_not_demonstrate": [
+        "real Sentinel or Landsat ingestion, calibration, atmospheric correction, cloud-mask quality, or co-registration",
+        "real-world forest-loss accuracy, learned-model generalization, or independent ground truth",
+        "geodetic reprojection or RFC 7946 WGS84 interchange",
+        "CNN, XAI, production-scale raster performance, field verification, or EUDR compliance"
+      ]
+    },
+    "classification": "synthetic_geospatial_plumbing_benchmark",
+    "purpose": "Verify fail-closed geospatial metadata, masking, spatial holdout, tiling, polygon, area, and metric plumbing with a small team-authored fixture."
+  },
+  "grid": {
+    "bbox_native_crs": [
+      500000.0,
+      4099960.0,
+      500060.0,
+      4100000.0
+    ],
+    "cols": 6,
+    "crs": {
+      "authority": "EPSG",
+      "axis_unit": "metre",
+      "code": 32652,
+      "kind": "projected",
+      "name": "WGS 84 / UTM zone 52N",
+      "registry_lookup_performed": false,
+      "validation_scope": "fixed offline authority/code/name/unit allowlist"
+    },
+    "geotransform_gdal_order": [
+      "500000",
+      "10",
+      "0",
+      "4100000",
+      "0",
+      "-10"
+    ],
+    "pixel_area_m2": "100",
+    "pixel_count": 24,
+    "rows": 4,
+    "total_grid_area_m2": "2400"
+  },
+  "input_provenance": {
+    "manifest": {
+      "bytes": 3973,
+      "file": "synthetic_geospatial_case.json",
+      "sha256": "e2f5f37c7e0d0b864db85705fc0e8f1f28bdc25265b11febeaa606eca6f81377"
+    },
+    "reference_mask": {
+      "bytes": 167,
+      "file": "synthetic_reference_mask.csv",
+      "sha256": "26766f853bed8f796858dea10f42b54683363f2d6030829574c141778aee4aa5"
+    },
+    "scene_pixels": {
+      "bytes": 936,
+      "file": "synthetic_scene_pixels.csv",
+      "sha256": "4081f533b902b58c866436791fca4181bc2f8535a57c82a1fadc3a1cc7de30b6"
+    }
+  },
+  "masking": {
+    "mask_reason_counts": {
+      "nodata_after": 1,
+      "qa_after:cloud": 1,
+      "qa_after:shadow": 1,
+      "qa_before:cloud": 1
+    },
+    "masked_pixel_count": 4,
+    "policy": {
+      "evaluation_scope": "valid_holdout_pixels_only",
+      "nodata_scope": "any_required_band",
+      "qa_clear_class": "clear",
+      "qa_excluded_classes": [
+        "cloud",
+        "shadow"
+      ]
+    },
+    "valid_pixel_count": 20
+  },
+  "prediction_rule": {
+    "forest_ndvi_min": "0.45",
+    "kind": "fixed_ndvi_threshold",
+    "ndvi_decrease_min": "0.25",
+    "threshold_provenance": "Thresholds were fixed for a synthetic code-path fixture; they were not fitted to a public or operational scene."
+  },
+  "reference": {
+    "created_at": "2026-08-12T00:00:00Z",
+    "creator": "EcoGuard public benchmark maintainers",
+    "independent_ground_truth": false,
+    "kind": "team_authored_synthetic_binary_mask",
+    "license": "CC0-1.0",
+    "method": "Manually fixed binary labels with intentional false-positive and false-negative cases; labels are stored separately from scene bands.",
+    "positive_pixel_count": 11
+  },
+  "reproduction": {
+    "benchmark_version": "1.0.0",
+    "inputs": {
+      "cbam_rule_coverage": {
+        "bytes": 42065,
+        "sha256": "c85c66d4dce803dd2e05273d21c6f8c4d199438e1d5365140678679879e6d2cf"
+      },
+      "forest_manifest": {
+        "bytes": 3973,
+        "sha256": "e2f5f37c7e0d0b864db85705fc0e8f1f28bdc25265b11febeaa606eca6f81377"
+      },
+      "forest_reference_mask": {
+        "bytes": 167,
+        "sha256": "26766f853bed8f796858dea10f42b54683363f2d6030829574c141778aee4aa5"
+      },
+      "forest_scene_pixels": {
+        "bytes": 936,
+        "sha256": "4081f533b902b58c866436791fca4181bc2f8535a57c82a1fadc3a1cc7de30b6"
+      },
+      "legal_blind_eval": {
+        "bytes": 17675,
+        "sha256": "a9c5b7f01d8876e6b373e179d0ea20f660e0235bfea380b791f19e6649a7e7b6"
+      },
+      "legal_corpus": {
+        "bytes": 10364,
+        "sha256": "8830e3d79d7698dfe3c24833f94395b1626cabf6377ac32a3a27aa42f2e9c374"
+      },
+      "legal_development_eval": {
+        "bytes": 11754,
+        "sha256": "6e7a1a9665aa3e42dae01e38096464440a184fe81124f1c2ce24b637364cd3b0"
+      },
+      "legal_source_manifest": {
+        "bytes": 1914,
+        "sha256": "b1f3b4588675fcbe804480bfb46ba90e58282ad196301ba28dddb3e19ae3f8dd"
+      },
+      "ocr_field_reference": {
+        "bytes": 875,
+        "sha256": "57e1a7e45b0a86c88d71dc1258b767d80506dfa9920757b3df5c0cab41cc539b"
+      },
+      "ocr_tesseract_tsv": {
+        "bytes": 833,
+        "sha256": "11f4cdb9ed6683647b098c7047eaeddcc3197e4cc6ef7c934cd108ed6c1835f6"
+      }
+    },
+    "policy": {
+      "committed_inputs": "synthetic_or_maintainer_authored_reference",
+      "external_network_io": false,
+      "timestamps_in_outputs": false
+    }
+  },
+  "schema_version": "forest-geospatial-summary/1.0",
+  "spatial_evaluation": {
+    "caveat": "Synthetic code-path metrics; the fixed rule was not trained and this is not real-world remote-sensing accuracy.",
+    "confusion_matrix": {
+      "fn": 1,
+      "fp": 1,
+      "tn": 3,
+      "tp": 4
+    },
+    "evaluated_pixel_count": 9,
+    "metrics": {
+      "f1": 0.8,
+      "iou": 0.666667,
+      "precision": 0.8,
+      "recall": 0.8
+    },
+    "scope": "valid_holdout_pixels_only",
+    "undefined_metrics": []
+  },
+  "spatial_split": {
+    "holdout_pixel_count": 12,
+    "holdout_tile_ids": [
+      "tile-r0000-c0003",
+      "tile-r0002-c0003"
+    ],
+    "masked_holdout_pixel_count": 3,
+    "selection_provenance": "Right-hand tiles were declared as holdout in the manifest before execution; the split verifies leakage-safe plumbing but is not evidence of learned-model generalization.",
+    "strategy": "deterministic_tile_holdout",
+    "train_pixel_count": 12,
+    "train_tile_ids": [
+      "tile-r0000-c0000",
+      "tile-r0002-c0000"
+    ]
+  },
+  "temporal_pair": {
+    "after": {
+      "acquired_at": "2025-02-17T02:12:00Z",
+      "product_level": "synthetic_surface_reflectance",
+      "scene_id": "SYNTH-MSI-20250217-AFTER",
+      "season_label": "dry",
+      "sensor_family": "SYNTHETIC-MULTISPECTRAL",
+      "source_kind": "team_authored_synthetic"
+    },
+    "before": {
+      "acquired_at": "2024-02-15T02:10:00Z",
+      "product_level": "synthetic_surface_reflectance",
+      "scene_id": "SYNTH-MSI-20240215-BEFORE",
+      "season_label": "dry",
+      "sensor_family": "SYNTHETIC-MULTISPECTRAL",
+      "source_kind": "team_authored_synthetic"
+    },
+    "day_of_year_delta": 2,
+    "elapsed_days": 368.001389,
+    "elapsed_seconds": 31795320,
+    "policy_passed": true,
+    "same_season_label": true,
+    "seasonality_policy": {
+      "maximum_day_of_year_delta": 7,
+      "maximum_elapsed_days": 400,
+      "minimum_elapsed_days": 300,
+      "require_same_season_label": true,
+      "timezone": "UTC"
+    }
+  },
+  "tiling": {
+    "edge_policy": "clip",
+    "order": "row_major",
+    "tile_count": 4,
+    "tiles": [
+      {
+        "col_start": 0,
+        "col_stop_exclusive": 3,
+        "pixel_count": 6,
+        "row_start": 0,
+        "row_stop_exclusive": 2,
+        "split": "train",
+        "tile_id": "tile-r0000-c0000",
+        "valid_pixel_count": 6
+      },
+      {
+        "col_start": 3,
+        "col_stop_exclusive": 6,
+        "pixel_count": 6,
+        "row_start": 0,
+        "row_stop_exclusive": 2,
+        "split": "holdout",
+        "tile_id": "tile-r0000-c0003",
+        "valid_pixel_count": 4
+      },
+      {
+        "col_start": 0,
+        "col_stop_exclusive": 3,
+        "pixel_count": 6,
+        "row_start": 2,
+        "row_stop_exclusive": 4,
+        "split": "train",
+        "tile_id": "tile-r0002-c0000",
+        "valid_pixel_count": 5
+      },
+      {
+        "col_start": 3,
+        "col_stop_exclusive": 6,
+        "pixel_count": 6,
+        "row_start": 2,
+        "row_stop_exclusive": 4,
+        "split": "holdout",
+        "tile_id": "tile-r0002-c0003",
+        "valid_pixel_count": 5
+      }
+    ]
+  }
+}

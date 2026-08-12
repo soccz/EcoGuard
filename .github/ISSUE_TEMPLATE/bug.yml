@@ -1,0 +1,35 @@
+name: Reproducibility or boundary bug
+description: Report a failure using synthetic, non-sensitive input.
+title: "[bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach personal documents, credentials or private endpoints.
+  - type: input
+    id: version
+    attributes:
+      label: Tagged version and commit
+      placeholder: v0.5.0 / commit SHA
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal synthetic reproduction
+      description: Include the command and synthetic input or a link to a small branch.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected boundary
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed result
+    validations:
+      required: true

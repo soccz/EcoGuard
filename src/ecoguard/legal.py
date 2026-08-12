@@ -16,6 +16,8 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Iterable
 
+from .jsonio import strict_json_file
+
 
 RETRIEVER_VERSION = "legal-bm25f-v2.1"
 PINNED_SOURCE_ELI = {
@@ -230,19 +232,26 @@ def _validate_concepts(identifier: str, concepts: Any) -> None:
     if not isinstance(concepts, dict) or not concepts:
         raise ValueError(f"concepts must be a non-empty object: {identifier}")
     for concept, aliases in concepts.items():
-        if not concept or not isinstance(aliases, list) or not aliases:
+        if (
+            not isinstance(concept, str)
+            or not concept.strip()
+            or not isinstance(aliases, list)
+            or not aliases
+        ):
             raise ValueError(f"invalid concept aliases: {identifier}: {concept}")
         if any(not isinstance(alias, str) or not alias.strip() for alias in aliases):
             raise ValueError(f"blank concept alias: {identifier}: {concept}")
+        if len({_normalize_text(alias) for alias in aliases}) != len(aliases):
+            raise ValueError(f"duplicate concept alias: {identifier}: {concept}")
 
 
 def _validate_corpus_entry(entry: dict[str, Any]) -> str:
-    missing = sorted(REQUIRED_ENTRY_FIELDS - entry.keys())
-    if missing:
-        raise ValueError(
-            f"legal corpus entry is missing fields: {entry.get('id', '?')}: "
-            + ", ".join(missing)
-        )
+    if not isinstance(entry, dict) or set(entry) != REQUIRED_ENTRY_FIELDS:
+        raise ValueError("legal corpus entry has missing or unsupported properties")
+    text_fields = REQUIRED_ENTRY_FIELDS - {"keywords", "concepts"}
+    for field in text_fields:
+        if not isinstance(entry[field], str) or not entry[field].strip():
+            raise ValueError(f"legal corpus {field} must be non-blank text")
     identifier = entry["id"]
     instrument = entry["instrument"]
     if instrument not in INSTRUMENT_ALIASES:
@@ -260,8 +269,19 @@ def _validate_corpus_entry(entry: dict[str, Any]) -> str:
         raise ValueError(f"legal source must be an EUR-Lex ELI URL: {identifier}")
     if "non-authoritative" not in entry["source_status"]:
         raise ValueError(f"team summary must be marked non-authoritative: {identifier}")
-    if not isinstance(entry["keywords"], list) or not entry["keywords"]:
+    if (
+        not isinstance(entry["keywords"], list)
+        or not entry["keywords"]
+        or any(
+            not isinstance(keyword, str) or not keyword.strip()
+            for keyword in entry["keywords"]
+        )
+    ):
         raise ValueError(f"keywords must be a non-empty list: {identifier}")
+    if len({_normalize_text(keyword) for keyword in entry["keywords"]}) != len(
+        entry["keywords"]
+    ):
+        raise ValueError(f"keywords must not contain duplicates: {identifier}")
     _validate_concepts(identifier, entry["concepts"])
     return identifier
 
@@ -756,13 +776,23 @@ class LegalRetriever:
         min_margin: float = DEFAULT_MIN_MARGIN,
     ) -> dict[str, Any]:
         """Return ranked citations plus an explicit support/abstention trace."""
-        if limit < 1:
-            raise ValueError("limit must be at least 1")
+        if type(limit) is not int or limit < 1:
+            raise ValueError("limit must be a positive integer")
         if not query.strip():
             raise ValueError("query must not be blank")
-        if not math.isfinite(min_score) or min_score < 0:
+        if (
+            isinstance(min_score, bool)
+            or not isinstance(min_score, (int, float))
+            or not math.isfinite(min_score)
+            or min_score < 0
+        ):
             raise ValueError("min_score must be a non-negative finite number")
-        if not math.isfinite(min_margin) or min_margin < 0:
+        if (
+            isinstance(min_margin, bool)
+            or not isinstance(min_margin, (int, float))
+            or not math.isfinite(min_margin)
+            or min_margin < 0
+        ):
             raise ValueError("min_margin must be a non-negative finite number")
 
         query_trace = self._analyze_query(query)
@@ -887,8 +917,7 @@ class LegalRetriever:
 
 
 def load_json(path: str | Path) -> Any:
-    with Path(path).open(encoding="utf-8") as handle:
-        return json.load(handle)
+    return strict_json_file(path)
 
 
 def _rate(numerator: int | float, denominator: int) -> float:
@@ -989,6 +1018,27 @@ def _validate_evaluation_case(
     case_type = case.get("type")
     if case_type not in {"positive", "negative", "distractor"}:
         raise ValueError(f"unsupported legal evaluation case type: {case_type}")
+    expected_keys = {
+        "id",
+        "type",
+        "query",
+        "expected_status",
+        "expected_ids",
+        "forbidden_ids",
+        "tags",
+    }
+    if case_type != "negative":
+        expected_keys.add("expected_instrument")
+    if set(case) != expected_keys:
+        raise ValueError(f"legal evaluation case has unsupported keys: {identifier}")
+    tags = case.get("tags")
+    if (
+        not isinstance(tags, list)
+        or not tags
+        or any(not isinstance(tag, str) or not tag for tag in tags)
+        or len(tags) != len(set(tags))
+    ):
+        raise ValueError(f"legal evaluation case has invalid tags: {identifier}")
 
     expected_ids = _validated_case_ids(case, "expected_ids", identifier, known_ids)
     forbidden_ids = _validated_case_ids(case, "forbidden_ids", identifier, known_ids)
@@ -1018,8 +1068,8 @@ def evaluate(
     k: int = 3,
 ) -> dict[str, Any]:
     """Evaluate positive, negative and contrastive citation cases."""
-    if k < 1:
-        raise ValueError("k must be at least 1")
+    if type(k) is not int or k < 1:
+        raise ValueError("k must be a positive integer")
     retriever = LegalRetriever(corpus)
     _validate_evaluation_cases(cases, retriever)
     rows: list[dict[str, Any]] = []

@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .cbam import calculate_exposure
+from .benchmark import run_benchmarks
 from .forest import analyze_forest_case, build_regions_geojson
 from .ingestion import extract_document_bundle_file
 from .legal import LegalRetriever, load_json, validate_source_manifest
@@ -48,6 +49,22 @@ def _parser() -> argparse.ArgumentParser:
         help="output directory (default: artifacts/generated)",
     )
     reproduce_parser.add_argument("--root", type=Path, help="repository root override")
+
+    benchmark_parser = subcommands.add_parser(
+        "benchmark",
+        help="run OCR, geospatial, legal holdout and CBAM coverage benchmarks",
+    )
+    benchmark_parser.add_argument(
+        "--output",
+        default="artifacts/generated-benchmarks",
+        help="output directory (default: artifacts/generated-benchmarks)",
+    )
+    benchmark_parser.add_argument(
+        "--root",
+        type=Path,
+        required=True,
+        help="repository checkout root containing benchmark fixtures",
+    )
 
     extract_parser = subcommands.add_parser(
         "extract",
@@ -129,6 +146,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "reproduce":
         paths = reproduce(args.output, root=args.root)
         print("EcoGuard reproduction completed:")
+        for name, path in paths.items():
+            print(f"- {name}: {path}")
+        return 0
+    if args.command == "benchmark":
+        paths = run_benchmarks(args.output, root=args.root)
+        print("EcoGuard benchmark suite completed:")
         for name, path in paths.items():
             print(f"- {name}: {path}")
         return 0

@@ -1,0 +1,88 @@
+{
+  "benchmark_id": "ecoguard-legal-holdout-ko-v1",
+  "metrics": {
+    "distractor_rejection_at_1": 1.0,
+    "expected_status_match_rate": 1.0,
+    "false_support_rate": 0.0,
+    "instrument_leakage_at_k": 0.0,
+    "mean_reciprocal_rank": 1.0,
+    "negative_abstention_rate": 1.0,
+    "positive_coverage": 1.0,
+    "recall_at_k": 1.0,
+    "trace_coverage": 1.0
+  },
+  "passed": true,
+  "reproduction": {
+    "benchmark_version": "1.0.0",
+    "inputs": {
+      "cbam_rule_coverage": {
+        "bytes": 42065,
+        "sha256": "c85c66d4dce803dd2e05273d21c6f8c4d199438e1d5365140678679879e6d2cf"
+      },
+      "forest_manifest": {
+        "bytes": 3973,
+        "sha256": "e2f5f37c7e0d0b864db85705fc0e8f1f28bdc25265b11febeaa606eca6f81377"
+      },
+      "forest_reference_mask": {
+        "bytes": 167,
+        "sha256": "26766f853bed8f796858dea10f42b54683363f2d6030829574c141778aee4aa5"
+      },
+      "forest_scene_pixels": {
+        "bytes": 936,
+        "sha256": "4081f533b902b58c866436791fca4181bc2f8535a57c82a1fadc3a1cc7de30b6"
+      },
+      "legal_blind_eval": {
+        "bytes": 17675,
+        "sha256": "a9c5b7f01d8876e6b373e179d0ea20f660e0235bfea380b791f19e6649a7e7b6"
+      },
+      "legal_corpus": {
+        "bytes": 10364,
+        "sha256": "8830e3d79d7698dfe3c24833f94395b1626cabf6377ac32a3a27aa42f2e9c374"
+      },
+      "legal_development_eval": {
+        "bytes": 11754,
+        "sha256": "6e7a1a9665aa3e42dae01e38096464440a184fe81124f1c2ce24b637364cd3b0"
+      },
+      "legal_source_manifest": {
+        "bytes": 1914,
+        "sha256": "b1f3b4588675fcbe804480bfb46ba90e58282ad196301ba28dddb3e19ae3f8dd"
+      },
+      "ocr_field_reference": {
+        "bytes": 875,
+        "sha256": "57e1a7e45b0a86c88d71dc1258b767d80506dfa9920757b3df5c0cab41cc539b"
+      },
+      "ocr_tesseract_tsv": {
+        "bytes": 833,
+        "sha256": "11f4cdb9ed6683647b098c7047eaeddcc3197e4cc6ef7c934cd108ed6c1835f6"
+      }
+    },
+    "policy": {
+      "committed_inputs": "synthetic_or_maintainer_authored_reference",
+      "external_network_io": false,
+      "timestamps_in_outputs": false
+    }
+  },
+  "scope": "Maintainer-authored post-hoc holdout for article retrieval; not external validation, answer-generation evaluation, or legal advice.",
+  "threshold_checks": {
+    "distractor_rejection_at_1": true,
+    "expected_status_match_rate": true,
+    "false_support_rate": true,
+    "instrument_leakage_at_k": true,
+    "negative_abstention_rate": true,
+    "recall_at_k": true
+  },
+  "validation": {
+    "benchmark_id": "ecoguard-legal-holdout-ko-v1",
+    "case_count": 36,
+    "case_counts": {
+      "distractor": 8,
+      "negative": 12,
+      "positive": 16
+    },
+    "corpus_sha256": "0b8a6936f9f53f0e3e7f2e36188bd3e6dd335a162d89ba3c825e8cabff18691e",
+    "development_fixture_sha256": "b9ac6ecc14d835d8d58b883063478ac0752a56eb13b0b03cd403e70ddbb7e8ff",
+    "external_blind": false,
+    "fixture_sha256": "c8eac312fef2774f20038462bc1a11b34d3902bb75ce5b5f1c6906f4ef9247e5",
+    "schema_version": "legal-blind-eval/1.0"
+  }
+}

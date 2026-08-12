@@ -1,5 +1,6 @@
 import json
 import re
+import tempfile
 import tomllib
 import unittest
 from hashlib import sha256
@@ -8,7 +9,12 @@ from pathlib import Path
 from jsonschema import Draft202012Validator
 
 from ecoguard import __version__
+from ecoguard.forest import load_forest_case
+from ecoguard.ingestion import extract_document_bundle_file
+from ecoguard.jsonio import strict_json_loads
+from ecoguard.legal import load_json
 from ecoguard.pipeline import INPUT_SPECS, PIPELINE_VERSION
+from ecoguard.preprocessing import load_policy, normalize_file
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,7 +49,7 @@ class PublicContractTests(unittest.TestCase):
                 self.assertTrue(payload["$id"].endswith("/" + path.name))
                 self.assertTrue(
                     payload["$id"].startswith(
-                        "https://raw.githubusercontent.com/soccz/EcoGuard/v0.4.1/schemas/"
+                        "https://raw.githubusercontent.com/soccz/EcoGuard/v0.5.0/schemas/"
                     )
                 )
                 self.assertEqual(payload["type"], "object")
@@ -182,6 +188,28 @@ class PublicContractTests(unittest.TestCase):
                     path.read_text(encoding="utf-8"),
                     parse_constant=reject_constant,
                 )
+
+        with self.assertRaisesRegex(ValueError, "valid UTF-8"):
+            strict_json_loads('{"key":"value"}'.encode("utf-16"))
+
+        with tempfile.TemporaryDirectory() as directory:
+            duplicate = Path(directory) / "duplicate.json"
+            duplicate.write_text(
+                '{"schema_version":"first","schema_version":"second"}',
+                encoding="utf-8",
+            )
+            for loader in (
+                extract_document_bundle_file,
+                load_forest_case,
+                load_json,
+                load_policy,
+                normalize_file,
+            ):
+                with self.subTest(loader=loader.__name__):
+                    with self.assertRaisesRegex(
+                        ValueError, "duplicate JSON object key"
+                    ):
+                        loader(duplicate)
 
     def test_validation_matrix_only_names_discoverable_tests(self):
         validation = (ROOT / "docs/VALIDATION.md").read_text(encoding="utf-8")

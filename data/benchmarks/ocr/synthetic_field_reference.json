@@ -1,0 +1,31 @@
+{
+  "schema_version": "ocr-field-reference/1.0",
+  "case_id": "ECO-OCR-SYN-001",
+  "notice": "All text and values are synthetic. The fixture intentionally includes one OCR value mismatch, one missing field and one spurious field to exercise error accounting; it is not an OCR-model accuracy claim.",
+  "fields": [
+    {
+      "document": "synthetic_ocr_invoice",
+      "label": "NET WT",
+      "occurrence": 1,
+      "value": "190 MT"
+    },
+    {
+      "document": "synthetic_ocr_invoice",
+      "label": "CN code",
+      "occurrence": 1,
+      "value": "7318.15.52"
+    },
+    {
+      "document": "synthetic_ocr_invoice",
+      "label": "전기사용량",
+      "occurrence": 1,
+      "value": "970000 kWh"
+    },
+    {
+      "document": "synthetic_ocr_invoice",
+      "label": "CBAM 인증서 가격",
+      "occurrence": 1,
+      "value": "EUR 87.50 / tCO2e"
+    }
+  ]
+}

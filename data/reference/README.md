@@ -2,7 +2,7 @@
 
 이 디렉터리에는 원문 전체가 아니라 검색·평가에 필요한 조문 메타데이터와 한국어 요약만 저장합니다. 법적 효력은 아래 공식 원문을 기준으로 합니다.
 
-메타데이터 확인일은 2026-08-11입니다. CELEX 기본 법령 식별자를 고정했지만
+retrieval 메타데이터 확인일은 2026-08-11이며, 별도 CBAM coverage map은 2026-08-12에 확인했습니다. CELEX 기본 법령 식별자를 고정했지만
 운영에 사용하려면 EUR-Lex의 최신 consolidated text와 후속 시행규칙을 다시
 확인해야 합니다.
 
@@ -11,12 +11,15 @@
 - Regulation (EU) 2023/956, consolidated 2025-10-20: <https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng>
 - Commission Implementing Regulation (EU) 2025/2547, embedded-emissions calculation methods: <https://eur-lex.europa.eu/eli/reg_impl/2025/2547/oj/eng>
 - Commission Implementing Regulation (EU) 2025/2620, free-allocation adjustment: <https://eur-lex.europa.eu/eli/reg_impl/2025/2620/oj/eng>
+- Commission Implementing Regulation (EU) 2025/2621, official default values: <https://eur-lex.europa.eu/eli/reg_impl/2025/2621/oj/eng>
 - European Commission, CBAM definitive regime: <https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-definitive-regime_en>
 - European Commission, legislation and guidance: <https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism/cbam-legislation-and-guidance_en>
 
 선택한 검색 단위는 Article 6(신고), 7(내재배출량 계산), 8(검증), 9(제3국에서 지불한 탄소가격)입니다.
 
 2025/2547과 2025/2620은 공개본이 각각 생산공정 방법론과 공식 free-allocation adjustment를 완전히 구현한다고 주장하지 않도록 경계를 확인하는 데 사용했습니다. 합성 component trace는 산술·provenance 검증용이며 두 시행규칙의 coverage table이 아닙니다.
+
+선정 요구사항 15개의 더 넓은 비교는 [`cbam_rule_coverage.json`](cbam_rule_coverage.json)과 [설명 문서](../../docs/CBAM_COVERAGE.md)에 있습니다. 2025/2083·2546·2548·2621도 포함하며 완전 구현으로 표시한 법정 pathway는 0개입니다.
 
 ## EUDR
 

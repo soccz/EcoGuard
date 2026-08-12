@@ -9,5 +9,9 @@ export PYTHONHASHSEED=0
 export TZ=UTC
 
 PYTHONPATH="$repo_dir/src" python3 -m ecoguard reproduce --output artifacts/generated
+PYTHONPATH="$repo_dir/src" python3 -m ecoguard benchmark \
+  --root "$repo_dir" \
+  --output artifacts/generated-benchmarks
 
 echo "Generated artifacts: $repo_dir/artifacts/generated"
+echo "Generated benchmark artifacts: $repo_dir/artifacts/generated-benchmarks"

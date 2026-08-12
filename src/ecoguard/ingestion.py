@@ -15,6 +15,7 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Iterable
 
+from .jsonio import strict_json_file
 from .preprocessing import (
     EXTRACTOR_ID,
     evidence_record_id,
@@ -250,5 +251,4 @@ def extract_document_bundle(payload: dict[str, Any]) -> dict[str, Any]:
 
 
 def extract_document_bundle_file(path: str | Path) -> dict[str, Any]:
-    with Path(path).open(encoding="utf-8") as handle:
-        return extract_document_bundle(json.load(handle))
+    return extract_document_bundle(strict_json_file(path))

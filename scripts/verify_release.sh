@@ -47,12 +47,18 @@ python3 -m venv "$verify_dir/tooling"
   --disable-pip-version-check \
   "$repo_dir[dev]"
 
-PYTHONPATH="$repo_dir/src" \
-  "$verify_dir/tooling/bin/python" -m unittest discover -s tests -v
+COVERAGE_FILE="$verify_dir/.coverage" \
+  PYTHONPATH="$repo_dir/src" \
+  "$verify_dir/tooling/bin/python" -m coverage run \
+  -m unittest discover -s tests -v
+COVERAGE_FILE="$verify_dir/.coverage" \
+  "$verify_dir/tooling/bin/python" -m coverage report
 PYTHONPATH="$repo_dir/src" \
   "$verify_dir/tooling/bin/python" -m compileall -q src tests
-"$verify_dir/tooling/bin/python" -m ruff check src tests
-"$verify_dir/tooling/bin/python" -m black --check src tests
+"$verify_dir/tooling/bin/python" -m compileall -q scripts/benchmark_ocr.py
+"$verify_dir/tooling/bin/python" -m ruff check src tests scripts/benchmark_ocr.py
+"$verify_dir/tooling/bin/python" -m black --check src tests scripts/benchmark_ocr.py
+bash -n scripts/*.sh
 require_clean_worktree "source verification"
 
 # Export two independent source trees from the committed Git object. This
@@ -100,6 +106,15 @@ if ! cmp -s "${wheel_one[0]}" "${wheel_two[0]}"; then
 fi
 wheel_sha256="$(sha256sum "${wheel_one[0]}" | cut -d ' ' -f 1)"
 
+if [[ -n "${ECOGUARD_RELEASE_DIST:-}" ]]; then
+  if [[ "$ECOGUARD_RELEASE_DIST" != /* ]]; then
+    echo "ECOGUARD_RELEASE_DIST must be an absolute path." >&2
+    exit 1
+  fi
+  mkdir -p "$ECOGUARD_RELEASE_DIST"
+  cp "${wheel_one[0]}" "$ECOGUARD_RELEASE_DIST/"
+fi
+
 python3 -m venv "$verify_dir/venv"
 "$verify_dir/venv/bin/python" -m pip install \
   --disable-pip-version-check \
@@ -107,26 +122,34 @@ python3 -m venv "$verify_dir/venv"
   "${wheel_one[0]}"
 "$verify_dir/venv/bin/python" -m pip install \
   --disable-pip-version-check \
+  "hypothesis==6.165.3" \
   "jsonschema==4.26.0"
 
 cd "$repo_dir"
-"$verify_dir/venv/bin/python" -m unittest discover -s tests -v
+env -u PYTHONPATH PYTHONNOUSERSITE=1 \
+  "$verify_dir/venv/bin/python" -m unittest discover -s tests -v
 
 mkdir -p "$verify_dir/runtime"
 cd "$verify_dir/runtime"
-"$verify_dir/venv/bin/python" -m ecoguard reproduce \
+env -u PYTHONPATH PYTHONNOUSERSITE=1 \
+  "$verify_dir/venv/bin/python" -m ecoguard reproduce \
   --output "$verify_dir/generated"
+env -u PYTHONPATH PYTHONNOUSERSITE=1 \
+  "$verify_dir/venv/bin/python" -m ecoguard benchmark \
+  --root "$repo_dir" \
+  --output "$verify_dir/generated-benchmarks"
 
 diff -ru "$repo_dir/artifacts/examples" "$verify_dir/generated"
+diff -ru "$repo_dir/artifacts/benchmarks" "$verify_dir/generated-benchmarks"
 
 cd "$repo_dir"
 git diff --check
 require_clean_worktree "final verification"
 
 echo "EcoGuard release verification passed."
-echo "- lint/format: Ruff and Black"
+echo "- lint/format/coverage: Ruff, Black and branch coverage threshold"
 echo "- unit/schema tests: source tree and installed wheel"
 echo "- source snapshot: canonical Git archive from clean HEAD"
 echo "- reproducible wheel SHA-256: $wheel_sha256"
 echo "- runtime cwd: $verify_dir/runtime"
-echo "- golden artifacts: byte-identical"
+echo "- evidence and benchmark artifacts: byte-identical"

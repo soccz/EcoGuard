@@ -324,16 +324,38 @@ class LegalRetrievalV2Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "EUR-Lex"):
             LegalRetriever(invalid_url)
 
+        for mutate in (
+            lambda entry: entry.update(official_translation=True),
+            lambda entry: entry.update(title={"official": True}),
+            lambda entry: entry["keywords"].append(entry["keywords"][0]),
+            lambda entry: entry["concepts"][next(iter(entry["concepts"]))].append(
+                entry["concepts"][next(iter(entry["concepts"]))][0]
+            ),
+        ):
+            with self.subTest(mutate=mutate):
+                invalid = copy.deepcopy(self.corpus)
+                mutate(invalid[0])
+                with self.assertRaises(ValueError):
+                    LegalRetriever(invalid)
+
         with self.assertRaisesRegex(ValueError, "blank"):
             self.retriever.retrieve("  ")
         with self.assertRaisesRegex(ValueError, "limit"):
             self.retriever.retrieve("CBAM", limit=0)
-        with self.assertRaisesRegex(ValueError, "min_score"):
-            self.retriever.retrieve("CBAM", min_score=float("nan"))
-        with self.assertRaisesRegex(ValueError, "min_margin"):
-            self.retriever.retrieve("CBAM", min_margin=-1)
+        with self.assertRaisesRegex(ValueError, "limit"):
+            self.retriever.retrieve("CBAM", limit=True)
+        for invalid in (True, "2", None, float("nan"), float("inf"), -1):
+            with self.subTest(min_score=invalid):
+                with self.assertRaisesRegex(ValueError, "min_score"):
+                    self.retriever.retrieve("CBAM", min_score=invalid)
+        for invalid in (False, "0.35", None, float("nan"), float("inf"), -1):
+            with self.subTest(min_margin=invalid):
+                with self.assertRaisesRegex(ValueError, "min_margin"):
+                    self.retriever.retrieve("CBAM", min_margin=invalid)
 
     def test_evaluation_reports_retrieval_and_selective_metrics(self):
+        with self.assertRaisesRegex(ValueError, "k"):
+            evaluate(self.corpus, self.cases, k=True)
         first = evaluate(self.corpus, self.cases, k=3)
         second = evaluate(self.corpus, self.cases, k=3)
         self.assertEqual(first, second)
@@ -381,6 +403,10 @@ class LegalRetrievalV2Tests(unittest.TestCase):
         overlapping = copy.deepcopy(self.cases)
         overlapping[0]["forbidden_ids"] = overlapping[0]["expected_ids"][:]
         invalid_cases.append((overlapping, "overlap"))
+
+        inflated_claim = copy.deepcopy(self.cases)
+        inflated_claim[0]["externally_adjudicated"] = True
+        invalid_cases.append((inflated_claim, "unsupported keys"))
 
         negative_with_target = copy.deepcopy(self.cases)
         negative = next(

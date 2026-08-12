@@ -1,0 +1,627 @@
+{
+  "schema_version": "legal-blind-eval/1.0",
+  "benchmark_id": "ecoguard-legal-holdout-ko-v1",
+  "created_on": "2026-08-12",
+  "k": 3,
+  "binding": {
+    "corpus": "data/reference/legal_corpus.json",
+    "corpus_sha256": "0b8a6936f9f53f0e3e7f2e36188bd3e6dd335a162d89ba3c825e8cabff18691e",
+    "development_fixture": "data/reference/legal_eval.json",
+    "development_fixture_sha256": "b9ac6ecc14d835d8d58b883063478ac0752a56eb13b0b03cd403e70ddbb7e8ff"
+  },
+  "construction": {
+    "evaluation_type": "post_hoc_blind_style_holdout",
+    "authorship": "repository_maintainer",
+    "external_blind": false,
+    "development_queries_reused": false,
+    "description": "A separately stored paraphrase, contrast, and negative set written after the development fixture. It is frozen for future regressions but was not authored by an independent external evaluator.",
+    "verbatim_policy": {
+      "minimum_protected_phrase_characters": 12,
+      "rule": "Reject a normalized query that duplicates a development query or contains a corpus title, summary, keyword, or concept alias of at least the configured compact length. Short legal terms may overlap because they identify the governed concept."
+    },
+    "limitations": [
+      "The maintainer authored both the system and this holdout, so the benchmark is not independent external validation.",
+      "The set covers only the eight article records in the repository corpus and does not measure legal completeness.",
+      "Labels test article retrieval and abstention, not generated-answer correctness, legal interpretation, or legal advice.",
+      "Queries are mainly Korean and do not establish multilingual or production-traffic performance."
+    ]
+  },
+  "case_counts": {
+    "positive": 16,
+    "distractor": 8,
+    "negative": 12
+  },
+  "acceptance_thresholds": {
+    "minimum_recall_at_k": 0.75,
+    "minimum_negative_abstention_rate": 0.75,
+    "minimum_distractor_rejection_at_1": 0.75,
+    "minimum_expected_status_match_rate": 1.0,
+    "maximum_false_support_rate": 0.25,
+    "maximum_instrument_leakage_at_k": 0.0
+  },
+  "cases": [
+    {
+      "id": "holdout-positive-cbam-6-a",
+      "type": "positive",
+      "query": "CBAM 연간 신고에서 물품 수량이 빠졌다면 어느 규정을 찾아야 하나",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART6"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "declaration-quantity"
+      ]
+    },
+    {
+      "id": "holdout-positive-cbam-6-b",
+      "type": "positive",
+      "query": "CBAM 신고에 들여온 물량과 반납할 증서 개수를 적는 근거가 궁금하다",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART6"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "certificate-count"
+      ]
+    },
+    {
+      "id": "holdout-positive-cbam-7-a",
+      "type": "positive",
+      "query": "CBAM 제품 1톤당 배출집약도를 실측치와 대체 수치 중 무엇으로 산정하는지 근거를 찾고 싶다",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART7"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "actual-or-default"
+      ]
+    },
+    {
+      "id": "holdout-positive-cbam-7-b",
+      "type": "positive",
+      "query": "CBAM 복합재 제조 때 투입재의 내재배출량을 완제품에 합치는 계산 규칙은 어디에 있나",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART7"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "precursor-calculation"
+      ]
+    },
+    {
+      "id": "holdout-positive-cbam-8-a",
+      "type": "positive",
+      "query": "CBAM 설비 실측치를 신고하기 전 검증인 확인이 필요한 근거",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART8"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "assurance"
+      ]
+    },
+    {
+      "id": "holdout-positive-cbam-8-b",
+      "type": "positive",
+      "query": "제조소가 계산한 실제 탄소량을 CBAM에 쓰려면 어떤 검증인이 확인해야 하는가",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART8"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "verifier"
+      ]
+    },
+    {
+      "id": "holdout-positive-cbam-9-a",
+      "type": "positive",
+      "query": "수출국 배출권 비용을 이미 부담한 경우 CBAM 중복 부담을 공제하려면 무엇을 입증해야 하나",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART9"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "foreign-carbon-price"
+      ]
+    },
+    {
+      "id": "holdout-positive-cbam-9-b",
+      "type": "positive",
+      "query": "제3국 탄소세를 CBAM 증서 개수에서 차감할 때 환급분까지 빼야 하나",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART9"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "rebate"
+      ]
+    },
+    {
+      "id": "holdout-positive-eudr-4-a",
+      "type": "positive",
+      "query": "EUDR 적용 제품을 판매망에 올리기 전에 운영자가 실사와 전자 진술을 마쳐야 하는 근거",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART4"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "operator-duty"
+      ]
+    },
+    {
+      "id": "holdout-positive-eudr-4-b",
+      "type": "positive",
+      "query": "EUDR 대상품을 EU 밖으로 내보내기 전 사업자가 실사를 해야 하는 근거는 어디인가",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART4"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "export-duty"
+      ]
+    },
+    {
+      "id": "holdout-positive-eudr-9-a",
+      "type": "positive",
+      "query": "EUDR 원료의 생산지 좌표와 수확 시점을 자료에 넣어야 하는 근거",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART9"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "plot-location"
+      ]
+    },
+    {
+      "id": "holdout-positive-eudr-9-b",
+      "type": "positive",
+      "query": "공급망 서류에서 위경도와 재배 시기가 누락됐다면 어떤 EUDR 조문인가",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART9"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "coordinates"
+      ]
+    },
+    {
+      "id": "holdout-positive-eudr-10-a",
+      "type": "positive",
+      "query": "EUDR 서류를 모은 뒤 규정 위반 가능성이 거의 없는지 위험 평가하는 절차는 어디에 있나",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART10"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "risk-review"
+      ]
+    },
+    {
+      "id": "holdout-positive-eudr-10-b",
+      "type": "positive",
+      "query": "원료 산지가 벌채와 연결됐을 가능성을 위험 평가하는 EUDR 단계의 근거",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART10"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "evidence-review"
+      ]
+    },
+    {
+      "id": "holdout-positive-eudr-11-a",
+      "type": "positive",
+      "query": "EUDR 검토 결과 우려가 남으면 현장 확인이나 별도 감사를 추가해야 하는 근거",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART11"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "additional-checks"
+      ]
+    },
+    {
+      "id": "holdout-positive-eudr-11-b",
+      "type": "positive",
+      "query": "위반 가능성을 충분히 낮추지 못한 경우 위험 완화를 위해 보충자료가 필요한 EUDR 절차",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART11"
+      ],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "paraphrase",
+        "supplemental-evidence"
+      ]
+    },
+    {
+      "id": "holdout-distractor-cbam-6-v-7",
+      "type": "distractor",
+      "query": "CBAM 계산 파일이 아니라 연말 신고의 물품 수량이 빠진 문제는 어느 조항인가",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART6"
+      ],
+      "forbidden_ids": [
+        "CBAM-ART7"
+      ],
+      "tags": [
+        "holdout",
+        "contrast",
+        "declaration-not-calculation"
+      ]
+    },
+    {
+      "id": "holdout-distractor-cbam-7-v-8",
+      "type": "distractor",
+      "query": "CBAM 외부 검토자가 아니라 실측값과 대체 배출계수 사이의 계산 선택 근거를 찾는다",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART7"
+      ],
+      "forbidden_ids": [
+        "CBAM-ART8"
+      ],
+      "tags": [
+        "holdout",
+        "contrast",
+        "calculation-not-verification"
+      ]
+    },
+    {
+      "id": "holdout-distractor-cbam-8-v-9",
+      "type": "distractor",
+      "query": "해외 탄소비용 공제가 아니라 CBAM 실제 수치에 외부 검증이 필요한 문제",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART8"
+      ],
+      "forbidden_ids": [
+        "CBAM-ART9"
+      ],
+      "tags": [
+        "holdout",
+        "contrast",
+        "verification-not-deduction"
+      ]
+    },
+    {
+      "id": "holdout-distractor-cbam-9-v-6",
+      "type": "distractor",
+      "query": "CBAM 신고 일반 내용보다 제3국 탄소가격 차감의 납부 증빙이 쟁점이다",
+      "expected_status": "supported",
+      "expected_instrument": "CBAM",
+      "expected_ids": [
+        "CBAM-ART9"
+      ],
+      "forbidden_ids": [
+        "CBAM-ART6"
+      ],
+      "tags": [
+        "holdout",
+        "contrast",
+        "deduction-not-declaration"
+      ]
+    },
+    {
+      "id": "holdout-distractor-eudr-4-v-9",
+      "type": "distractor",
+      "query": "농장 위치 정보가 아니라 EUDR 상품을 판매하기 전 운영자가 먼저 할 실사 의무",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART4"
+      ],
+      "forbidden_ids": [
+        "EUDR-ART9"
+      ],
+      "tags": [
+        "holdout",
+        "contrast",
+        "operator-duty-not-location"
+      ]
+    },
+    {
+      "id": "holdout-distractor-eudr-9-v-10",
+      "type": "distractor",
+      "query": "위험 판단 절차보다 EUDR 생산지 좌표와 수확 때가 누락된 문제",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART9"
+      ],
+      "forbidden_ids": [
+        "EUDR-ART10"
+      ],
+      "tags": [
+        "holdout",
+        "contrast",
+        "information-not-assessment"
+      ]
+    },
+    {
+      "id": "holdout-distractor-eudr-10-v-11",
+      "type": "distractor",
+      "query": "EUDR 위험 완화 조치가 아니라 정보와 문서를 분석해 비준수 위험을 평가하는 근거",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART10"
+      ],
+      "forbidden_ids": [
+        "EUDR-ART11"
+      ],
+      "tags": [
+        "holdout",
+        "contrast",
+        "assessment-not-mitigation"
+      ]
+    },
+    {
+      "id": "holdout-distractor-eudr-11-v-10",
+      "type": "distractor",
+      "query": "EUDR 위험 판정이 끝난 뒤 위험 완화를 위해 추가 조사하는 단계는 어디인가",
+      "expected_status": "supported",
+      "expected_instrument": "EUDR",
+      "expected_ids": [
+        "EUDR-ART11"
+      ],
+      "forbidden_ids": [
+        "EUDR-ART10"
+      ],
+      "tags": [
+        "holdout",
+        "contrast",
+        "mitigation-not-assessment"
+      ]
+    },
+    {
+      "id": "holdout-negative-cbam-slides",
+      "type": "negative",
+      "query": "CBAM 로고가 들어간 발표 슬라이드 색상을 추천해줘",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "CBAM-ART6",
+        "CBAM-ART7"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "design"
+      ]
+    },
+    {
+      "id": "holdout-negative-price-chart",
+      "type": "negative",
+      "query": "탄소가격 그래프 축 눈금을 보기 좋게 바꿔줘",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "CBAM-ART9"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "chart"
+      ]
+    },
+    {
+      "id": "holdout-negative-certificate-pdf",
+      "type": "negative",
+      "query": "인증서 PDF 파일을 이미지로 변환하는 방법",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "CBAM-ART6",
+        "CBAM-ART8"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "file-conversion"
+      ]
+    },
+    {
+      "id": "holdout-negative-emissions-dashboard",
+      "type": "negative",
+      "query": "내재 탄소 센서 값을 보여줄 대시보드 라이브러리를 골라줘",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "CBAM-ART7",
+        "CBAM-ART8"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "software-choice"
+      ]
+    },
+    {
+      "id": "holdout-negative-eudr-map-ui",
+      "type": "negative",
+      "query": "EUDR 농장 좌표를 지도 타일에 그리는 화면 구성",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "EUDR-ART9"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "map-ui"
+      ]
+    },
+    {
+      "id": "holdout-negative-risk-model",
+      "type": "negative",
+      "query": "산림 위험 모델의 F1 점수를 높이는 튜닝",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "EUDR-ART10",
+        "EUDR-ART11"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "machine-learning"
+      ]
+    },
+    {
+      "id": "holdout-negative-due-diligence-icon",
+      "type": "negative",
+      "query": "실사 진술 화면에 쓸 아이콘을 만들어줘",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "EUDR-ART4"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "icon"
+      ]
+    },
+    {
+      "id": "holdout-negative-carbon-blog",
+      "type": "negative",
+      "query": "제3국 탄소세를 설명하는 블로그 제목을 써줘",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "CBAM-ART9"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "copywriting"
+      ]
+    },
+    {
+      "id": "holdout-negative-verifier-card",
+      "type": "negative",
+      "query": "검증 담당자 연락처 카드의 글꼴 크기를 조정해줘",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "CBAM-ART8"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "contact-card"
+      ]
+    },
+    {
+      "id": "holdout-negative-mitigation-poster",
+      "type": "negative",
+      "query": "위험 완화 교육 포스터 문구를 짧게 만들어줘",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "EUDR-ART11"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "poster"
+      ]
+    },
+    {
+      "id": "holdout-negative-lunch",
+      "type": "negative",
+      "query": "오늘 점심 예약 시간을 정해줘",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [],
+      "tags": [
+        "holdout",
+        "out-of-domain",
+        "daily-life"
+      ]
+    },
+    {
+      "id": "holdout-negative-article-nine-novel",
+      "type": "negative",
+      "query": "Article 9라는 제목의 소설 줄거리를 써줘",
+      "expected_status": "abstained",
+      "expected_ids": [],
+      "forbidden_ids": [
+        "CBAM-ART9",
+        "EUDR-ART9"
+      ],
+      "tags": [
+        "holdout",
+        "hard-negative",
+        "ambiguous-article"
+      ]
+    }
+  ]
+}

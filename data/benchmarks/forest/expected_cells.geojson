@@ -1,0 +1,1178 @@
+{
+  "bbox": [
+    500000.0,
+    4099960.0,
+    500060.0,
+    4100000.0
+  ],
+  "benchmark": {
+    "benchmark_id": "ECO-FOREST-GEO-SYN-2026-001",
+    "claim_boundary": {
+      "demonstrates": [
+        "strict offline CRS and affine geotransform contract validation",
+        "native projected pixel polygons and affine-determinant area accounting",
+        "nodata, cloud, and shadow exclusion before NDVI evaluation",
+        "acquisition timestamp and declared seasonality policy validation",
+        "deterministic clipped tiling and tile-level spatial holdout plumbing",
+        "reference provenance and valid-holdout-only binary metric accounting"
+      ],
+      "does_not_demonstrate": [
+        "real Sentinel or Landsat ingestion, calibration, atmospheric correction, cloud-mask quality, or co-registration",
+        "real-world forest-loss accuracy, learned-model generalization, or independent ground truth",
+        "geodetic reprojection or RFC 7946 WGS84 interchange",
+        "CNN, XAI, production-scale raster performance, field verification, or EUDR compliance"
+      ]
+    },
+    "classification": "synthetic_geospatial_plumbing_benchmark",
+    "purpose": "Verify fail-closed geospatial metadata, masking, spatial holdout, tiling, polygon, area, and metric plumbing with a small team-authored fixture."
+  },
+  "coordinate_reference_system": {
+    "authority": "EPSG",
+    "axis_unit": "metre",
+    "code": 32652,
+    "coordinate_space": "native_projected",
+    "name": "WGS 84 / UTM zone 52N",
+    "note": "Native projected coordinates are retained to test affine geometry; reproject before RFC 7946 interchange.",
+    "rfc7946_wgs84": false
+  },
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500000.0,
+              4100000.0
+            ],
+            [
+              500000.0,
+              4099990.0
+            ],
+            [
+              500010.0,
+              4099990.0
+            ],
+            [
+              500010.0,
+              4100000.0
+            ],
+            [
+              500000.0,
+              4100000.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c000",
+      "properties": {
+        "col": 0,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "row": 0,
+        "split": "train",
+        "tile_id": "tile-r0000-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500010.0,
+              4100000.0
+            ],
+            [
+              500010.0,
+              4099990.0
+            ],
+            [
+              500020.0,
+              4099990.0
+            ],
+            [
+              500020.0,
+              4100000.0
+            ],
+            [
+              500010.0,
+              4100000.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c001",
+      "properties": {
+        "col": 1,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "row": 0,
+        "split": "train",
+        "tile_id": "tile-r0000-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500020.0,
+              4100000.0
+            ],
+            [
+              500020.0,
+              4099990.0
+            ],
+            [
+              500030.0,
+              4099990.0
+            ],
+            [
+              500030.0,
+              4100000.0
+            ],
+            [
+              500020.0,
+              4100000.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c002",
+      "properties": {
+        "col": 2,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "row": 0,
+        "split": "train",
+        "tile_id": "tile-r0000-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500030.0,
+              4100000.0
+            ],
+            [
+              500030.0,
+              4099990.0
+            ],
+            [
+              500040.0,
+              4099990.0
+            ],
+            [
+              500040.0,
+              4100000.0
+            ],
+            [
+              500030.0,
+              4100000.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c003",
+      "properties": {
+        "col": 3,
+        "confusion_class": "tn",
+        "evaluation_included": true,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "row": 0,
+        "split": "holdout",
+        "tile_id": "tile-r0000-c0003",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500040.0,
+              4100000.0
+            ],
+            [
+              500040.0,
+              4099990.0
+            ],
+            [
+              500050.0,
+              4099990.0
+            ],
+            [
+              500050.0,
+              4100000.0
+            ],
+            [
+              500040.0,
+              4100000.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c004",
+      "properties": {
+        "col": 4,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [
+          "qa_before:cloud"
+        ],
+        "ndvi_after": null,
+        "ndvi_before": null,
+        "ndvi_change": null,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": null,
+        "reference_loss": false,
+        "row": 0,
+        "split": "holdout",
+        "tile_id": "tile-r0000-c0003",
+        "valid": false
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500050.0,
+              4100000.0
+            ],
+            [
+              500050.0,
+              4099990.0
+            ],
+            [
+              500060.0,
+              4099990.0
+            ],
+            [
+              500060.0,
+              4100000.0
+            ],
+            [
+              500050.0,
+              4100000.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r000-c005",
+      "properties": {
+        "col": 5,
+        "confusion_class": "tp",
+        "evaluation_included": true,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "row": 0,
+        "split": "holdout",
+        "tile_id": "tile-r0000-c0003",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500000.0,
+              4099990.0
+            ],
+            [
+              500000.0,
+              4099980.0
+            ],
+            [
+              500010.0,
+              4099980.0
+            ],
+            [
+              500010.0,
+              4099990.0
+            ],
+            [
+              500000.0,
+              4099990.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c000",
+      "properties": {
+        "col": 0,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "row": 1,
+        "split": "train",
+        "tile_id": "tile-r0000-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500010.0,
+              4099990.0
+            ],
+            [
+              500010.0,
+              4099980.0
+            ],
+            [
+              500020.0,
+              4099980.0
+            ],
+            [
+              500020.0,
+              4099990.0
+            ],
+            [
+              500010.0,
+              4099990.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c001",
+      "properties": {
+        "col": 1,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "row": 1,
+        "split": "train",
+        "tile_id": "tile-r0000-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500020.0,
+              4099990.0
+            ],
+            [
+              500020.0,
+              4099980.0
+            ],
+            [
+              500030.0,
+              4099980.0
+            ],
+            [
+              500030.0,
+              4099990.0
+            ],
+            [
+              500020.0,
+              4099990.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c002",
+      "properties": {
+        "col": 2,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "row": 1,
+        "split": "train",
+        "tile_id": "tile-r0000-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500030.0,
+              4099990.0
+            ],
+            [
+              500030.0,
+              4099980.0
+            ],
+            [
+              500040.0,
+              4099980.0
+            ],
+            [
+              500040.0,
+              4099990.0
+            ],
+            [
+              500030.0,
+              4099990.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c003",
+      "properties": {
+        "col": 3,
+        "confusion_class": "tp",
+        "evaluation_included": true,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "row": 1,
+        "split": "holdout",
+        "tile_id": "tile-r0000-c0003",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500040.0,
+              4099990.0
+            ],
+            [
+              500040.0,
+              4099980.0
+            ],
+            [
+              500050.0,
+              4099980.0
+            ],
+            [
+              500050.0,
+              4099990.0
+            ],
+            [
+              500040.0,
+              4099990.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c004",
+      "properties": {
+        "col": 4,
+        "confusion_class": "fn",
+        "evaluation_included": true,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": true,
+        "row": 1,
+        "split": "holdout",
+        "tile_id": "tile-r0000-c0003",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500050.0,
+              4099990.0
+            ],
+            [
+              500050.0,
+              4099980.0
+            ],
+            [
+              500060.0,
+              4099980.0
+            ],
+            [
+              500060.0,
+              4099990.0
+            ],
+            [
+              500050.0,
+              4099990.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r001-c005",
+      "properties": {
+        "col": 5,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [
+          "nodata_after"
+        ],
+        "ndvi_after": null,
+        "ndvi_before": null,
+        "ndvi_change": null,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": null,
+        "reference_loss": false,
+        "row": 1,
+        "split": "holdout",
+        "tile_id": "tile-r0000-c0003",
+        "valid": false
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500000.0,
+              4099980.0
+            ],
+            [
+              500000.0,
+              4099970.0
+            ],
+            [
+              500010.0,
+              4099970.0
+            ],
+            [
+              500010.0,
+              4099980.0
+            ],
+            [
+              500000.0,
+              4099980.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c000",
+      "properties": {
+        "col": 0,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "row": 2,
+        "split": "train",
+        "tile_id": "tile-r0002-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500010.0,
+              4099980.0
+            ],
+            [
+              500010.0,
+              4099970.0
+            ],
+            [
+              500020.0,
+              4099970.0
+            ],
+            [
+              500020.0,
+              4099980.0
+            ],
+            [
+              500010.0,
+              4099980.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c001",
+      "properties": {
+        "col": 1,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "row": 2,
+        "split": "train",
+        "tile_id": "tile-r0002-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500020.0,
+              4099980.0
+            ],
+            [
+              500020.0,
+              4099970.0
+            ],
+            [
+              500030.0,
+              4099970.0
+            ],
+            [
+              500030.0,
+              4099980.0
+            ],
+            [
+              500020.0,
+              4099980.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c002",
+      "properties": {
+        "col": 2,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "row": 2,
+        "split": "train",
+        "tile_id": "tile-r0002-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500030.0,
+              4099980.0
+            ],
+            [
+              500030.0,
+              4099970.0
+            ],
+            [
+              500040.0,
+              4099970.0
+            ],
+            [
+              500040.0,
+              4099980.0
+            ],
+            [
+              500030.0,
+              4099980.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c003",
+      "properties": {
+        "col": 3,
+        "confusion_class": "tp",
+        "evaluation_included": true,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "row": 2,
+        "split": "holdout",
+        "tile_id": "tile-r0002-c0003",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500040.0,
+              4099980.0
+            ],
+            [
+              500040.0,
+              4099970.0
+            ],
+            [
+              500050.0,
+              4099970.0
+            ],
+            [
+              500050.0,
+              4099980.0
+            ],
+            [
+              500040.0,
+              4099980.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c004",
+      "properties": {
+        "col": 4,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [
+          "qa_after:shadow"
+        ],
+        "ndvi_after": null,
+        "ndvi_before": null,
+        "ndvi_change": null,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": null,
+        "reference_loss": true,
+        "row": 2,
+        "split": "holdout",
+        "tile_id": "tile-r0002-c0003",
+        "valid": false
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500050.0,
+              4099980.0
+            ],
+            [
+              500050.0,
+              4099970.0
+            ],
+            [
+              500060.0,
+              4099970.0
+            ],
+            [
+              500060.0,
+              4099980.0
+            ],
+            [
+              500050.0,
+              4099980.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r002-c005",
+      "properties": {
+        "col": 5,
+        "confusion_class": "fp",
+        "evaluation_included": true,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": false,
+        "row": 2,
+        "split": "holdout",
+        "tile_id": "tile-r0002-c0003",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500000.0,
+              4099970.0
+            ],
+            [
+              500000.0,
+              4099960.0
+            ],
+            [
+              500010.0,
+              4099960.0
+            ],
+            [
+              500010.0,
+              4099970.0
+            ],
+            [
+              500000.0,
+              4099970.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c000",
+      "properties": {
+        "col": 0,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "row": 3,
+        "split": "train",
+        "tile_id": "tile-r0002-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500010.0,
+              4099970.0
+            ],
+            [
+              500010.0,
+              4099960.0
+            ],
+            [
+              500020.0,
+              4099960.0
+            ],
+            [
+              500020.0,
+              4099970.0
+            ],
+            [
+              500010.0,
+              4099970.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c001",
+      "properties": {
+        "col": 1,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [
+          "qa_after:cloud"
+        ],
+        "ndvi_after": null,
+        "ndvi_before": null,
+        "ndvi_change": null,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": null,
+        "reference_loss": false,
+        "row": 3,
+        "split": "train",
+        "tile_id": "tile-r0002-c0000",
+        "valid": false
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500020.0,
+              4099970.0
+            ],
+            [
+              500020.0,
+              4099960.0
+            ],
+            [
+              500030.0,
+              4099960.0
+            ],
+            [
+              500030.0,
+              4099970.0
+            ],
+            [
+              500020.0,
+              4099970.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c002",
+      "properties": {
+        "col": 2,
+        "confusion_class": null,
+        "evaluation_included": false,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "row": 3,
+        "split": "train",
+        "tile_id": "tile-r0002-c0000",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500030.0,
+              4099970.0
+            ],
+            [
+              500030.0,
+              4099960.0
+            ],
+            [
+              500040.0,
+              4099960.0
+            ],
+            [
+              500040.0,
+              4099970.0
+            ],
+            [
+              500030.0,
+              4099970.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c003",
+      "properties": {
+        "col": 3,
+        "confusion_class": "tn",
+        "evaluation_included": true,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "row": 3,
+        "split": "holdout",
+        "tile_id": "tile-r0002-c0003",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500040.0,
+              4099970.0
+            ],
+            [
+              500040.0,
+              4099960.0
+            ],
+            [
+              500050.0,
+              4099960.0
+            ],
+            [
+              500050.0,
+              4099970.0
+            ],
+            [
+              500040.0,
+              4099970.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c004",
+      "properties": {
+        "col": 4,
+        "confusion_class": "tp",
+        "evaluation_included": true,
+        "mask_reasons": [],
+        "ndvi_after": -0.142857,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.642857,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": true,
+        "reference_loss": true,
+        "row": 3,
+        "split": "holdout",
+        "tile_id": "tile-r0002-c0003",
+        "valid": true
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              500050.0,
+              4099970.0
+            ],
+            [
+              500050.0,
+              4099960.0
+            ],
+            [
+              500060.0,
+              4099960.0
+            ],
+            [
+              500060.0,
+              4099970.0
+            ],
+            [
+              500050.0,
+              4099970.0
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "id": "cell-r003-c005",
+      "properties": {
+        "col": 5,
+        "confusion_class": "tn",
+        "evaluation_included": true,
+        "mask_reasons": [],
+        "ndvi_after": 0.45,
+        "ndvi_before": 0.5,
+        "ndvi_change": -0.05,
+        "pixel_area_m2": 100.0,
+        "predicted_loss": false,
+        "reference_loss": false,
+        "row": 3,
+        "split": "holdout",
+        "tile_id": "tile-r0002-c0003",
+        "valid": true
+      },
+      "type": "Feature"
+    }
+  ],
+  "name": "ecoguard_synthetic_geospatial_plumbing_benchmark",
+  "type": "FeatureCollection"
+}

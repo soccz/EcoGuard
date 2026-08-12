@@ -14,6 +14,8 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
+from .jsonio import strict_json_file
+
 
 ALIASES = {
     "총 출하 중량": "shipment_mass_t",
@@ -202,8 +204,7 @@ class Candidate:
 
 
 def load_policy(path: str | Path) -> dict[str, Any]:
-    with Path(path).open(encoding="utf-8") as handle:
-        policy = json.load(handle)
+    policy = strict_json_file(path)
     _validate_policy(policy)
     return policy
 
@@ -1222,6 +1223,43 @@ SOURCE_REFERENCE_KEYS = {
     "line_sha256",
     "document_sha256",
 }
+NORMALIZED_PAYLOAD_KEYS = {
+    "schema_version",
+    "case_id",
+    "notice",
+    "policy",
+    "source_documents",
+    "source_lines",
+    "ingestion_summary",
+    "fields",
+    "issues",
+    "observations",
+    "validation_ledger",
+    "rejected_records",
+    "summary",
+}
+NORMALIZED_FIELD_KEYS = {
+    "value",
+    "unit",
+    "transformation",
+    "selected_from",
+    "selection",
+    "candidates",
+}
+SELECTION_METADATA_KEYS = {"policy_id", "strategy", "reason", "candidate_count"}
+SOURCE_LINE_KEYS = {
+    "document_id",
+    "page",
+    "line",
+    "text",
+    "confidence",
+    "line_sha256",
+}
+CANDIDATE_KEYS = {
+    *Candidate.__dataclass_fields__,
+    "selection_rank",
+    "selected",
+}
 
 
 def _validated_line_index(documents: list[Any], source_lines: list[Any]) -> tuple[
@@ -1234,7 +1272,7 @@ def _validated_line_index(documents: list[Any], source_lines: list[Any]) -> tupl
     line_index: dict[tuple[str, int, int], dict[str, Any]] = {}
     lines_by_document: dict[str, list[tuple[int, int, str, float]]] = {}
     for source_line in source_lines:
-        if not isinstance(source_line, dict):
+        if not isinstance(source_line, dict) or set(source_line) != SOURCE_LINE_KEYS:
             raise ValueError("normalized source line entries must be objects")
         document_id = source_line.get("document_id")
         page = source_line.get("page")
@@ -1355,7 +1393,7 @@ def _validate_candidate_completeness(
 def _candidate_validation_key(
     field_name: str, candidate: Any
 ) -> tuple[bool, int, float, int]:
-    if not isinstance(candidate, dict):
+    if not isinstance(candidate, dict) or set(candidate) != CANDIDATE_KEYS:
         raise ValueError(f"normalized field has invalid candidates: {field_name}")
     authority = candidate.get("authority_rank")
     confidence = candidate.get("confidence")
@@ -1604,6 +1642,11 @@ def validate_normalized_evidence(
     payload: dict[str, Any], required_fields: Iterable[str]
 ) -> None:
     """Re-check selected values against retained OCR lines and document hashes."""
+    if not isinstance(payload, dict) or set(payload) not in (
+        NORMALIZED_PAYLOAD_KEYS,
+        NORMALIZED_PAYLOAD_KEYS | {"reproduction"},
+    ):
+        raise ValueError("normalized evidence has missing or unsupported properties")
     if payload.get("schema_version") != NORMALIZED_SCHEMA_VERSION:
         raise ValueError(
             "unsupported normalized evidence schema_version; expected "
@@ -1628,7 +1671,13 @@ def validate_normalized_evidence(
     selected_candidates: dict[str, dict[str, Any]] = {}
     all_candidates: list[dict[str, Any]] = []
     for field_name, details in sorted(fields.items()):
-        if field_name not in SUPPORTED_FIELDS or not isinstance(details, dict):
+        if (
+            field_name not in SUPPORTED_FIELDS
+            or not isinstance(details, dict)
+            or set(details) != NORMALIZED_FIELD_KEYS
+            or not isinstance(details.get("selection"), dict)
+            or set(details["selection"]) != SELECTION_METADATA_KEYS
+        ):
             raise ValueError(f"normalized evidence has invalid field: {field_name}")
         candidates = details.get("candidates")
         if not isinstance(candidates, list) or not candidates:
@@ -1672,7 +1721,6 @@ def normalize_file(
     *,
     policy_path: str | Path | None = None,
 ) -> dict[str, Any]:
-    with Path(path).open(encoding="utf-8") as handle:
-        payload = json.load(handle)
+    payload = strict_json_file(path)
     policy = load_policy(policy_path) if policy_path else None
     return normalize_records(payload, policy)

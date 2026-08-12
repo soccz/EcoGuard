@@ -98,6 +98,37 @@ class CliStageTests(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 main(["legal-search", "CBAM 검증 조항", "--limit", "0"])
 
+    def test_benchmark_cli_writes_six_auditable_outputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.assertEqual(
+                main(
+                    [
+                        "benchmark",
+                        "--root",
+                        str(ROOT),
+                        "--output",
+                        directory,
+                    ]
+                ),
+                0,
+            )
+            names = {path.name for path in Path(directory).iterdir()}
+            self.assertEqual(
+                names,
+                {
+                    "benchmark_manifest.json",
+                    "cbam_rule_coverage_report.json",
+                    "forest_geospatial.geojson",
+                    "forest_geospatial_summary.json",
+                    "legal_blind_evaluation.json",
+                    "ocr_field_benchmark.json",
+                },
+            )
+
+        with redirect_stderr(StringIO()):
+            with self.assertRaises(SystemExit):
+                main(["benchmark", "--output", directory])
+
 
 if __name__ == "__main__":
     unittest.main()

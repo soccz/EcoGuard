@@ -1,0 +1,52 @@
+{
+  "schema_version": "forest-public-data-opt-in/1.0",
+  "classification": "network_opt_in_metadata_only",
+  "purpose": "Document authoritative discovery paths for a future licensed public-scene benchmark without downloading or committing remote imagery.",
+  "automatic_download": false,
+  "runtime_used_by_default": false,
+  "downloaded_assets_committed": false,
+  "verified_on": "2026-08-12",
+  "providers": [
+    {
+      "provider": "Copernicus Data Space Ecosystem",
+      "mission": "Sentinel-2",
+      "product": "Level-2A surface reflectance",
+      "catalog_protocol": "STAC",
+      "catalog_root": "https://stac.dataspace.copernicus.eu/v1/",
+      "collection": "sentinel-2-l2a",
+      "official_documentation": "https://documentation.dataspace.copernicus.eu/APIs/STAC.html",
+      "terms_url": "https://dataspace.copernicus.eu/terms-and-conditions",
+      "access_note": "Discovery is public; asset access conditions and registration requirements must be checked by the person explicitly opting in."
+    },
+    {
+      "provider": "U.S. Geological Survey",
+      "mission": "Landsat 8/9",
+      "product": "Collection 2 Level-2 surface reflectance",
+      "catalog_protocol": "STAC",
+      "catalog_root": "https://landsatlook.usgs.gov/stac-server/",
+      "collection": "landsat-c2l2-sr",
+      "official_documentation": "https://www.usgs.gov/landsat-missions/spatiotemporal-asset-catalog-stac",
+      "terms_url": "https://www.usgs.gov/faqs/are-landsat-data-cloud-still-considered-be-within-public-domain",
+      "access_note": "USGS describes Landsat data as public domain and requests source acknowledgement; cloud-provider charges or credentials may still apply."
+    }
+  ],
+  "adapter_contract": {
+    "explicit_user_opt_in_required": true,
+    "network_client_in_runtime_package": false,
+    "required_user_selection": [
+      "provider and immutable scene IDs",
+      "AOI and acquisition windows",
+      "license or terms acceptance record",
+      "red, NIR, quality-mask, CRS, affine transform, and timestamp assets"
+    ],
+    "required_local_record": [
+      "upstream item metadata and asset URLs",
+      "download timestamp and byte-level SHA-256",
+      "band scale and offset",
+      "cloud, shadow, saturation, and nodata decoding",
+      "reprojection, resampling, co-registration, and compositing decisions",
+      "reference-label license, creator, method, and spatial split"
+    ],
+    "repository_policy": "Downloaded raster assets and credentials stay untracked; only reviewed manifests, hashes, derived aggregate evidence, and licensing notes may be proposed separately."
+  }
+}
