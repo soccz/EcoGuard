@@ -32,7 +32,7 @@ ecoguard-api = "ecoguard.api:main"
 
 [project.optional-dependencies]
 dev = [
-  "black==24.8.0",
+  "black==26.5.1",
   "coverage==7.15.4",
   "hypothesis==6.165.3",
   "jsonschema==4.26.0",
