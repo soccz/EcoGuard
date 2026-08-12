@@ -16,7 +16,7 @@
 
 선택한 검색 단위는 Article 6(신고), 7(내재배출량 계산), 8(검증), 9(제3국에서 지불한 탄소가격)입니다.
 
-2025/2547과 2025/2620은 v0.3가 각각 생산공정 방법론과 공식 free-allocation adjustment를 완전히 구현한다고 주장하지 않도록 경계를 확인하는 데 사용했습니다. 합성 component trace는 산술·provenance 검증용이며 두 시행규칙의 coverage table이 아닙니다.
+2025/2547과 2025/2620은 공개본이 각각 생산공정 방법론과 공식 free-allocation adjustment를 완전히 구현한다고 주장하지 않도록 경계를 확인하는 데 사용했습니다. 합성 component trace는 산술·provenance 검증용이며 두 시행규칙의 coverage table이 아닙니다.
 
 ## EUDR
 

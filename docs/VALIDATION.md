@@ -28,7 +28,7 @@
 | Manifest 8 input·10 output의 byte/hash가 실제 파일과 일치 | 모든 공개 input + artifact | `ecoguard.pipeline.reproduce` | `test_contracts.PublicContractTests.test_manifest_hashes_match_every_committed_input_and_output_byte` | `artifacts/examples/artifact_manifest.json` |
 | 공개 fixture 4종은 Draft 2020-12 JSON Schema와 runtime의 핵심 contract를 함께 만족 | trade bundle, normalization policy, forest case, artifact manifest | `schemas/*.schema.json` + 각 runtime loader | `test_contracts.PublicContractTests.test_public_fixtures_validate_against_draft_2020_12_schemas`; `test_contracts.PublicContractTests.test_forest_schema_rejects_invalid_runtime_contract_examples` | const·required·additionalProperties·decimal string·nested shape 오류를 거절 |
 | runtime은 network I/O 없이 재현 가능 | packaged/public fixture | `ecoguard.pipeline.reproduce` | `test_pipeline.PipelineTests.test_reproduction_performs_no_network_io` | 임시 디렉터리의 11개 public artifact |
-| 설치 wheel을 저장소 밖에서 실행해 golden과 byte-identical | wheel에 포함된 resource 8개 | `scripts/verify_release.sh` | `test_resources.PackagedResourceTests.test_package_contains_only_declared_public_resources`; script가 clean source snapshot build, source/installed-wheel tests와 `diff -ru`를 모두 실행 | stale ignored `build/` 파일의 wheel 재유입 차단; `artifacts/examples/` 전체; build dependency 최초 확보까지 offline이라는 주장은 아님 |
+| 동일 commit의 wheel SHA가 일치하고, 설치 wheel을 저장소 밖에서 실행해 golden과 byte-identical | Git tracked source와 wheel에 포함된 resource 8개 | `scripts/verify_release.sh` | `test_resources.PackagedResourceTests.test_package_contains_only_declared_public_resources`; script가 dirty/untracked guard, tracked-only snapshot, `SOURCE_DATE_EPOCH` 고정 2회 build, wheel SHA 비교, source/installed-wheel tests와 `diff -ru`를 모두 실행 | ignored 파일은 release snapshot에서 제외; build dependency 최초 확보까지 offline이라는 주장은 아님 |
 
 ## 입력 변화와 동등 변형
 
@@ -47,4 +47,4 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 ./scripts/verify_release.sh
 ```
 
-두 번째 명령이 완료돼야 source tree뿐 아니라 fresh wheel, 저장소 밖 runtime과 committed golden까지 함께 검증한 것입니다.
+두 번째 명령은 clean worktree에서만 실행되며, 완료돼야 source tree, 두 번 재현한 동일 wheel, 저장소 밖 runtime과 committed golden까지 함께 검증한 것입니다. GitHub Actions는 이 계약을 Python 3.11·3.12·3.13에서 각각 실행합니다.

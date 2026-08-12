@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/soccz/EcoGuard/main/schemas/trade_case_documents.schema.json",
+  "$id": "https://raw.githubusercontent.com/soccz/EcoGuard/v0.4.0/schemas/trade_case_documents.schema.json",
   "title": "EcoGuard synthetic OCR document bundle",
   "type": "object",
   "additionalProperties": false,

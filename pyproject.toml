@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ecoguard-evidence"
-version = "0.3.0"
+version = "0.4.0"
 description = "Auditable OCR-after preprocessing, legal retrieval, CBAM and forest evidence pipeline"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "Team UniHana" }]
+authors = [{ name = "soccz" }]
 keywords = ["cbam", "eudr", "trade-finance", "data-quality", "legal-retrieval"]
 classifiers = [
   "Development Status :: 3 - Alpha",

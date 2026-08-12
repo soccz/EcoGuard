@@ -1,8 +1,26 @@
 # EcoGuard
 
-**비정형 무역자료를 계산 가능한 값으로 바꾸는 것보다, 그 값이 어디에서 왔고 왜 선택됐는지 증명하는 일이 더 어려웠습니다.** EcoGuard는 이 증명 과정을 코드로 재구성한 3인 팀의 무역금융 교육용 PoC입니다.
+[![Python 3.11–3.13 verification](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml)
+[![Release v0.4.0](https://img.shields.io/badge/release-v0.4.0-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.4.0)
 
-2026 하나 청년 금융인재 양성 프로젝트에서 Team UniHana가 개발·발표해 **대상(상장 표기: 금융감독원상)**을 받았습니다. [연합뉴스 보도](https://www.yna.co.kr/view/AKR20260724041100002)와 [하나금융그룹 제공 보도자료 게재본](https://www.hankyung.com/article/202607243395P)에 따르면 대상 팀에는 상장과 상금 1천만 원이 수여됐습니다. 공개 저장소는 수상 당시 화면을 복제하거나 수상 결과를 기술 정확도의 증거로 삼지 않고, 팀이 중요하게 본 기술을 합성 데이터와 결정론적 테스트로 다시 실행합니다.
+**비정형 무역자료를 계산 가능한 값으로 바꾸는 것보다, 그 값이 어디에서 왔고 왜 선택됐는지 증명하는 일이 더 어려웠습니다.** EcoGuard는 이 증명 과정을 코드로 재구성한 무역금융 교육용 PoC입니다.
+
+2026 하나 청년 금융인재 양성 프로젝트에서 3인 Team UniHana가 준비·발표해 **대상(상장 표기: 금융감독원상)**을 받았습니다. [연합뉴스 보도](https://www.yna.co.kr/view/AKR20260724041100002)와 [하나금융그룹 제공 보도자료 게재본](https://www.hankyung.com/article/202607243395P)에 따르면 대상 팀에는 상장과 상금 1천만 원이 수여됐습니다. 대상은 세 사람이 함께 만든 팀 성과이며, 수상 결과를 아래 코드의 정확도 증거로 사용하지 않습니다.
+
+## 이 저장소의 기술 저자와 공개 범위
+
+저장소 소유자 [**@soccz**](https://github.com/soccz)는 대회에서 **핵심 기술 엔진의 단독 개발 책임자**로 참여해 CBAM 계산·가격 민감도, 산림 변화 분석, 데이터 처리·검증 로직을 설계하고 구현했습니다. 현재 v0.4 공개본의 Python 패키지, schema, 테스트와 재현 산출물도 이 개발 범위를 제3자가 검증할 수 있도록 @soccz가 정리한 것입니다.
+
+이 문장은 팀 전체 결과를 개인 성과로 바꾸려는 설명이 아닙니다. 대회 수상과 프로젝트 결과는 3인 팀의 공동 성과입니다. 다른 참여자의 세부 역할, 원본 Live Demo와 발표용 웹 구현은 이 기술 저장소의 공개·평가 범위에 넣지 않습니다.
+
+### 대회 당시 기술과 공개 v0.4의 차이
+
+| 시점 | 실제 범위 | 이 저장소와의 관계 |
+|---|---|---|
+| **2026 대회 당시** | @soccz가 핵심 엔진을 설계·구현하고, 팀이 이를 발표용 서비스 흐름으로 구성해 시연 | 원본 서비스·전체 소스·실데이터·비공개 Demo는 포함하지 않음 |
+| **공개 v0.4 재현본** | OCR 이후 정규화와 provenance, Legal retrieval 기준선, CBAM trace, 합성 NDVI 평가를 dependency-free Python으로 재구성 | 합성 입력·고정 정책·테스트·golden artifact로 공개 기술 주장만 재현 |
+
+즉, 이 저장소는 대회 당시 운영 백엔드의 그대로인 복원본이 아니라, 당시 @soccz가 담당한 핵심 개발을 **공개 가능한 입력과 더 엄격한 검증 계약으로 재구성한 기술 증거**입니다.
 
 ```text
 7개 합성 문서의 OCR line payload
@@ -23,16 +41,19 @@
 |---|---|---|
 | **이 GitHub 저장소** | 기술 주장을 다시 실행하고 검증할 수 있는가? | 합성 입력, Python 패키지, 테스트, schema, golden artifact, 재현 명령 |
 | [**상세 프로젝트 보고서**](https://soccz.github.io/projects/ecoguard/) | 어떤 대회를 준비했고, 왜 이 문제로 좁혔으며, 무엇을 배우고 발표했는가? | 수상 기록, CarbonCast→EcoGuard 발전 과정, 현업·법무 피드백, 화면, 회고와 한계 |
-| [**공개용 4쪽 발췌본**](presentation/EcoGuard_Selected_Excerpt.pdf) | 발표의 핵심을 짧게 훑을 수 있는가? | OCR 이후 전처리, 조문 근거, CBAM·산림 기술 경계와 proof journey |
+| [**공개용 4쪽 case study**](presentation/EcoGuard_Selected_Excerpt.pdf) | 프로젝트의 핵심을 짧게 훑을 수 있는가? | OCR 이후 전처리, 조문 근거, CBAM·산림 기술 경계와 proof journey |
 
 과정과 발표 맥락을 먼저 보려면 상세 보고서부터, 구현 근거를 확인하려면 아래 재현 명령부터 읽으면 됩니다. 원본 Live Demo는 공개하지 않습니다.
 
 ## 한 번에 재현하기
 
 Python 3.11 이상과 표준 라이브러리만 있으면 런타임에 네트워크가 필요하지 않습니다.
+아래 명령은 검증된 `v0.4.0` 릴리스 태그를 고정합니다. `main`은 다음 변경이
+먼저 들어올 수 있는 개발 브랜치이므로 동일 결과를 인용하거나 검증할 때는 태그를
+사용합니다.
 
 ```bash
-git clone https://github.com/soccz/EcoGuard.git
+git clone --branch v0.4.0 --depth 1 https://github.com/soccz/EcoGuard.git
 cd EcoGuard
 python3 -m venv .venv
 source .venv/bin/activate
@@ -57,11 +78,16 @@ python -m pip install -e .
 
 1. 전체 단위·회귀·통합·Draft 2020-12 schema 테스트
 2. source tree compile + Ruff + Black
-3. ignored build 잔재를 제외한 공개 파일 snapshot에서 wheel build
-4. wheel package resource 8개 allow-list 검사
-5. 임시 virtualenv 설치 후 전체 테스트 재실행
-6. 저장소 밖의 빈 작업 디렉터리에서 실행
-7. `artifacts/examples/`와 생성 결과의 byte-for-byte diff
+3. tracked 수정·non-ignored 미추적 파일이 없는 clean worktree 확인
+4. Git이 추적하는 파일만 source snapshot에 복사
+5. commit timestamp를 `SOURCE_DATE_EPOCH`으로 고정해 wheel을 두 번 build하고 SHA-256 일치 확인
+6. wheel package resource 8개 allow-list 검사
+7. 임시 virtualenv 설치 후 전체 테스트 재실행
+8. 저장소 밖의 빈 작업 디렉터리에서 실행
+9. `artifacts/examples/`와 생성 결과의 byte-for-byte diff
+
+GitHub Actions에서도 같은 스크립트를 Python 3.11·3.12·3.13에서 실행합니다. 태그
+릴리스는 세 버전의 검증이 모두 성공한 뒤에만 생성됩니다.
 
 `make test`, `make reproduce`, `make verify`도 같은 진입점을 제공합니다.
 
@@ -261,7 +287,7 @@ docs/                  # methodology, architecture, journey and limitations
 - [한계와 다음 검증](docs/LIMITATIONS.md)
 - [주장-입력-코드-테스트-산출물 검증표](docs/VALIDATION.md)
 - [공식 법령 출처와 버전](data/reference/README.md)
-- [공개용 4쪽 프로젝트 발췌본](presentation/EcoGuard_Selected_Excerpt.pdf)
+- [공개용 4쪽 프로젝트 case study](presentation/EcoGuard_Selected_Excerpt.pdf)
 - [생성된 evidence report 예시](artifacts/examples/ecoguard_evidence_report.html)
 
 원본 Live Demo 주소와 대회 전체 발표자료는 공개하지 않습니다. 모든 사례 데이터는 합성이며, EcoGuard는 하나은행의 공식 제품이 아니고 법률·통관·금융 자문을 제공하지 않습니다.
