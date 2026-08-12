@@ -131,7 +131,7 @@ Golden output excludes timestamps, random IDs, absolute paths and host-specific 
 
 1. refuse tracked changes and non-ignored untracked files
 2. test, compile, lint and format-check the source tree
-3. copy only Git-tracked files into a source snapshot
+3. export clean HEAD twice with `git archive` so tracked bytes, modes and timestamps are canonical
 4. build the wheel twice with the commit timestamp as `SOURCE_DATE_EPOCH`
 5. require the two wheel SHA-256 digests to match
 6. install into a fresh venv and rerun the complete test suite

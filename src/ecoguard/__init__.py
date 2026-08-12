@@ -3,4 +3,4 @@
 from .pipeline import reproduce
 
 __all__ = ["reproduce"]
-__version__ = "0.4.0"
+__version__ = "0.4.1"

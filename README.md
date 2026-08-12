@@ -1,7 +1,7 @@
 # EcoGuard
 
 [![Python 3.11–3.13 verification](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml)
-[![Release v0.4.0](https://img.shields.io/badge/release-v0.4.0-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.4.0)
+[![Release v0.4.1](https://img.shields.io/badge/release-v0.4.1-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.4.1)
 
 **비정형 무역자료를 계산 가능한 값으로 바꾸는 것보다, 그 값이 어디에서 왔고 왜 선택됐는지 증명하는 일이 더 어려웠습니다.** EcoGuard는 이 증명 과정을 코드로 재구성한 무역금융 교육용 PoC입니다.
 
@@ -48,12 +48,12 @@
 ## 한 번에 재현하기
 
 Python 3.11 이상과 표준 라이브러리만 있으면 런타임에 네트워크가 필요하지 않습니다.
-아래 명령은 검증된 `v0.4.0` 릴리스 태그를 고정합니다. `main`은 다음 변경이
+아래 명령은 검증된 `v0.4.1` 릴리스 태그를 고정합니다. `main`은 다음 변경이
 먼저 들어올 수 있는 개발 브랜치이므로 동일 결과를 인용하거나 검증할 때는 태그를
 사용합니다.
 
 ```bash
-git clone --branch v0.4.0 --depth 1 https://github.com/soccz/EcoGuard.git
+git clone --branch v0.4.1 --depth 1 https://github.com/soccz/EcoGuard.git
 cd EcoGuard
 python3 -m venv .venv
 source .venv/bin/activate
@@ -79,7 +79,7 @@ python -m pip install -e .
 1. 전체 단위·회귀·통합·Draft 2020-12 schema 테스트
 2. source tree compile + Ruff + Black
 3. tracked 수정·non-ignored 미추적 파일이 없는 clean worktree 확인
-4. Git이 추적하는 파일만 source snapshot에 복사
+4. clean HEAD를 Git archive로 두 번 내보내 파일 mode·timestamp까지 정규화
 5. commit timestamp를 `SOURCE_DATE_EPOCH`으로 고정해 wheel을 두 번 build하고 SHA-256 일치 확인
 6. wheel package resource 8개 allow-list 검사
 7. 임시 virtualenv 설치 후 전체 테스트 재실행

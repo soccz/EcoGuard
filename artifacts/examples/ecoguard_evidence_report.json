@@ -903,7 +903,7 @@
           "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
         }
       },
-      "pipeline_version": "0.4.0",
+      "pipeline_version": "0.4.1",
       "schema_version": "3.0.0"
     },
     "schema_version": "cbam-scenario/3.0",
@@ -2756,7 +2756,7 @@
           "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
         }
       },
-      "pipeline_version": "0.4.0",
+      "pipeline_version": "0.4.1",
       "schema_version": "3.0.0"
     },
     "schema_version": "2.0.0",
@@ -3353,7 +3353,7 @@
           "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
         }
       },
-      "pipeline_version": "0.4.0",
+      "pipeline_version": "0.4.1",
       "schema_version": "3.0.0"
     },
     "schema_version": "2.0.0",
@@ -4364,7 +4364,7 @@
           "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
         }
       },
-      "pipeline_version": "0.4.0",
+      "pipeline_version": "0.4.1",
       "schema_version": "3.0.0"
     },
     "retriever_version": "legal-bm25f-v2.1",
@@ -20445,7 +20445,7 @@
           "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
         }
       },
-      "pipeline_version": "0.4.0",
+      "pipeline_version": "0.4.1",
       "schema_version": "3.0.0"
     },
     "retrieval_case_count": 24,
@@ -22380,7 +22380,7 @@
           "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
         }
       },
-      "pipeline_version": "0.4.0",
+      "pipeline_version": "0.4.1",
       "schema_version": "3.0.0"
     },
     "schema_version": "3.0.0",
@@ -23105,7 +23105,7 @@
         "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
       }
     },
-    "pipeline_version": "0.4.0",
+    "pipeline_version": "0.4.1",
     "schema_version": "3.0.0"
   },
   "schema_version": "evidence-packet/3.0"

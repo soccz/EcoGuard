@@ -55,23 +55,20 @@ PYTHONPATH="$repo_dir/src" \
 "$verify_dir/tooling/bin/python" -m black --check src tests
 require_clean_worktree "source verification"
 
-# Make two independent snapshots from Git's tracked-file allow-list. Neither
-# ignored build residue nor an untracked local file can enter a release wheel.
-copy_tracked_source() {
+# Export two independent source trees from the committed Git object. This
+# excludes ignored/untracked residue and normalizes tracked file modes and
+# timestamps across worktrees before the wheel builder sees them.
+export_tracked_source() {
   local destination="$1"
-  local source_path
 
   mkdir -p "$destination"
-  while IFS= read -r -d '' source_path; do
-    mkdir -p "$destination/$(dirname "$source_path")"
-    cp -a "$repo_dir/$source_path" "$destination/$source_path"
-  done < <(git -C "$repo_dir" ls-files --cached -z)
+  git -C "$repo_dir" archive --format=tar HEAD | tar -xf - -C "$destination"
 }
 
 source_one="$verify_dir/source-one"
 source_two="$verify_dir/source-two"
-copy_tracked_source "$source_one"
-copy_tracked_source "$source_two"
+export_tracked_source "$source_one"
+export_tracked_source "$source_two"
 
 "$verify_dir/tooling/bin/python" -m pip wheel \
   --disable-pip-version-check \
@@ -129,7 +126,7 @@ require_clean_worktree "final verification"
 echo "EcoGuard release verification passed."
 echo "- lint/format: Ruff and Black"
 echo "- unit/schema tests: source tree and installed wheel"
-echo "- source snapshot: Git-tracked files from clean HEAD"
+echo "- source snapshot: canonical Git archive from clean HEAD"
 echo "- reproducible wheel SHA-256: $wheel_sha256"
 echo "- runtime cwd: $verify_dir/runtime"
 echo "- golden artifacts: byte-identical"

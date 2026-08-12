@@ -43,7 +43,7 @@ class PublicContractTests(unittest.TestCase):
                 self.assertTrue(payload["$id"].endswith("/" + path.name))
                 self.assertTrue(
                     payload["$id"].startswith(
-                        "https://raw.githubusercontent.com/soccz/EcoGuard/v0.4.0/schemas/"
+                        "https://raw.githubusercontent.com/soccz/EcoGuard/v0.4.1/schemas/"
                     )
                 )
                 self.assertEqual(payload["type"], "object")

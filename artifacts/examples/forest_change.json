@@ -518,7 +518,7 @@
         "sha256": "0f4f54ff9e9d7c36f38bf345b9ba0f4a56b4429e1fc396f38966f6d0abf33566"
       }
     },
-    "pipeline_version": "0.4.0",
+    "pipeline_version": "0.4.1",
     "schema_version": "3.0.0"
   },
   "schema_version": "2.0.0",

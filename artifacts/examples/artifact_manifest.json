@@ -36,7 +36,7 @@
   "outputs": {
     "cbam_exposure": {
       "bytes": 76338,
-      "sha256": "06f27b4d55c0ff994c00eeff21de5675811037479acef298baf3657c9237be9f"
+      "sha256": "11fe6c97cdcb3436acb305d17d8147c54096be3c4e972758be84be517c09b607"
     },
     "evidence_report_html": {
       "bytes": 35752,
@@ -44,15 +44,15 @@
     },
     "evidence_report_json": {
       "bytes": 818918,
-      "sha256": "5eb2d182d9f24e1b41296a7bb43005e97a95dc9910b277b266c8a114b4763ec9"
+      "sha256": "b932dfaee0439ffa4e458d5b26ddf3059537e9c00696c6d2c46c5e5c400a83a4"
     },
     "extracted_records": {
       "bytes": 28297,
-      "sha256": "b56ee713f54e645f0178c3ec74dc1ec079b5576a4f3fca35262294f425a33b14"
+      "sha256": "045b42b21a2107c448705a82f77d379d4968125ba53c6c31984be156734815dd"
     },
     "forest_change": {
       "bytes": 12421,
-      "sha256": "6760ab2a7d38010e7e8d71733a16fd937a4caae8060513f1b4a3c80579558737"
+      "sha256": "023a9178b3836ff05dd286ea13fed1252abd5a4e40194a1b03d576cc4bd77f30"
     },
     "forest_change_geojson": {
       "bytes": 34477,
@@ -64,18 +64,18 @@
     },
     "legal_issue_citations": {
       "bytes": 35565,
-      "sha256": "6abffb07e4dac4319f24973de35ff312628aa3eaad3785a911f1c1d3de2c10ce"
+      "sha256": "a3f6449f03472ed5b49653f9992ab8a9b217a3d69fa8232db37f74e820b33b76"
     },
     "legal_retrieval_evaluation": {
       "bytes": 527086,
-      "sha256": "c9d35f8eb52e24db29fafc7670955be6e6cbae73ca20584c7ea7be75050cf1e5"
+      "sha256": "7e45c065cc34a203245812e2afad5a2cd0dd730dc2f517d0093a7afaba669041"
     },
     "normalized_evidence": {
       "bytes": 89613,
-      "sha256": "71ab33a53c6d5a3f0f0b19690476691898240c97bfa399fa5462944c1a2aa8b4"
+      "sha256": "cfd17b3ca29bd90291fb0054c0c27fa6385a354988831a4c7a2e08e794f3600b"
     }
   },
-  "pipeline_version": "0.4.0",
+  "pipeline_version": "0.4.1",
   "schema_version": "artifact-manifest/1.0",
   "verification": "Re-run `python -m ecoguard reproduce` and compare SHA-256 values or execute `./scripts/verify_release.sh` for a wheel-installed exact diff."
 }

@@ -59,8 +59,11 @@ jobs:
             echo "Tag $GITHUB_REF_NAME does not match package version $package_version." >&2
             exit 1
           fi
+          umask 022
           export SOURCE_DATE_EPOCH="$(git show -s --format=%ct HEAD)"
-          python -m pip wheel --disable-pip-version-check --no-deps --wheel-dir dist .
+          mkdir -p release-source
+          git archive --format=tar HEAD | tar -xf - -C release-source
+          python -m pip wheel --disable-pip-version-check --no-deps --wheel-dir dist release-source
 
       - name: Publish verified tag artifacts
         env:
