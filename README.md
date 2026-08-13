@@ -20,6 +20,7 @@
 |---|---|---|
 | **2026 대회 당시** | @soccz가 핵심 엔진을 설계·구현하고, 팀이 이를 발표용 서비스 흐름으로 구성해 시연 | 원본 서비스·전체 소스·실데이터·비공개 Demo는 포함하지 않음 |
 | **공개 v0.5 재현본** | OCR engine-output adapter, 정규화와 provenance, Legal retrieval·blind-style holdout, CBAM trace·규칙 coverage, 합성 NDVI·geospatial 평가를 dependency-free Python으로 재구성 | 합성 입력·고정 정책·정량 benchmark·golden artifact로 공개 기술 주장만 재현 |
+| **선택형 산림 연구 트랙** | 공개 Sentinel-2 단일시점 산림피복 CNN·Grad-CAM과 합성 전후영상 CNN·JVP를 core 밖에서 재현 | `research/forest_xai` 전용 의존성·테스트·artifact를 사용하며 v0.5 wheel 및 core 수치에 포함하지 않음 |
 
 즉, 이 저장소는 대회 당시 운영 백엔드의 그대로인 복원본이 아니라, 당시 @soccz가 담당한 핵심 개발을 **공개 가능한 입력과 더 엄격한 검증 계약으로 재구성한 기술 증거**입니다.
 
@@ -34,9 +35,15 @@ Tesseract TSV / provider-neutral JSON / pdftotext 출력
   → CBAM component 산식 DAG + 가격 민감도
   → NDVI mask + geotransform·cloud/nodata·spatial holdout + GeoJSON
   → 사람이 검토하는 JSON/HTML evidence packet
+
+optional research/forest_xai (core wheel 밖)
+  실제 공개 단일시점 Sentinel-2 chip
+    → forest-cover CNN → evaluation → Grad-CAM
+  합성 before/after 4-band pair
+    → change CNN → Grad-CAM + local latent JVP
 ```
 
-> OCR 이미지 인식 모델, 법률 LLM, 법정 CBAM 계산기, 운영 위성 모델을 주장하지 않습니다. 공개 코드는 **외부 OCR 출력 이후의 정규화**, **citation retrieval**, **비법정 기술 인벤토리**, **합성 지리공간 검증 plumbing**을 재현합니다.
+> Core는 OCR 이미지 인식 모델, 법률 LLM, 법정 CBAM 계산기 또는 운영 위성 모델을 주장하지 않습니다. 선택형 연구 트랙의 실제 위성 축도 **단일시점 산림피복 segmentation**일 뿐 실제 전후시점 산림변화 탐지가 아닙니다. HiGAN 재현, 발표 당시 `83.4% → 96.2%`, 위성영상에서 3D를 생성하는 pipeline은 구현·검증됐다고 주장하지 않습니다.
 
 ## 자료별 역할과 읽는 순서
 
@@ -111,7 +118,24 @@ python -m pip install -e '.[dev]'
 `make verify`는 격리된 임시
 환경에 고정된 개발 의존성을 스스로 설치합니다.
 
-## 현재 공개본이 실제로 검증하는 것
+Core release suite에는 **174개 test method**가 있으며 이 수치는 `tests/`와
+dependency-free wheel의 계약만 가리킵니다. 선택형 산림 연구 트랙의 PyTorch
+의존성, 9개 연구 테스트, 모델 metric과 artifact는 이 숫자에 더하지 않습니다.
+위 `v0.5.0` tag 명령은 core release를 고정합니다. 아래 명령은
+`research/forest_xai` 디렉터리가 있는 현재 소스 트리에서 별도 환경으로 실행합니다.
+
+```bash
+python -m pip install -r research/forest_xai/requirements.txt
+python -m unittest discover -s research/forest_xai/tests -v
+python -m research.forest_xai.scripts.verify_public_demo
+```
+
+마지막 명령은 학습을 다시 하지 않고 committed fixture·checkpoint hash를 검사한
+뒤 CPU 추론과 Grad-CAM 산출물을 다시 만들어 byte 계약을 대조합니다. 80 epoch
+CPU 재학습까지 반복하려면 `--retrain`을 붙입니다. 자세한 설치·실행 경계는
+[`research/forest_xai/README.md`](research/forest_xai/README.md)에 있습니다.
+
+## 현재 v0.5 core가 실제로 검증하는 것
 
 | 단계 | 공개 입력 | 결정론적 출력과 검증 | 경계 |
 |---|---|---|---|
@@ -148,6 +172,40 @@ CBAM coverage     15 selected rules · partial 8 · not implemented 7 · complet
 Legal의 1.0은 의도적으로 고정한 작은 회귀셋이 기대 citation을 회수한다는 뜻입니다. 일반 EU 법률 검색 성능으로 해석하지 않습니다. Forest 지표도 실제 영상 성능이 아니라 metric code가 오탐·미탐을 드러내는지 확인하는 합성 reference 결과입니다.
 
 각 수치가 어느 입력·함수·테스트·산출물로 검증되는지는 [주장-증거 검증표](docs/VALIDATION.md)에서 바로 대조할 수 있습니다.
+
+### 선택형 산림 연구 트랙은 무엇을 더 증명하는가
+
+이 트랙은 core의 합성 geospatial benchmark를 실제 위성 정확도로 바꾸지 않습니다.
+서로 다른 두 실험을 나란히 두되 입력과 주장을 섞지 않는 것이 목적입니다.
+
+| 연구 축 | 입력·분할 | 공개 구현과 고정 결과 | 주장하지 않는 것 |
+|---|---|---|---|
+| 실제 단일시점 산림피복 | CC BY 4.0 Sentinel-2 L2A B4/B3/B2/B8 derivative; train 24 chip·2 scene / evaluation 12 chip·2 scene, scene overlap 0 | `TinyForestCoverSegmenter`, checkpoint+sidecar, CPU 재평가, forest F1 0.947917·IoU 0.900991, reference-targeted Grad-CAM | 전후 변화, 산림훼손 원인·합법성, 외부 독립 benchmark, 현장 일반화 |
+| 합성 전후영상 smoke test | 프로그램으로 만든 before/after 4-band pair와 change mask | 작은 change CNN의 train/evaluate/explain, segmentation Grad-CAM, local classifier-score JVP, checkpoint tamper guard | 실제 위성 metric, GAN·HiGAN, 인과 counterfactual, semantic latent factor |
+
+아래는 evaluation sample `S2-EV-003`의 공개 artifact입니다. Grad-CAM은
+모델 민감도를 보여 줄 뿐, 분류 근거의 인과성이나 생태학적 타당성을
+증명하지 않습니다.
+
+<table>
+  <tr>
+    <th>Sentinel-2 RGB</th>
+    <th>Forest probability</th>
+    <th>Reference-targeted Grad-CAM</th>
+  </tr>
+  <tr>
+    <td><img src="research/forest_xai/artifacts/public_demo/explanation/sentinel2_rgb.png" alt="Sentinel-2 RGB chip S2-EV-003" width="260"></td>
+    <td><img src="research/forest_xai/artifacts/public_demo/explanation/forest_probability.png" alt="Forest-cover probability for S2-EV-003" width="260"></td>
+    <td><img src="research/forest_xai/artifacts/public_demo/explanation/gradcam.png" alt="Reference-targeted Grad-CAM for S2-EV-003" width="260"></td>
+  </tr>
+</table>
+
+F1 0.947917·IoU 0.900991은 네 개의 maintainer-selected source scene에서
+만든 작은 forest/non-forest **capability fixture**의 결과입니다. 발표 수치,
+실제 산림변화 정확도, 외부 독립 평가와 비교할 수 없습니다. 데이터
+출처·derivative·split은 [`DATA_CARD.md`](research/forest_xai/DATA_CARD.md), 모델
+구조·metric·위험은 [`MODEL_CARD.md`](research/forest_xai/MODEL_CARD.md), 전체
+실행 순서는 [`research/forest_xai/README.md`](research/forest_xai/README.md)에 고정했습니다.
 
 ## 1. OCR 이후의 데이터 전처리
 
@@ -271,7 +329,11 @@ python -m ecoguard.geospatial \
   --geojson /tmp/forest-cells.geojson
 ```
 
-[산림 benchmark 문서](docs/FOREST_BENCHMARK.md)는 Sentinel-2와 Landsat 공식 STAC/terms를 opt-in metadata로만 연결합니다. 저장소는 영상·credential을 내려받지 않으며 실제 장면을 쓸 때 필요한 scene ID, asset hash, band scale, QA, reprojection, co-registration, reference license를 명시합니다.
+[산림 benchmark 문서](docs/FOREST_BENCHMARK.md)는 core 입력과 선택형 연구 입력을
+따로 설명합니다. Core는 Sentinel-2·Landsat 공식 STAC/terms를 opt-in
+metadata로만 연결하고 영상·credential을 내려받지 않습니다. 선택형 연구는
+출처와 CC BY 4.0을 고정한 소형 `.npy` derivative를 commit하지만, raw
+scene 다운로드·reprojection·co-registration adapter는 제공하지 않습니다.
 
 ## 5. 속성 테스트·로컬 API·공급망 경계
 
@@ -357,15 +419,21 @@ schemas/               # machine-readable public input contract
 artifacts/examples/    # committed byte-stable golden outputs
 artifacts/benchmarks/  # committed benchmark evidence and manifest
 docs/                  # methodology, architecture, journey and limitations
+
+research/forest_xai/   # optional PyTorch track; core wheel 밖
+├── data/public_fixture/       # attributed 24 train + 12 evaluation chips
+├── artifacts/public_demo/     # checkpoint, metrics and Grad-CAM evidence
+└── tests/                     # 9 research-only test methods
 ```
 
 ## 구현·시뮬레이션·제안 경계
 
 | 상태 | 범위 |
 |---|---|
-| Implemented and tested | OCR output adapters/field evaluation, preprocessing/lineage, BM25F retrieval/holdout, component CBAM sensitivity and coverage map, synthetic NDVI/geospatial evaluation, local API, reports/manifests |
-| Simulated with synthetic inputs | OCR engine output, document confidence, 기업·거래·설비, 가격·집약도, raster CRS/time/QA, band/reference mask |
-| Not implemented / proposed | OCR vision model, LLM answer generation, 전체 EU 법령 corpus, Hana 내부 연동, 법정 CBAM 의무 계산, 실제 위성 수집·reprojection·CNN/XAI, 자동 금융 승인 |
+| Core: implemented and tested | OCR output adapters/field evaluation, preprocessing/lineage, BM25F retrieval/holdout, component CBAM sensitivity and coverage map, synthetic NDVI/geospatial evaluation, local API, reports/manifests |
+| Optional research: implemented and separately tested | 공개 Sentinel-2 derivative의 단일시점 forest-cover CNN·evaluation·Grad-CAM |
+| Simulated with synthetic inputs | OCR engine output, document confidence, 기업·거래·설비, 가격·집약도, raster CRS/time/QA, band/reference mask, before/after change CNN·local latent JVP |
+| Not implemented / proposed | OCR vision model, LLM answer generation, 전체 EU 법령 corpus, Hana 내부 연동, 법정 CBAM 의무 계산, 실제 bi-temporal 산림변화, HiGAN 재현, `83.4% → 96.2%` 재현, 위성→3D pipeline, 자동 금융 승인 |
 
 ## 프로젝트 과정과 공개 자료
 
@@ -379,6 +447,9 @@ docs/                  # methodology, architecture, journey and limitations
 - [Legal blind-style 평가 경계](docs/LEGAL_BLIND_EVAL.md)
 - [CBAM 공식 규칙 coverage 경계](docs/CBAM_COVERAGE.md)
 - [산림 geospatial benchmark](docs/FOREST_BENCHMARK.md)
+- [선택형 Forest XAI 실행 가이드](research/forest_xai/README.md)
+- [공개 Sentinel-2 derivative 데이터 카드](research/forest_xai/DATA_CARD.md)
+- [단일시점 forest-cover CNN 모델 카드](research/forest_xai/MODEL_CARD.md)
 - [대회 보관 자료와 공개 재구성의 provenance](docs/COMPETITION_PROVENANCE.md)
 - [로컬 API와 운영 전 필수 경계](docs/OPERATIONS.md)
 - [변경 기록](CHANGELOG.md) · [기여 규칙](CONTRIBUTING.md) · [보안 정책](SECURITY.md)
@@ -386,7 +457,10 @@ docs/                  # methodology, architecture, journey and limitations
 - [공개용 4쪽 프로젝트 case study](presentation/EcoGuard_Selected_Excerpt.pdf)
 - [생성된 evidence report 예시](artifacts/examples/ecoguard_evidence_report.html)
 
-원본 Live Demo 주소와 대회 전체 발표자료는 공개하지 않습니다. 모든 사례 데이터는 합성이며, EcoGuard는 하나은행의 공식 제품이 아니고 법률·통관·금융 자문을 제공하지 않습니다.
+원본 Live Demo 주소와 대회 전체 발표자료는 공개하지 않습니다. Core의 사례
+데이터는 합성입니다. 유일한 공개 위성 예외인 선택형 연구 derivative의 출처·라이선스는
+data card에 구분해 기록했습니다. EcoGuard는 하나은행의 공식 제품이 아니고
+법률·통관·금융 자문을 제공하지 않습니다.
 
 ## License
 

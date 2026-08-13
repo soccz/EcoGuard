@@ -14,7 +14,7 @@
 |---|---|---|---|
 | 문서 처리 | 합성 무역문서 생성기와 발표용 추출 화면 | OCR adapter contract, 원문 span/hash, 단위 정규화, 후보 선택 ledger와 benchmark | 특정 상용 OCR 엔진의 정확도 |
 | CBAM | CarbonCast 초기 Python 계산과 EcoGuard 발표 시나리오 | 품목×component DAG, direct/indirect 및 process/precursor 대사, 가격 민감도, provenance 재검증 | 법정 납부액 계산기 또는 EU 신고 인증 |
-| 산림 | 위성/XAI 및 현장형 시각화 발표 화면 | 합성 red/NIR 기준선, reference mask 평가, geotransform·cloud/nodata·spatial split 검증 | 대회 화면의 모델·정확도 또는 운영 위성 pipeline |
+| 산림 | 위성/XAI 및 현장형 시각화 발표 화면 | Core의 합성 red/NIR·geospatial 기준선; 선택형 공개 Sentinel-2 단일시점 forest-cover CNN·Grad-CAM; 합성 before/after CNN·JVP | 대회 화면의 모델·정확도, 실제 bi-temporal change, HiGAN, 위성→3D 또는 운영 pipeline |
 | 법률 | EU 조문 탐색·응답 흐름 | official identifier binding, citation retrieval, 기권, 고정·blind evaluation | 생성형 법률 답변이나 법률 자문 |
 
 ## 비공개 원본의 제한적 확인 가능성
@@ -28,3 +28,21 @@
 3. 개발 책임은 저장소 소유자의 명시적 attestation이며, 상장·외부 보도는 팀의 수상 사실을 별도로 뒷받침합니다.
 
 이 구분은 “수상 뒤에 만든 공개 검증 코드”를 “대회 당시 그대로 운영된 코드”로 과장하지 않으면서, 핵심 기술이 어떤 자료에서 어떤 검증 가능한 구현으로 발전했는지를 남기기 위한 것입니다.
+
+## 발표 언어와 현재 재현 증거의 경계
+
+발표 자료·대본에 등장한 시연 설명은 당시 프로젝트의 의도와 화면을
+설명하는 provenance입니다. 아래 표는 그 문구를 현재 공개 코드의 실험 결과로
+바꿔 인용하지 않기 위한 claim boundary입니다.
+
+| 발표 시대 표현 | 현재 공개 증거 | 아직 필요한 동일성 증거 |
+|---|---|---|
+| `83.4% → 96.2%` | 공개 재현 성공 수치로 사용하지 않음. 현재 0.947917 F1은 서로 다른 단일시점 forest-cover fixture의 값 | 같은 task·dataset version·split·preprocessing·metric·checkpoint·evaluation code |
+| HiGAN/HIGAN 활용 | 특정 논문·공개 구현의 재현이 없음. Synthetic local JVP는 명시적으로 `not_a_gan`, `not_a_reproduction` | 정확한 논문·commit·architecture·loss·data·weight·evaluation 계약 |
+| Grad-CAM으로 개선 확인 | 현재 Grad-CAM은 한 모델의 국소 민감도 artifact일 뿐 metric 개선을 증명하지 않음 | 동일 데이터·split의 ablation과 부트스트랩 불확실성 |
+| 위성 영상의 산림변화 | 공개 실제 위성 경로는 단일시점 forest cover. Before/after 경로는 합성 | 라이선스가 명확한 실제 scene pair, co-registration, 독립 change label, 시공간 holdout |
+| 위성→3D | 현재 출력은 2D mask·PNG·GeoJSON·SVG. 고도 복원 코드가 없음 | DEM·stereo·LiDAR·photogrammetry 중 적합한 고도 근거, 기하 검증, 정확도 평가 |
+
+선택형 공개 CNN·Grad-CAM은 발표 의도의 한 부분을 제3자가 실행할 수 있게
+새로 만든 후속 증거입니다. 대회 당시 모델이나 가중치의 복원본이 아니며,
+다른 task의 수치를 이어 붙여 발표 성능을 간접 입증하지 않습니다.

@@ -55,9 +55,13 @@ COVERAGE_FILE="$verify_dir/.coverage" \
   "$verify_dir/tooling/bin/python" -m coverage report
 PYTHONPATH="$repo_dir/src" \
   "$verify_dir/tooling/bin/python" -m compileall -q src tests
-"$verify_dir/tooling/bin/python" -m compileall -q scripts/benchmark_ocr.py
-"$verify_dir/tooling/bin/python" -m ruff check src tests scripts/benchmark_ocr.py
-"$verify_dir/tooling/bin/python" -m black --check src tests scripts/benchmark_ocr.py
+"$verify_dir/tooling/bin/python" -m compileall -q \
+  scripts/benchmark_ocr.py \
+  research/forest_xai
+"$verify_dir/tooling/bin/python" -m ruff check \
+  src tests scripts/benchmark_ocr.py research/forest_xai
+"$verify_dir/tooling/bin/python" -m black --check \
+  src tests scripts/benchmark_ocr.py research/forest_xai
 bash -n scripts/*.sh
 require_clean_worktree "source verification"
 

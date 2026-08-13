@@ -2,6 +2,30 @@
 
 All notable public reconstruction changes are recorded here. Competition-era private implementation is mapped separately in [COMPETITION_PROVENANCE.md](docs/COMPETITION_PROVENANCE.md).
 
+## [Unreleased]
+
+### Added
+
+- Optional `research/forest_xai` track, isolated from the dependency-free wheel
+- attributed public Sentinel-2 single-date forest-cover fixture, compact CNN,
+  checkpoint, evaluation, model/data cards, and Grad-CAM artifacts
+- synthetic paired-image change CNN and exact local classifier-score JVP smoke test
+- separate CPU research workflow and fast/full reproducibility verifiers
+- PyTorch 2.13 CPU checkpoint loading with `weights_only=True`, file/tensor hashes,
+  exact metadata sidecars, and tamper regression tests
+
+### Changed
+
+- core `make verify` now also lints and byte-compiles `research/forest_xai`
+  (research tests, dependencies, metrics and artifacts stay outside core counts)
+- new `forest-xai-test` and `forest-xai-verify` Makefile targets for the
+  research track
+
+### Boundaries
+
+- no claim of real bi-temporal forest-loss detection, HiGAN reproduction,
+  presentation-era score reproduction, or satellite-to-3D reconstruction
+
 ## [0.5.0] - 2026-08-12
 
 ### Added

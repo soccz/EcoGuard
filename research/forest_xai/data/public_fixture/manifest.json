@@ -1,0 +1,230 @@
+{
+  "claim_boundary": {
+    "bi_temporal_change_detection": false,
+    "deforestation_cause_or_legality": false,
+    "external_independent_benchmark": false,
+    "forest_cover_segmentation": true,
+    "purpose": "small CPU-reproducible capability demonstration, not field validation",
+    "real_public_satellite_pixels": true
+  },
+  "derivation": {
+    "committed_shape": [
+      4,
+      64,
+      64
+    ],
+    "image_operation": "clip(DN / 10000, 0, 1), then non-overlapping 8x8 mean",
+    "input": "Sentinel-2 L2A B4/B3/B2/B8 chips and binary forest masks",
+    "mask_operation": "non-overlapping 8x8 forest coverage >= 0.5",
+    "source_shape": [
+      4,
+      512,
+      512
+    ],
+    "split_policy": "source scene IDs are disjoint between train and evaluation"
+  },
+  "files": {
+    "evaluation_images": {
+      "dtype": "float32",
+      "path": "evaluation_images.npy",
+      "sha256": "2f0198b1459010fd44eb58f22d8e3fd4125a8e4517731a5a8e2415e7ab1f9f1a",
+      "shape": [
+        12,
+        4,
+        64,
+        64
+      ]
+    },
+    "evaluation_masks": {
+      "dtype": "float32",
+      "path": "evaluation_masks.npy",
+      "sha256": "9923493d79269cc142abd6a7c981fd6610dacce1cf1cf336f3387099da7445f1",
+      "shape": [
+        12,
+        1,
+        64,
+        64
+      ]
+    },
+    "train_images": {
+      "dtype": "float32",
+      "path": "train_images.npy",
+      "sha256": "1abe295f3e87b2f715ebd16acbe685d4ed969a41671096ed62386f37111171ec",
+      "shape": [
+        24,
+        4,
+        64,
+        64
+      ]
+    },
+    "train_masks": {
+      "dtype": "float32",
+      "path": "train_masks.npy",
+      "sha256": "813392c9b5941e488ceb079b2b4639a39bbace3f5e0501e13058d1bef7099d30",
+      "shape": [
+        24,
+        1,
+        64,
+        64
+      ]
+    }
+  },
+  "schema_version": "forest-xai-public-fixture/1.0",
+  "scope": "public_sentinel2_forest_cover_research_fixture",
+  "source": {
+    "authors": [
+      "Lucimara Bragagnolo",
+      "Roberto Valmir da Silva",
+      "Jose Mario Vicensi Grzybowski"
+    ],
+    "license": "CC BY 4.0",
+    "machine_readable_mirror": "https://huggingface.co/datasets/NickBurns/amazon-sentinel2-forest-segmentation",
+    "machine_readable_mirror_commit": "516251c601e1d2fe579f8e2d15589140f94383b9",
+    "original_doi": "https://doi.org/10.5281/zenodo.4498086",
+    "original_title": "Amazon and Atlantic Forest image datasets for semantic segmentation",
+    "source_shards": {
+      "evaluation": {
+        "rows": [
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48
+        ],
+        "sha256": "af8228317cfea898c0b3595bd1458861862214ff31f1aafdc39011415b559d10",
+        "url": "https://huggingface.co/datasets/NickBurns/amazon-sentinel2-forest-segmentation/resolve/516251c601e1d2fe579f8e2d15589140f94383b9/data/val-00000-of-00001.parquet"
+      },
+      "train": {
+        "rows": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104
+        ],
+        "sha256": "20cc1ba67d019602c7292b9ccf65fb34df344e96bad1e9208afac3d79cb18847",
+        "url": "https://huggingface.co/datasets/NickBurns/amazon-sentinel2-forest-segmentation/resolve/516251c601e1d2fe579f8e2d15589140f94383b9/data/train-00000-of-00004.parquet"
+      }
+    }
+  },
+  "splits": {
+    "evaluation": {
+      "sample_ids": [
+        "S2-EV-000",
+        "S2-EV-001",
+        "S2-EV-002",
+        "S2-EV-003",
+        "S2-EV-004",
+        "S2-EV-005",
+        "S2-EV-006",
+        "S2-EV-007",
+        "S2-EV-008",
+        "S2-EV-009",
+        "S2-EV-010",
+        "S2-EV-011"
+      ],
+      "source_filenames": [
+        "S2A_MSIL2A_20200217T141651_N0209_R010_T20LQN_20200217T160045_01_21.tif",
+        "S2A_MSIL2A_20200217T141651_N0209_R010_T20LQN_20200217T160045_03_18.tif",
+        "S2A_MSIL2A_20200217T141651_N0209_R010_T20LQN_20200217T160045_03_20.tif",
+        "S2A_MSIL2A_20200217T141651_N0209_R010_T20LQN_20200217T160045_05_06.tif",
+        "S2A_MSIL2A_20200217T141651_N0209_R010_T20LQN_20200217T160045_05_15.tif",
+        "S2A_MSIL2A_20200217T141651_N0209_R010_T20LQN_20200217T160045_06_15.tif",
+        "S2A_MSIL2A_20200818T142741_N0214_R053_T20LMP_20200818T165705_01_01.tif",
+        "S2A_MSIL2A_20200818T142741_N0214_R053_T20LMP_20200818T165705_01_06.tif",
+        "S2A_MSIL2A_20200818T142741_N0214_R053_T20LMP_20200818T165705_01_11.tif",
+        "S2A_MSIL2A_20200818T142741_N0214_R053_T20LMP_20200818T165705_03_05.tif",
+        "S2A_MSIL2A_20200818T142741_N0214_R053_T20LMP_20200818T165705_03_08.tif",
+        "S2A_MSIL2A_20200818T142741_N0214_R053_T20LMP_20200818T165705_03_12.tif"
+      ],
+      "source_scene_ids": [
+        "S2A_MSIL2A_20200217T141651_N0209_R010_T20LQN_20200217T160045",
+        "S2A_MSIL2A_20200818T142741_N0214_R053_T20LMP_20200818T165705"
+      ]
+    },
+    "train": {
+      "sample_ids": [
+        "S2-TR-000",
+        "S2-TR-001",
+        "S2-TR-002",
+        "S2-TR-003",
+        "S2-TR-004",
+        "S2-TR-005",
+        "S2-TR-006",
+        "S2-TR-007",
+        "S2-TR-008",
+        "S2-TR-009",
+        "S2-TR-010",
+        "S2-TR-011",
+        "S2-TR-012",
+        "S2-TR-013",
+        "S2-TR-014",
+        "S2-TR-015",
+        "S2-TR-016",
+        "S2-TR-017",
+        "S2-TR-018",
+        "S2-TR-019",
+        "S2-TR-020",
+        "S2-TR-021",
+        "S2-TR-022",
+        "S2-TR-023"
+      ],
+      "source_filenames": [
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_01_07.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_01_13.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_02_03.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_02_04.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_02_07.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_02_10.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_02_11.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_03_05.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_03_06.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_03_11.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_04_07.tif",
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651_04_08.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_01_09.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_02_09.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_03_03.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_03_05.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_03_08.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_03_09.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_04_02.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_04_06.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_04_07.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_04_08.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_04_09.tif",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049_04_11.tif"
+      ],
+      "source_scene_ids": [
+        "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651",
+        "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049"
+      ]
+    }
+  }
+}

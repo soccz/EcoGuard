@@ -1,0 +1,10 @@
+_runs/
+*.pt
+*.pt.metadata.json
+*.npz
+*.png
+__pycache__/
+
+# The audited public capability demo is a deliberate, small committed exception.
+!artifacts/public_demo/
+!artifacts/public_demo/**

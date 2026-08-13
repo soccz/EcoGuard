@@ -1,0 +1,42 @@
+{
+  "checkpoint": "sentinel2_forest_cover.pt",
+  "checkpoint_metadata": "sentinel2_forest_cover.pt.metadata.json",
+  "checkpoint_sha256": "270fe3c7f857cfee541240ae8af09968e76b194c367539904c64f619953f168c",
+  "claim_boundary": {
+    "bi_temporal_change_detection": false,
+    "deforestation_cause_or_legality": false,
+    "external_independent_benchmark": false,
+    "forest_cover_segmentation": true,
+    "purpose": "small CPU-reproducible capability demonstration, not field validation",
+    "real_public_satellite_pixels": true
+  },
+  "evaluation_metrics": {
+    "f1": 0.947917,
+    "fn": 2090,
+    "fp": 488,
+    "iou": 0.900991,
+    "mean_probability": 0.488855,
+    "pixel_accuracy": 0.94755,
+    "precision": 0.979623,
+    "recall": 0.9182,
+    "threshold": 0.55,
+    "tn": 23114,
+    "tp": 23460
+  },
+  "schema_version": "forest-xai-public-train-result/1.0",
+  "scope": "public_sentinel2_forest_cover_research_fixture",
+  "state_dict_sha256": "cd89eb6b8589d5ae1d0d3a775de911cb026af685fd023b5dc2949e4f4257293e",
+  "training_metrics": {
+    "f1": 0.967525,
+    "fn": 1425,
+    "fp": 1492,
+    "iou": 0.937093,
+    "mean_probability": 0.460646,
+    "pixel_accuracy": 0.970327,
+    "precision": 0.966804,
+    "recall": 0.968247,
+    "threshold": 0.55,
+    "tn": 51934,
+    "tp": 43453
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "checkpoint_file": "sentinel2_forest_cover.pt",
+  "checkpoint_sha256": "270fe3c7f857cfee541240ae8af09968e76b194c367539904c64f619953f168c",
+  "metadata": {
+    "bi_temporal_change_detection": false,
+    "determinism": {
+      "cublas_workspace_config": ":4096:8",
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": true,
+      "deterministic_algorithms": true,
+      "seed": 20260812,
+      "torch_num_threads": 1
+    },
+    "evaluation_fixture_sha256": "aff03196bf5ff076bd4a1c2754faef4b84b49cd450be4ba4b216ab5b3b9386ae",
+    "evaluation_metrics": {
+      "f1": 0.947917,
+      "fn": 2090,
+      "fp": 488,
+      "iou": 0.900991,
+      "mean_probability": 0.488855,
+      "pixel_accuracy": 0.94755,
+      "precision": 0.979623,
+      "recall": 0.9182,
+      "threshold": 0.55,
+      "tn": 23114,
+      "tp": 23460
+    },
+    "evaluation_scene_ids": [
+      "S2A_MSIL2A_20200217T141651_N0209_R010_T20LQN_20200217T160045",
+      "S2A_MSIL2A_20200818T142741_N0214_R053_T20LMP_20200818T165705"
+    ],
+    "external_independent_validation": false,
+    "final_bce": 0.083633,
+    "normalization_mean": [
+      0.04599473,
+      0.06407768,
+      0.03650075,
+      0.31079707
+    ],
+    "normalization_std": [
+      0.03440195,
+      0.03019486,
+      0.02963154,
+      0.0615478
+    ],
+    "real_public_satellite_pixels": true,
+    "research_track_version": "0.1.0",
+    "resolved_device": "cpu",
+    "scope": "public_sentinel2_forest_cover_research_fixture",
+    "state_dict_sha256": "cd89eb6b8589d5ae1d0d3a775de911cb026af685fd023b5dc2949e4f4257293e",
+    "threshold_selected_on_training_split": 0.55,
+    "torch_version": "2.13.0+cpu",
+    "training_config": {
+      "device": "cpu",
+      "epochs": 80,
+      "learning_rate": 0.02,
+      "seed": 20260812,
+      "width": 16
+    },
+    "training_fixture_sha256": "81cb4b7b3322ff2529e88bac82e62840eb7fb22b5470c2d2ec28de967c5c9af4",
+    "training_metrics": {
+      "f1": 0.967525,
+      "fn": 1425,
+      "fp": 1492,
+      "iou": 0.937093,
+      "mean_probability": 0.460646,
+      "pixel_accuracy": 0.970327,
+      "precision": 0.966804,
+      "recall": 0.968247,
+      "threshold": 0.55,
+      "tn": 51934,
+      "tp": 43453
+    },
+    "training_scene_ids": [
+      "S2A_MSIL2A_20200111T142701_N0213_R053_T20NQG_20200111T164651",
+      "S2A_MSIL2A_20200115T140641_N0213_R110_T21LUH_20200115T163049"
+    ]
+  },
+  "schema_version": "forest-xai-public-checkpoint-metadata/1.0",
+  "scope": "public_sentinel2_forest_cover_research_model",
+  "state_dict_sha256": "cd89eb6b8589d5ae1d0d3a775de911cb026af685fd023b5dc2949e4f4257293e"
+}

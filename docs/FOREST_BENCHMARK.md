@@ -1,8 +1,18 @@
-# 산림 geospatial plumbing benchmark
+# 산림 benchmark와 선택형 Forest XAI
 
-이 벤치마크는 실제 위성 모델의 정확도를 주장하지 않습니다. 작은 합성 raster contract를 이용해 산림 변화 코드 앞뒤에서 자주 깨지는 좌표·마스크·시간·공간 분할 경계를 제3자가 반복 검증하도록 만든 기술 기준선입니다.
+이 저장소의 산림 증거는 입력·task·metric이 다른 세 개 코드 경로입니다.
+한 경로의 수치를 다른 경로의 성능으로 읽지 않아야 합니다.
 
-## 증명 범위
+| 증거 경로 | 입력 | 구현 | 증명하는 것 | 증명하지 않는 것 |
+|---|---|---|---|---|
+| Core NDVI·geospatial | 6×6, 4×6 합성 band/reference | dependency-free NDVI, CRS·affine·QA·tile holdout, GeoJSON/SVG | metric·지리공간 contract의 결정론적 재현 | 실제 위성 정확도 |
+| Public forest cover | CC BY 4.0 Sentinel-2 4-band derivative, 단일시점 | CNN 학습·추론·평가, checkpoint, Grad-CAM | 실제 공개 pixel을 다루는 소형 capability fixture | 전후 변화·훼손, 외부 일반화 |
+| Synthetic change mechanics | 프로그램으로 만든 before/after 4-band pair | change CNN, Grad-CAM, local latent JVP | train→evaluate→explain 코드 경로 | 실제 위성 metric, GAN·HiGAN, 인과 설명 |
+
+실제 bi-temporal 산림변화, 발표 수치 `83.4% → 96.2%`, HiGAN 재현,
+위성→3D pipeline은 세 경로 어느 것으로도 검증되지 않습니다.
+
+## Core geospatial plumbing의 증명 범위
 
 `src/ecoguard/geospatial.py`는 외부 runtime dependency 없이 다음을 fail-closed 방식으로 검사합니다.
 
@@ -17,9 +27,11 @@
 - 유효한 holdout 셀만 사용하는 confusion matrix와 precision/recall/F1/IoU
 - manifest·scene CSV·reference CSV의 byte 수와 SHA-256
 
-이 검증은 CRS registry 조회, raster reprojection, 영상 co-registration 또는 학습 모델을 구현하지 않습니다. `EPSG:32652` 의미는 작은 offline allowlist로 고정하며 결과에도 `registry_lookup_performed: false`를 남깁니다.
+이 core 검증은 CRS registry 조회, raster reprojection, 영상 co-registration 또는
+학습 모델을 구현하지 않습니다. `EPSG:32652` 의미는 작은 offline
+allowlist로 고정하며 결과에도 `registry_lookup_performed: false`를 남깁니다.
 
-## 공개 fixture
+## Core 공개 fixture
 
 | 파일 | 성격 |
 |---|---|
@@ -31,9 +43,12 @@
 | `data/benchmarks/forest/expected_cells.geojson` | 24개 셀의 결정론적 golden polygon 출력 |
 | `data/benchmarks/forest/public_data_opt_in_manifest.json` | 실제 공개 위성 자료의 공식 discovery·terms metadata만 기록 |
 
-커밋된 scene ID, reflectance, QA, 좌표와 reference는 모두 팀 작성 합성값입니다. UTM 좌표는 geometry 연산을 시험하기 위한 값이며 특정 기업·농장·현장을 나타내지 않습니다. Reference도 독립 현장조사가 아니므로 manifest와 summary에 `independent_ground_truth: false`를 명시합니다.
+위 표의 core scene ID, reflectance, QA, 좌표와 reference는 모두 팀 작성
+합성값입니다. UTM 좌표는 geometry 연산을 시험하기 위한 값이며 특정
+기업·농장·현장을 나타내지 않습니다. Reference도 독립 현장조사가 아니므로
+manifest와 summary에 `independent_ground_truth: false`를 명시합니다.
 
-## 재현 명령
+## Core 재현 명령
 
 기존 `ecoguard reproduce` 산출물과 버전 경계를 바꾸지 않도록 별도 module entry point를 사용합니다.
 
@@ -108,7 +123,84 @@ declared holdout tile
 
 Train tile의 예측은 출력에서 확인할 수 있지만 보고 metric에는 포함하지 않습니다. 이 rule은 학습되지 않았으므로 spatial holdout은 일반화 성능의 증거가 아니라 leakage-safe split plumbing의 증거입니다.
 
-## 실제 Sentinel/Landsat opt-in 경계
+## 선택형 공개 Sentinel-2 forest-cover CNN
+
+`research/forest_xai` 경로는 core wheel·174개 테스트·artifact 수치에서
+분리된 PyTorch 연구 트랙입니다. Bragagnolo 등의 [CC BY 4.0
+Sentinel-2 dataset](https://doi.org/10.5281/zenodo.4498086)에서 B4/B3/B2/B8
+4-band derivative를 만들어 단일시점 forest/non-forest segmentation을 수행합니다.
+Machine-readable mirror는 Hugging Face commit
+`516251c601e1d2fe579f8e2d15589140f94383b9`에 고정하고 각 shard의
+SHA-256·선택 row를 fixture manifest에 기록합니다.
+
+| 항목 | 고정 계약 |
+|---|---|
+| Input | train `[24, 4, 64, 64]`, evaluation `[12, 4, 64, 64]` |
+| Split | train 2 source scenes / evaluation 2 source scenes / scene overlap 0 |
+| Model | `TinyForestCoverSegmenter`, 2,929 parameters, threshold 0.55 |
+| Evaluation | F1 0.947917, precision 0.979623, recall 0.918200, IoU 0.900991, pixel accuracy 0.947550 |
+| Confusion | TP 23,460 / FP 488 / FN 2,090 / TN 23,114 |
+| Explanation | evaluation sample `S2-EV-003`의 RGB·reference·probability·Grad-CAM 4개 PNG |
+
+별도 환경에 고정 의존성을 설치한 뒤 다음을 실행합니다.
+
+```bash
+python -m pip install -r research/forest_xai/requirements.txt
+python -m unittest discover -s research/forest_xai/tests -v
+python -m research.forest_xai.scripts.verify_public_demo
+```
+
+마지막 명령은 모델을 재학습하지 않고 다음을 한번에 검증합니다.
+
+1. 모든 committed NPY의 hash·shape·dtype·range와 scene 분리
+2. checkpoint·sidecar·tensor-state·fixture binding
+3. CPU 재추론으로 `evaluation.json` 전체 일치
+4. RGB·reference·probability·Grad-CAM 재생성 및 SHA-256 일치
+5. single-date forest cover일 뿐이라는 machine-readable claim boundary
+
+80 epoch CPU 재학습으로 tensor state·metadata·metric까지 다시 확인하려면
+마지막 명령에 `--retrain`을 붙입니다. 소스·derivative 계약은
+[`DATA_CARD.md`](../research/forest_xai/DATA_CARD.md), 모델·metric·위험은
+[`MODEL_CARD.md`](../research/forest_xai/MODEL_CARD.md)를 기준으로 합니다.
+
+### 공개 fixture의 한계
+
+이 결과는 maintainer가 선택한 4 scene·36 chip의 소형 capability fixture입니다.
+독립 외부 평가, blind row 선택, 지리·계절·cloud·shadow 강건성 평가가 없습니다.
+또한 원본 dataset 설명의 8-bit 표현과 pinned Hugging Face Parquet mirror의
+실측 수치 범위(255 초과)가 일치하지 않으므로, preparation path는 mirror에서
+committed derivative로의 변환을 재현할 뿐 원본 archive와 mirror의 수치 표현
+동일성을 증명하지 않습니다. 데이터 카드에 기록한 변환·해석 경계를
+함께 읽어야 합니다.
+
+## 선택형 합성 before/after CNN·JVP
+
+동일한 연구 디렉터리의 두 번째 축은 프로그램으로 만든 before/after 4-band
+pair와 change mask를 사용합니다. 작은 change CNN의 학습·추론·평가,
+segmentation Grad-CAM, encoder/generator latent에 대한 local classifier-score JVP,
+checkpoint tamper guard를 실행합니다.
+
+```bash
+python -m research.forest_xai train \
+  --device cpu --seed 20260812 --epochs 12 \
+  --output-dir research/forest_xai/_runs/demo
+python -m research.forest_xai evaluate \
+  --device cpu \
+  --checkpoint research/forest_xai/_runs/demo/forest_xai_checkpoint.pt \
+  --output research/forest_xai/_runs/demo/evaluation.json
+python -m research.forest_xai explain \
+  --device cpu \
+  --checkpoint research/forest_xai/_runs/demo/forest_xai_checkpoint.pt \
+  --sample-index 1 --direction decrease \
+  --output-dir research/forest_xai/_runs/demo/explanation
+```
+
+JVP는 학습된 합성 classifier score의 한 국소 방향을 정확히 미분하는 기계적
+검사입니다. GAN이 아니고, HiGAN/HIGAN 재현이 아니며, 인과
+counterfactual이나 의미론적 latent factor도 아닙니다. 실제 공개 위성 평가에는
+이 경로의 metric을 사용하지 않습니다.
+
+## Core의 실제 Sentinel/Landsat opt-in 경계
 
 `public_data_opt_in_manifest.json`에는 현재 공식 문서에서 확인한 discovery endpoint와 이용조건 링크만 있습니다.
 
@@ -128,14 +220,24 @@ Train tile의 예측은 출력에서 확인할 수 있지만 보고 metric에는
 
 ## 남은 한계
 
-- Sentinel-2/Landsat asset adapter와 실제 raster I/O가 없습니다.
+- Core에 Sentinel-2/Landsat asset adapter와 실제 raster I/O가 없습니다.
 - 대기보정 품질, cloud/shadow mask 오류, saturation, terrain shadow를 평가하지 않습니다.
 - 다른 해상도의 band 정합, resampling kernel, sub-pixel registration을 구현하지 않습니다.
 - 계절 label은 manifest 선언이며 phenology나 장기 composite로 검증하지 않습니다.
 - UTM allowlist 하나만 다루며 EPSG registry 또는 geoid/epoch를 검증하지 않습니다.
 - GeoJSON WGS84 reprojection과 geodesic area를 제공하지 않습니다.
-- Reference는 팀 작성 합성 mask이며 독립 annotator·현장조사·공인 land-cover 제품이 아닙니다.
+- Core reference는 팀 작성 합성 mask이며 독립 annotator·현장조사·공인 land-cover 제품이 아닙니다.
 - 4×6 fixture는 correctness 회귀용이며 memory, streaming, COG window read, 대규모 tiling 성능을 증명하지 않습니다.
-- NDVI threshold baseline은 CNN/XAI 또는 EUDR 규정 준수 판정이 아닙니다.
+- 공개 CNN은 4 scene·36 chip에 한정되며 external·seasonal·geographic validation이 없습니다.
+- Grad-CAM은 모델 민감도이지 산림 변화 원인 또는 metric 개선의 증거가 아닙니다.
+- 실제 before/after scene pair·change label을 쓰는 bi-temporal 평가가 없습니다.
+- NDVI threshold·CNN·XAI 어느 경로도 EUDR 규정 준수 판정이 아닙니다.
+- 발표의 `83.4% → 96.2%`를 같은 데이터·task·split으로 재현하는 코드와 가중치가 없습니다.
+- 특정 HiGAN/HIGAN 구현·논문 버전·학습 계약이 없으며 synthetic JVP와 동일하지 않습니다.
+- 고도 자료·다중시점·다시점 기하가 없으므로 위성→3D reconstruction을 구현하지 않습니다.
 
-실제 remote-sensing benchmark라는 주장은 공개 scene pair, 재배포 권한, 독립 reference, spatially separated evaluation, cloud·seasonality·registration error analysis가 함께 검토된 뒤에만 가능합니다.
+실제 **산림변화** benchmark라는 주장은 공개 scene pair, 재배포 권한,
+독립 change reference, spatially separated evaluation, cloud·seasonality·registration
+error analysis가 함께 검토된 뒤에만 가능합니다. 3D가 필요하다면 라이선스가
+명확한 DEM을 별도 입력으로 고정하고 분류·heatmap을 drape한 **2.5D 시각화**로
+범위를 명시해야 하며, 위성 영상 자체에서 3D를 복원했다고 주장하면 안 됩니다.

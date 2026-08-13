@@ -1,0 +1,35 @@
+{
+  "checkpoint_sha256": "270fe3c7f857cfee541240ae8af09968e76b194c367539904c64f619953f168c",
+  "claim_boundary": {
+    "bi_temporal_change_detection": false,
+    "deforestation_cause_or_legality": false,
+    "external_independent_benchmark": false,
+    "forest_cover_segmentation": true,
+    "purpose": "small CPU-reproducible capability demonstration, not field validation",
+    "real_public_satellite_pixels": true
+  },
+  "files": {
+    "gradcam": {
+      "path": "gradcam.png",
+      "sha256": "0a0c7525080d244756366867039e37241640dc0c31a5b54e9862cced2de61539"
+    },
+    "probability": {
+      "path": "forest_probability.png",
+      "sha256": "401f5e9cbdcb93256d64d7c85e70aec2c0cd4aa7fe0fb786c5507c941b6a1e3f"
+    },
+    "reference": {
+      "path": "reference_mask.png",
+      "sha256": "768ba76cd18d0fe7292af63a465f6fb3c1ebcb18cc1b02cd6b063fb240f98a0e"
+    },
+    "rgb": {
+      "path": "sentinel2_rgb.png",
+      "sha256": "04c4611673586ec641faf6d26c5c2363d7d579c840a4f4769ebd6efb2bb0f2b3"
+    }
+  },
+  "gradcam_target": "mean forest logit over source reference-mask pixels",
+  "gradcam_target_score": 4.07564449,
+  "sample_id": "S2-EV-003",
+  "schema_version": "forest-xai-public-explanation/1.0",
+  "scope": "public_sentinel2_forest_cover_research_fixture",
+  "source_filename": "S2A_MSIL2A_20200217T141651_N0209_R010_T20LQN_20200217T160045_05_06.tif"
+}
