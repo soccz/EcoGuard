@@ -5,11 +5,16 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
+  # Research pins are part of the committed byte-reproducibility contract
+  # (Pillow encodes the committed PNGs, numpy/torch shape the fixture and
+  # checkpoint bytes). Version bumps must be deliberate commits that retrain
+  # and re-verify the artifacts, so automatic version PRs stay disabled;
+  # security advisories still surface through the dependency graph.
   - package-ecosystem: pip
     directory: /research/forest_xai
     schedule:
       interval: monthly
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
   - package-ecosystem: github-actions
     directory: /
     schedule:
