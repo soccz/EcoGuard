@@ -60,7 +60,7 @@ bi-temporal change model이라고 주장하지 않습니다.
 | Committed checkpoint CPU 재평가 | evaluation 12 chip·49,152 pixel | verifier가 추론·metric JSON을 새로 만들어 committed JSON 전체와 대조 | F1 0.947917, precision 0.979623, recall 0.918200, IoU 0.900991, pixel accuracy 0.947550; TP/FP/FN/TN 23,460/488/2,090/23,114 | 산림변화·훼손·현장 성능이 아닌 작은 forest-cover capability fixture |
 | Grad-CAM 재생성 | evaluation sample `S2-EV-003`, source reference mask로 target region 고정 | RGB·reference·probability·Grad-CAM을 재생성해 각 SHA-256 대조 | explanation JSON 1개 + PNG 4개; public demo 전체 9 file | 모델 민감도이지 인과·생태학적 근거·metric 개선 증거가 아님 |
 | 합성 change CNN·JVP mechanics | 고정 seed로 생성한 before/after 4-band rectangle/noise·change mask | 연구 테스트가 shape/range, train→evaluate→explain, Grad-CAM, JVP direction, checkpoint tamper guard를 검사 | generated checkpoint·metric·Grad-CAM·NPZ·JVP trace | 실제 위성 metric이 아니며 GAN·HiGAN·causal counterfactual이 아님 |
-| 수상 후 tiny-GAN 재구성 | public train split, 고정 seed·CPU config, `z0`·`z1`, committed forest-cover CNN | checkpoint/sidecar file·tensor hash, latent frame 재생성, forest probability curve와 alpha 0.5 exact unit-path JVP 대조 | tiny generator/critic checkpoint, interpolation JSON·PNG; path length 4.24485588, derivative 0.01209233 | 당시 code가 아님; 특정 HiGAN·photorealism·생성 품질·발표 수치 증거가 아님 |
+| 수상 후 tiny-GAN 재구성 | public train split, 고정 seed·CPU config, `z0`·`z1`, committed forest-cover CNN | checkpoint/sidecar file·tensor hash, exact forest probability curve·alpha 0.5 unit-path JVP, decode한 contact-sheet RGB의 최대 replay 오차 2/255 | tiny generator/critic checkpoint, interpolation JSON·PNG; committed PNG SHA exact, path length 4.24485588, derivative 0.01209233 | 당시 code가 아님; 특정 HiGAN·photorealism·생성 품질·발표 수치 증거가 아님 |
 | 수상 후 2.5D height-field 재구성 | evaluation RGB·forest probability + 결정론적 synthetic coarse height | x/y 격자 bilinear height interpolation, drape, height/probability와 1089-vertex/1024-face mesh를 재생성해 claim boundary·SHA 대조 | terrain JSON·PNG, `[64,64]` float32 height/probability, `[33,33,3]` float32 vertices, `[1024,4]` int32 faces | 합성 높이이며 DEM·stereo·LiDAR 또는 위성에서 복원한 3D가 아님 |
 | 명시적 claim boundary | public JSON은 single-date, synthetic change JSON은 not-a-GAN, reconstruction JSON은 post-award·not-HiGAN·not-photorealistic·synthetic-height를 고정 | 연구 test suite + public/reconstruction 전용 verifier | core 174개 test method·wheel·benchmark count에 포함하지 않음 | 실제 bi-temporal change, `83.4% → 96.2%`, HiGAN, satellite-derived elevation은 미재현 |
 
@@ -70,8 +70,10 @@ state·metadata·metric까지 추가로 비교합니다. PyTorch container byte�
 달라질 수 있으므로, 재학습 audit은 새 checkpoint file의 byte를 committed checkpoint와
 강제하지 않고 각 sidecar의 file hash와 tensor-state hash를 따로 검사합니다.
 Reconstruction verifier도 committed GAN과 2.5D 산출물의 hash·claim boundary를
-검사하고 interpolation/drape를 재생성합니다. `--retrain`을 붙였을 때만 tiny GAN
-CPU 학습을 반복해 tensor state와 파생 artifact를 대조합니다.
+검사하고 interpolation/drape를 재생성합니다. Committed PNG SHA와 2.5D machine
+arrays는 exact하게 고정하고, latent contact-sheet replay는 CPU kernel 차이를 위해
+decode RGB 최대 2/255를 허용합니다. `--retrain`을 붙였을 때만 tiny GAN CPU 학습을
+반복해 tensor state·metadata·numeric semantics와 bounded preview를 대조합니다.
 
 ## 입력 변화와 동등 변형
 

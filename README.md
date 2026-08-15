@@ -138,9 +138,12 @@ python -m research.forest_xai.scripts.verify_public_demo
 python -m research.forest_xai.scripts.verify_reconstruction
 ```
 
-두 verifier는 학습을 다시 하지 않고 committed fixture·checkpoint hash를 검사한
-뒤 public 추론·Grad-CAM과 reconstruction 산출물을 각각 다시 만들어 byte 계약을
-대조합니다. CPU 재학습까지 반복하려면 해당 verifier에 `--retrain`을 붙입니다.
+두 verifier는 학습을 다시 하지 않고 committed fixture·checkpoint·artifact hash를
+검사한 뒤 public 추론·Grad-CAM과 reconstruction 산출물을 다시 만듭니다. Public
+artifact와 2.5D machine array는 byte 계약으로, latent 수치·JVP는 exact 값으로
+대조합니다. CPU kernel의 미세한 반올림 차이가 preview PNG의 압축 바이트를 바꿀 수
+있어 latent contact sheet는 decode한 RGB channel 오차를 최대 2/255로 제한합니다.
+CPU 재학습까지 반복하려면 해당 verifier에 `--retrain`을 붙입니다.
 Public CNN은 80 epoch, tiny GAN은 120 epoch를 반복합니다. 자세한 설치·실행 경계는
 [`research/forest_xai/README.md`](research/forest_xai/README.md)에 있습니다.
 재학습 완전 동일성의 기준 환경은 CI와 같은 Ubuntu x86_64·CPython 3.12·

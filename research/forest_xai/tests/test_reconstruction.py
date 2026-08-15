@@ -21,6 +21,7 @@ from research.forest_xai.reconstruction import (
     train_latent_gan,
 )
 from research.forest_xai.scripts.verify_reconstruction import (
+    _compare_png_replay,
     verify_committed_reconstruction,
 )
 
@@ -41,6 +42,9 @@ class PostAwardReconstructionTests(unittest.TestCase):
         self.assertEqual(result["terrain_files_verified"], 5)
         self.assertEqual(result["mesh"]["vertex_count"], 1089)
         self.assertEqual(result["mesh"]["face_count"], 1024)
+        self.assertLessEqual(
+            result["latent_contact_sheet_replay"]["max_channel_error"], 2
+        )
 
     def test_latent_gan_training_is_deterministic_and_small(self) -> None:
         config = LatentGanConfig(epochs=4)
@@ -86,13 +90,30 @@ class PostAwardReconstructionTests(unittest.TestCase):
             )
             self.assertEqual(result["jvp"], committed["jvp"])
             self.assertEqual(
-                result["files"]["contact_sheet"]["sha256"],
-                committed["files"]["contact_sheet"]["sha256"],
+                {key: value for key, value in result.items() if key != "files"},
+                {key: value for key, value in committed.items() if key != "files"},
             )
+            replay = _compare_png_replay(
+                RECONSTRUCTION / committed["files"]["contact_sheet"]["path"],
+                Path(temporary) / result["files"]["contact_sheet"]["path"],
+            )
+            self.assertLessEqual(replay["max_channel_error"], 2)
         self.assertEqual(
             committed["files"]["contact_sheet"]["sha256"],
             file_sha256(RECONSTRUCTION / "latent_interpolation.png"),
         )
+
+    def test_contact_sheet_replay_rejects_visible_pixel_drift(self) -> None:
+        source = RECONSTRUCTION / "latent_interpolation.png"
+        with tempfile.TemporaryDirectory(prefix="forest-xai-image-drift-") as temporary:
+            changed = Path(temporary) / "changed.png"
+            with Image.open(source) as image:
+                values = image.convert("RGB")
+            pixel = values.getpixel((0, 0))
+            values.putpixel((0, 0), ((pixel[0] + 8) % 256, pixel[1], pixel[2]))
+            values.save(changed)
+            with self.assertRaisesRegex(ValueError, "more than 2/255"):
+                _compare_png_replay(source, changed)
 
     def test_committed_relief_drape_reproduces_and_declares_synthetic_height(
         self,

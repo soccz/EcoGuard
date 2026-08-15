@@ -99,8 +99,11 @@ python -m research.forest_xai.scripts.verify_reconstruction
 
 Verifier는 committed checkpoint·sidecar·JSON·PNG·NPY의 hash와
 machine-readable claim boundary를 검사하고 latent interpolation/JVP와 2.5D
-drape·mesh arrays를 임시 디렉터리에 재생성해 대조합니다. 120-epoch CPU
-학습까지 반복하려면 다음을 실행합니다.
+drape·mesh arrays를 임시 디렉터리에 재생성해 대조합니다. Committed PNG 자체의
+SHA-256은 정확히 고정하되, CPU kernel에 따른 마지막 반올림·압축 byte 차이를
+실패로 오인하지 않도록 재생성 contact sheet는 decode한 RGB channel의 최대 오차를
+2/255로 제한합니다. Probability curve와 JVP, 2.5D machine arrays는 기존 exact
+계약을 유지합니다. 120-epoch CPU 학습까지 반복하려면 다음을 실행합니다.
 
 ```bash
 python -m research.forest_xai.scripts.verify_reconstruction --retrain
@@ -108,7 +111,8 @@ python -m research.forest_xai.scripts.verify_reconstruction --retrain
 
 PyTorch checkpoint container byte는 tensor가 같아도 달라질 수 있으므로 full
 audit은 각 checkpoint file을 각 sidecar SHA에 대조하고, 재학습 동일성은
-tensor-state hash·metadata·파생 artifact로 판단합니다.
+tensor-state hash·metadata·exact numeric semantics와 bounded preview replay로
+판단합니다.
 
 Full retrain의 기준 환경은 CI와 같은 Ubuntu x86_64·CPython 3.12·
 `torch 2.13.0+cpu`입니다. 다른 platform/build에서는 fast verifier를 사용할 수

@@ -131,16 +131,20 @@ sidecar SHA-256.
 
 The reconstruction verifier validates the committed tiny-GAN checkpoint and
 metadata before `weights_only=True` loading, reproduces the deterministic
-8-frame latent contact sheet, forest-probability curve and exact JVP, and regenerates the 2.5D
-drape, height/probability arrays, 1,089-vertex/1,024-face mesh and its
-machine-readable claim boundary:
+8-frame latent contact sheet, forest-probability curve and exact JVP, and
+regenerates the 2.5D drape, height/probability arrays,
+1,089-vertex/1,024-face mesh and its machine-readable claim boundary. The
+committed PNG hash remains exact; replay compares decoded RGB pixels with a
+maximum 2/255 per-channel tolerance because CPU kernels can change a preview's
+rounding or compression bytes without changing the recorded probabilities or
+JVP:
 
 ```bash
 python -m research.forest_xai.scripts.verify_reconstruction
 ```
 
-Repeat the CPU GAN training and compare tensor state and all derived artifacts
-only when a full audit is needed:
+Repeat the CPU GAN training and compare tensor state, numeric semantics and the
+bounded decoded preview only when a full audit is needed:
 
 ```bash
 python -m research.forest_xai.scripts.verify_reconstruction --retrain

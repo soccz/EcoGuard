@@ -267,4 +267,5 @@ added to the core's 174 test methods, wheel or golden-artifact counts. Appending
 `--retrain` to the public verifier additionally repeats the 80-epoch CPU
 training and compares tensor state, metadata and metrics. Appending `--retrain`
 to the reconstruction verifier additionally repeats the tiny-GAN CPU training
-and compares its tensor state and derived artifacts.
+and compares its tensor state, exact numeric semantics and bounded decoded
+preview replay.

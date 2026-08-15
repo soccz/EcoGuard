@@ -12,6 +12,7 @@ import tempfile
 from typing import Any
 
 import numpy as np
+from PIL import Image
 
 
 TRACK_ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +24,23 @@ if str(REPOSITORY_ROOT) not in sys.path:
 def _require_equal(label: str, actual: Any, expected: Any) -> None:
     if actual != expected:
         raise ValueError(f"{label} differs from the committed contract")
+
+
+def _compare_png_replay(reference: Path, candidate: Path) -> dict[str, Any]:
+    """Compare decoded pixels while allowing negligible CPU-kernel rounding."""
+    with Image.open(reference) as image:
+        expected = np.asarray(image.convert("RGB"), dtype=np.int16)
+    with Image.open(candidate) as image:
+        actual = np.asarray(image.convert("RGB"), dtype=np.int16)
+    _require_equal("replayed PNG shape", list(actual.shape), list(expected.shape))
+    difference = np.abs(actual - expected)
+    metrics = {
+        "max_channel_error": int(difference.max(initial=0)),
+        "mean_absolute_error": round(float(difference.mean()), 8),
+    }
+    if metrics["max_channel_error"] > 2:
+        raise ValueError("replayed PNG differs by more than 2/255 in one channel")
+    return metrics
 
 
 def _artifact_path(root: Path, relative: Any) -> Path:
@@ -190,7 +208,7 @@ def verify_committed_reconstruction(
     )
     if set(latent["files"]) != {"contact_sheet"}:
         raise ValueError("latent contact-sheet manifest is incomplete")
-    _verify_file_entry(
+    committed_contact_sheet = _verify_file_entry(
         reconstruction_root,
         "contact_sheet",
         latent["files"]["contact_sheet"],
@@ -223,7 +241,23 @@ def verify_committed_reconstruction(
             generated_root,
             LatentInterpolationConfig(seed=latent["seed"], frames=latent["frames"]),
         )
-        _require_equal("regenerated latent result", generated_latent, latent)
+        _require_equal(
+            "regenerated latent semantics",
+            {key: value for key, value in generated_latent.items() if key != "files"},
+            {key: value for key, value in latent.items() if key != "files"},
+        )
+        _require_equal(
+            "regenerated contact-sheet path",
+            generated_latent["files"]["contact_sheet"]["path"],
+            latent["files"]["contact_sheet"]["path"],
+        )
+        latent_image_replay = _compare_png_replay(
+            committed_contact_sheet,
+            _artifact_path(
+                generated_root,
+                generated_latent["files"]["contact_sheet"]["path"],
+            ),
+        )
         generated_terrain = render_relief_drape(
             fixture_root,
             classifier_checkpoint,
@@ -236,16 +270,15 @@ def verify_committed_reconstruction(
             ),
         )
         _require_equal("regenerated terrain result", generated_terrain, terrain)
-        for document in (latent, terrain):
-            for name, entry in document["files"].items():
-                generated_path = _artifact_path(generated_root, entry["path"])
-                from research.forest_xai.checkpoint import file_sha256
+        for name, entry in terrain["files"].items():
+            generated_path = _artifact_path(generated_root, entry["path"])
+            from research.forest_xai.checkpoint import file_sha256
 
-                _require_equal(
-                    f"regenerated {name} SHA",
-                    file_sha256(generated_path),
-                    entry["sha256"],
-                )
+            _require_equal(
+                f"regenerated {name} SHA",
+                file_sha256(generated_path),
+                entry["sha256"],
+            )
 
     return {
         "status": "verified",
@@ -254,6 +287,7 @@ def verify_committed_reconstruction(
         "gan_state_dict_sha256": gan_sidecar["state_dict_sha256"],
         "latent_frames": latent["frames"],
         "unit_path_jvp": latent["jvp"]["unit_path_direction_derivative"],
+        "latent_contact_sheet_replay": latent_image_replay,
         "terrain_sample_id": terrain["sample_id"],
         "terrain_files_verified": len(terrain["files"]),
         "mesh": terrain["mesh"],
@@ -312,24 +346,30 @@ def verify_retraining(track_root: Path, output_dir: Path) -> dict[str, Any]:
         {
             key: value
             for key, value in regenerated.items()
-            if key != "gan_checkpoint_sha256"
+            if key not in {"gan_checkpoint_sha256", "files"}
         },
         {
             key: value
             for key, value in committed_latent.items()
-            if key != "gan_checkpoint_sha256"
+            if key not in {"gan_checkpoint_sha256", "files"}
         },
     )
+    image_replay = _compare_png_replay(
+        reconstruction_root / committed_latent["files"]["contact_sheet"]["path"],
+        output_dir / "derived" / regenerated["files"]["contact_sheet"]["path"],
+    )
     return {
-        "status": "state-metadata-derived-artifacts-identical",
+        "status": "state-metadata-semantics-identical",
         "committed_checkpoint_sha256": committed_sidecar["checkpoint_sha256"],
         "retrained_checkpoint_sha256": retrained_sidecar["checkpoint_sha256"],
         "state_dict_sha256": result["state_dict_sha256"],
         "epochs": 120,
         "device": "cpu",
+        "latent_contact_sheet_replay": image_replay,
         "checkpoint_container_note": (
             "torch.save container bytes may differ; each file must match its own "
-            "sidecar while tensor state, metadata, and derived artifacts are identical"
+            "sidecar; tensor state, metadata, and numeric semantics are exact while "
+            "the decoded contact sheet allows at most 2/255 channel error across CPU kernels"
         ),
     }
 
