@@ -24,6 +24,7 @@ from research.forest_xai.reconstruction import (
 from research.forest_xai.scripts.verify_reconstruction import (
     _compare_array_replay,
     _compare_model_state_replay,
+    _compare_numeric_sequence,
     _compare_png_replay,
     verify_committed_reconstruction,
 )
@@ -148,6 +149,14 @@ class PostAwardReconstructionTests(unittest.TestCase):
             actual.weight[0, 0] += 1e-3
         with self.assertRaisesRegex(ValueError, "more than 0.0005"):
             _compare_model_state_replay({"generator": expected}, {"generator": actual})
+
+    def test_numeric_replay_enforces_threshold_and_finite_values(self) -> None:
+        replay = _compare_numeric_sequence("probe", [0.000099], [0.0], tolerance=1e-4)
+        self.assertEqual(replay["max_absolute_error"], 0.000099)
+        with self.assertRaisesRegex(ValueError, "more than 0.0001"):
+            _compare_numeric_sequence("probe", [0.000101], [0.0], tolerance=1e-4)
+        with self.assertRaisesRegex(ValueError, "non-finite"):
+            _compare_numeric_sequence("probe", [float("nan")], [0.0], tolerance=1e-4)
 
     def test_committed_relief_drape_reproduces_and_declares_synthetic_height(
         self,
