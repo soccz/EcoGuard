@@ -15,7 +15,6 @@ from ecoguard.regulatory import (
     validate_coverage_matrix,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 COVERAGE = ROOT / "data/reference/cbam_rule_coverage.json"
 BLIND = ROOT / "data/benchmarks/legal_blind.json"

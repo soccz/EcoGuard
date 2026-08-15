@@ -13,7 +13,6 @@ from typing import Any
 
 from .preprocessing import ITEM_COMPONENTS, ITEM_IDS, validate_normalized_evidence
 
-
 MONEY = Decimal("0.01")
 EMISSIONS = Decimal("0.01")
 INTENSITY = Decimal("0.000001")

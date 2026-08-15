@@ -18,7 +18,6 @@ from .ocr_adapter import (
 from .pipeline import repository_root
 from .regulatory import evaluate_blind_fixture, validate_coverage_matrix
 
-
 BENCHMARK_VERSION = "1.0.0"
 INPUT_PATHS = {
     "ocr_tesseract_tsv": "data/benchmarks/ocr/synthetic_tesseract.tsv",

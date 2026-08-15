@@ -13,7 +13,6 @@ from ecoguard.legal import (
 )
 from ecoguard.preprocessing import load_policy, normalize_records
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

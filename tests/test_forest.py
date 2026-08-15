@@ -17,7 +17,6 @@ from ecoguard.forest import (
     render_change_svg,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 CASE_PATH = ROOT / "data/synthetic/forest_case.json"
 PIXEL_PATH = ROOT / "data/synthetic/forest_pixels.csv"

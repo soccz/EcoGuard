@@ -3,7 +3,6 @@ import re
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 ATTESTATION = ROOT / "data/reference/competition_archive_attestation.json"
 

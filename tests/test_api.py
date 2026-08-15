@@ -14,7 +14,6 @@ from ecoguard.api import (
     main,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

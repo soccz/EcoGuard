@@ -34,7 +34,6 @@ from research.forest_xai.scripts.verify_reconstruction import (
 
 import torch
 
-
 TRACK_ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = TRACK_ROOT / "data" / "public_fixture"
 RECONSTRUCTION = TRACK_ROOT / "artifacts" / "public_demo" / "reconstruction"

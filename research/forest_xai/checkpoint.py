@@ -19,7 +19,6 @@ from .models import (
 )
 from .jsonio import load_json_object
 
-
 CHECKPOINT_SCOPE = "synthetic_smoke_test_not_real_satellite_model"
 
 

@@ -8,7 +8,6 @@ from unittest.mock import patch
 
 from ecoguard.pipeline import reproduce
 
-
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_DEMO_MARKERS = (".github.io", "Live Demo")
 

@@ -14,7 +14,6 @@ from typing import Any
 import numpy as np
 from PIL import Image
 
-
 TRACK_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = TRACK_ROOT.parents[1]
 RETRAINED_PARAMETER_ATOL = 5e-4

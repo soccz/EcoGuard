@@ -23,7 +23,6 @@ from .preprocessing import (
     raw_value,
 )
 
-
 ADAPTER_VERSION = "2.0.0"
 DOCUMENT_BUNDLE_SCHEMA_VERSION = "ocr-document-bundle/1.0"
 EXTRACTION_SCHEMA_VERSION = "2.0.0"

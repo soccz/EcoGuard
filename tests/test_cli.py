@@ -7,7 +7,6 @@ from pathlib import Path
 
 from ecoguard.cli import main
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

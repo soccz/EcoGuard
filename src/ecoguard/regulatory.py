@@ -19,7 +19,6 @@ from typing import Any
 from .legal import LegalRetriever, evaluate
 from .jsonio import strict_json_file
 
-
 COVERAGE_SCHEMA_VERSION = "cbam-rule-coverage/1.0"
 BLIND_SCHEMA_VERSION = "legal-blind-eval/1.0"
 ALLOWED_COVERAGE_STATUSES = {"implemented", "partial", "not_implemented"}

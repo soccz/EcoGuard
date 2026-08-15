@@ -16,7 +16,6 @@ from ecoguard.ocr_adapter import (
 )
 from ecoguard.jsonio import strict_json_file
 
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_INPUT = ROOT / "data/benchmarks/ocr/synthetic_tesseract.tsv"
 DEFAULT_REFERENCE = ROOT / "data/benchmarks/ocr/synthetic_field_reference.json"

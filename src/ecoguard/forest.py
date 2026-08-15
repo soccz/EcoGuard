@@ -11,7 +11,6 @@ from typing import Any, Iterable
 
 from .jsonio import strict_json_file
 
-
 Cell = tuple[int, int]
 BAND_COLUMNS = (
     "row",

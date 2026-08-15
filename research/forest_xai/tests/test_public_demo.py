@@ -15,7 +15,6 @@ from research.forest_xai.scripts.verify_public_demo import (
     verify_committed_public_demo,
 )
 
-
 TRACK_ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_ARTIFACTS = TRACK_ROOT / "artifacts" / "public_demo"
 

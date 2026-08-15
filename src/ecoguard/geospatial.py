@@ -21,7 +21,6 @@ from typing import Any, Iterable, Sequence
 
 from .jsonio import strict_json_loads
 
-
 Cell = tuple[int, int]
 SCHEMA_VERSION = "forest-geospatial-benchmark/1.0"
 ANALYSIS_SCHEMA_VERSION = "forest-geospatial-analysis/1.0"
@@ -287,7 +286,7 @@ def deterministic_tiles(
 
 
 def _load_grid(
-    manifest: dict[str, Any]
+    manifest: dict[str, Any],
 ) -> tuple[int, int, dict[str, Any], AffineTransform, Decimal]:
     grid = _object(manifest.get("grid"), "grid")
     _exact_keys(

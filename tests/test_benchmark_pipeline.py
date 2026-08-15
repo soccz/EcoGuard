@@ -7,7 +7,6 @@ from unittest.mock import patch
 
 from ecoguard.benchmark import INPUT_PATHS, run_benchmarks
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

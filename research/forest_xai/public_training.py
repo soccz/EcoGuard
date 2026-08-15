@@ -25,7 +25,6 @@ from .public_data import (
     load_public_forest_fixture,
 )
 
-
 PUBLIC_CHECKPOINT_SCOPE = "public_sentinel2_forest_cover_research_model"
 
 

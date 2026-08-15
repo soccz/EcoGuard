@@ -11,7 +11,6 @@ import sys
 import tempfile
 from typing import Any
 
-
 TRACK_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = TRACK_ROOT.parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:

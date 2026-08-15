@@ -9,7 +9,6 @@ import json
 import numpy as np
 import torch
 
-
 CHANNEL_NAMES = ("red", "green", "nir", "swir")
 FIXTURE_SCOPE = "synthetic_smoke_test_not_real_satellite_data"
 

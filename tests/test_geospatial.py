@@ -26,7 +26,6 @@ from ecoguard.geospatial import (
     pixel_polygon,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 BENCHMARK_DIR = ROOT / "data/benchmarks/forest"
 MANIFEST_PATH = BENCHMARK_DIR / "synthetic_geospatial_case.json"

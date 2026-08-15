@@ -12,7 +12,6 @@ from ecoguard.cbam import calculate_exposure
 from ecoguard.forest import evaluate_binary_mask
 from ecoguard.preprocessing import _normalize
 
-
 ROOT = Path(__file__).resolve().parents[1]
 PROPERTY_SETTINGS = settings(max_examples=80, derandomize=True, deadline=None)
 

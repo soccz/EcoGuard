@@ -54,7 +54,7 @@ jobs:
           python -m pip install \
             --disable-pip-version-check \
             --requirement research/forest_xai/requirements.txt \
-            "black==24.8.0" \
+            "black==26.3.1" \
             "ruff==0.16.2"
           python - <<'PY'
           from importlib.metadata import version
@@ -62,9 +62,9 @@ jobs:
           import torch
 
           assert version("numpy") == "1.26.4"
-          assert version("Pillow") == "12.2.0"
+          assert version("Pillow") == "12.3.0"
           assert version("torch").split("+", 1)[0] == "2.13.0"
-          assert version("black") == "24.8.0"
+          assert version("black") == "26.3.1"
           assert version("ruff") == "0.16.2"
           assert torch.version.cuda is None, torch.version.cuda
           assert not torch.cuda.is_available()

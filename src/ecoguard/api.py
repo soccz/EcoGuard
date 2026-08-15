@@ -18,7 +18,6 @@ from .cbam import calculate_exposure
 from .jsonio import strict_json_loads
 from .legal import LegalRetriever, validate_source_manifest
 
-
 API_VERSION = "1"
 MAX_REQUEST_BYTES = 1_000_000
 MAX_QUERY_CHARACTERS = 8_000

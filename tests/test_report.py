@@ -8,7 +8,6 @@ from pathlib import Path
 from ecoguard.pipeline import reproduce
 from ecoguard.report import build_evidence_packet, render_html
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

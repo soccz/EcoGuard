@@ -11,7 +11,6 @@ import urllib.request
 
 import numpy as np
 
-
 SOURCES = {
     "train": {
         "url": "https://huggingface.co/datasets/NickBurns/amazon-sentinel2-forest-segmentation/resolve/516251c601e1d2fe579f8e2d15589140f94383b9/data/train-00000-of-00004.parquet",

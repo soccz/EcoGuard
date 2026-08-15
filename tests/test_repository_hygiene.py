@@ -5,7 +5,6 @@ from urllib.parse import unquote
 
 from ecoguard import __version__
 
-
 ROOT = Path(__file__).resolve().parents[1]
 MARKDOWN_LINK = re.compile(r"\[[^]]*\]\(([^)]+)\)")
 

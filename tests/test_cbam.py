@@ -9,7 +9,6 @@ from ecoguard.cbam import _price_scenario, calculate_exposure
 from ecoguard.ingestion import extract_document_bundle, extract_document_bundle_file
 from ecoguard.preprocessing import load_policy, normalize_records
 
-
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "data/synthetic/trade_case_documents.json"
 POLICY = ROOT / "data/reference/normalization_policy.json"

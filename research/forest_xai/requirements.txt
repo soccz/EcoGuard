@@ -2,5 +2,5 @@
 # For the full retrain audit, install this Torch version from the official CPU
 # index first; README.md records the exact reference command and platform.
 numpy==1.26.4
-Pillow==12.2.0
+Pillow==12.3.0
 torch==2.13.0

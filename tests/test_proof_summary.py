@@ -12,7 +12,6 @@ from scripts.proof_summary import (
     format_summary,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

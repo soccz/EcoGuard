@@ -18,7 +18,6 @@ from typing import Any, Iterable
 
 from .jsonio import strict_json_file
 
-
 RETRIEVER_VERSION = "legal-bm25f-v2.1"
 PINNED_SOURCE_ELI = {
     "32023R0956": "https://eur-lex.europa.eu/eli/reg/2023/956/2025-10-20/eng",
@@ -337,7 +336,7 @@ def _validate_source_metadata(source: dict[str, Any], celex: str) -> None:
 
 
 def _legal_source_index(
-    manifest: dict[str, Any]
+    manifest: dict[str, Any],
 ) -> tuple[str, dict[str, dict[str, Any]]]:
     if not isinstance(manifest, dict):
         raise ValueError("legal source manifest must be an object")

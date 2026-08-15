@@ -16,7 +16,6 @@ from ecoguard.legal import load_json
 from ecoguard.pipeline import INPUT_SPECS, PIPELINE_VERSION
 from ecoguard.preprocessing import load_policy, normalize_file
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

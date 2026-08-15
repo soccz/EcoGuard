@@ -16,7 +16,6 @@ from ecoguard.ocr_adapter import (
     tesseract_tsv_to_document_bundle,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 TSV_FIXTURE = ROOT / "data/benchmarks/ocr/synthetic_tesseract.tsv"
 REFERENCE_FIXTURE = ROOT / "data/benchmarks/ocr/synthetic_field_reference.json"

@@ -16,7 +16,6 @@ import torch
 
 from .jsonio import load_json_object
 
-
 PUBLIC_FIXTURE_SCOPE = "public_sentinel2_forest_cover_research_fixture"
 EXPECTED_MANIFEST_KEYS = {
     "schema_version",

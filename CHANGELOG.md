@@ -30,6 +30,8 @@ All notable public reconstruction changes are recorded here. Competition-era pri
 - competition provenance now records the attempted GAN latent and z/field
   visualization concepts without treating the post-award code as contemporary
   evidence
+- development and research image dependencies now pin the first patched Black
+  26.3.1 and Pillow 12.3.0 releases reported by GitHub security advisories
 
 ### Boundaries
 

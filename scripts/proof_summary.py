@@ -11,7 +11,6 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
-
 CORE_OUTPUTS = {
     "cbam_exposure": "artifacts/examples/cbam_exposure.json",
     "evidence_report_html": "artifacts/examples/ecoguard_evidence_report.html",

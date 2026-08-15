@@ -20,7 +20,6 @@ from .legal import (
 from .preprocessing import load_policy, normalize_records
 from .report import build_evidence_packet, render_html
 
-
 PIPELINE_VERSION = "0.6.0"
 SCHEMA_VERSION = "3.0.0"
 INPUT_SPECS = (

@@ -27,7 +27,6 @@ from typing import Any
 from .ingestion import extract_document_bundle
 from .jsonio import strict_json_loads
 
-
 OCR_ADAPTER_VERSION = "1.0.0"
 FIELD_REFERENCE_SCHEMA_VERSION = "ocr-field-reference/1.0"
 FIELD_BENCHMARK_SCHEMA_VERSION = "ocr-field-benchmark/1.0"

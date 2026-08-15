@@ -16,7 +16,6 @@ from typing import Any
 
 from .jsonio import strict_json_file
 
-
 ALIASES = {
     "총 출하 중량": "shipment_mass_t",
     "NET WT": "shipment_mass_t",
