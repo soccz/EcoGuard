@@ -66,8 +66,11 @@ This is the reference full-audit environment used by CI: Ubuntu x86_64,
 CPython 3.12, and `torch 2.13.0+cpu`. `requirements.txt` pins the remaining
 versions and repeats the Torch version constraint. Compatible platforms can run
 the fast hash/inference verifiers, but `--retrain` intentionally requires exact
-version metadata and does not promise tensor/byte equality across operating
-systems, accelerators, or PyTorch builds.
+version metadata. Even in the reference environment, CPU kernels may differ in
+their final floating-point rounding, so the GAN audit bounds parameter replay at
+`5e-4`, final losses at `1e-3`, the probability curve at `5e-4`, the JVP at
+`1e-4`, and decoded preview channels at 2/255. It does not promise tensor/byte
+equality across operating systems, accelerators, or PyTorch builds.
 
 ## Verify the committed public forest-cover demo
 
@@ -144,8 +147,10 @@ JVP. Committed NPY hashes also remain exact; regenerated float arrays use a
 python -m research.forest_xai.scripts.verify_reconstruction
 ```
 
-Repeat the CPU GAN training and compare tensor state, numeric semantics and the
-bounded decoded preview only when a full audit is needed:
+Repeat the CPU GAN training and compare invariant metadata exactly, parameters
+within `5e-4`, final losses within `1e-3`, the probability curve within `5e-4`,
+the JVP within `1e-4`, and the bounded decoded preview only when a full audit is
+needed:
 
 ```bash
 python -m research.forest_xai.scripts.verify_reconstruction --retrain

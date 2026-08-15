@@ -17,6 +17,10 @@ from PIL import Image
 
 TRACK_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = TRACK_ROOT.parents[1]
+RETRAINED_PARAMETER_ATOL = 5e-4
+RETRAINED_LOSS_ATOL = 1e-3
+RETRAINED_PROBABILITY_ATOL = 5e-4
+RETRAINED_JVP_ATOL = 1e-4
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
@@ -62,6 +66,85 @@ def _compare_array_replay(reference: Path, candidate: Path) -> dict[str, Any]:
     if metrics["max_absolute_error"] > 1e-6:
         raise ValueError("replayed float array differs by more than 1e-6")
     return metrics
+
+
+def _compare_model_state_replay(
+    expected_models: dict[str, Any],
+    actual_models: dict[str, Any],
+) -> dict[str, Any]:
+    """Compare retrained parameters across deterministic CPU kernel variants."""
+    _require_equal("retrained model groups", set(actual_models), set(expected_models))
+    max_error = 0.0
+    total_error = 0.0
+    element_count = 0
+    tensor_count = 0
+    for model_name, expected_model in expected_models.items():
+        expected_state = expected_model.state_dict()
+        actual_state = actual_models[model_name].state_dict()
+        _require_equal(
+            f"{model_name} state keys", set(actual_state), set(expected_state)
+        )
+        for tensor_name, expected_tensor in expected_state.items():
+            actual_tensor = actual_state[tensor_name]
+            _require_equal(
+                f"{model_name}.{tensor_name} shape",
+                list(actual_tensor.shape),
+                list(expected_tensor.shape),
+            )
+            _require_equal(
+                f"{model_name}.{tensor_name} dtype",
+                str(actual_tensor.dtype),
+                str(expected_tensor.dtype),
+            )
+            expected = expected_tensor.detach().cpu().numpy()
+            actual = actual_tensor.detach().cpu().numpy()
+            if not np.isfinite(actual).all():
+                raise ValueError(
+                    f"non-finite retrained tensor: {model_name}.{tensor_name}"
+                )
+            difference = np.abs(actual.astype(np.float64) - expected.astype(np.float64))
+            tensor_max = float(difference.max(initial=0.0))
+            max_error = max(max_error, tensor_max)
+            total_error += float(difference.sum())
+            element_count += difference.size
+            tensor_count += 1
+    if max_error > RETRAINED_PARAMETER_ATOL:
+        raise ValueError(
+            "retrained tensor state differs by more than "
+            f"{RETRAINED_PARAMETER_ATOL:g}"
+        )
+    return {
+        "comparison": f"absolute_tolerance_{RETRAINED_PARAMETER_ATOL:g}",
+        "tensor_count": tensor_count,
+        "element_count": element_count,
+        "max_absolute_error": round(max_error, 12),
+        "mean_absolute_error": round(total_error / max(element_count, 1), 12),
+    }
+
+
+def _compare_numeric_sequence(
+    label: str,
+    actual: Any,
+    expected: Any,
+    *,
+    tolerance: float,
+) -> dict[str, Any]:
+    actual_values = np.asarray(actual, dtype=np.float64)
+    expected_values = np.asarray(expected, dtype=np.float64)
+    _require_equal(
+        f"{label} shape", list(actual_values.shape), list(expected_values.shape)
+    )
+    if not np.isfinite(actual_values).all():
+        raise ValueError(f"non-finite retrained {label}")
+    difference = np.abs(actual_values - expected_values)
+    max_error = float(difference.max(initial=0.0))
+    if max_error > tolerance:
+        raise ValueError(f"retrained {label} differs by more than {tolerance:g}")
+    return {
+        "tolerance": tolerance,
+        "max_absolute_error": round(max_error, 12),
+        "mean_absolute_error": round(float(difference.mean()), 12),
+    }
 
 
 def _artifact_path(root: Path, relative: Any) -> Path:
@@ -339,7 +422,7 @@ def verify_committed_reconstruction(
 
 
 def verify_retraining(track_root: Path, output_dir: Path) -> dict[str, Any]:
-    """Repeat the 120-epoch CPU GAN training and compare tensor-derived results."""
+    """Repeat CPU training and compare invariant metadata plus numeric semantics."""
     from research.forest_xai.determinism import resolve_device
     from research.forest_xai.jsonio import load_json_object
     from research.forest_xai.reconstruction import (
@@ -363,18 +446,45 @@ def verify_retraining(track_root: Path, output_dir: Path) -> dict[str, Any]:
     )
     result = train_latent_gan(fixture_root, output_dir, LatentGanConfig(device="cpu"))
     retrained_checkpoint = output_dir / result["checkpoint"]
-    _, _, retrained_sidecar = load_latent_gan(
+    committed_generator, committed_critic, _ = load_latent_gan(
+        reconstruction_root / "latent_gan.pt", resolve_device("cpu")
+    )
+    retrained_generator, retrained_critic, retrained_sidecar = load_latent_gan(
         retrained_checkpoint, resolve_device("cpu")
     )
-    _require_equal(
-        "retrained tensor state",
-        retrained_sidecar["state_dict_sha256"],
-        committed_sidecar["state_dict_sha256"],
+    state_replay = _compare_model_state_replay(
+        {"generator": committed_generator, "critic": committed_critic},
+        {"generator": retrained_generator, "critic": retrained_critic},
     )
+    volatile_metadata = {
+        "state_dict_sha256",
+        "final_critic_loss",
+        "final_generator_loss",
+    }
     _require_equal(
-        "retrained metadata",
-        retrained_sidecar["metadata"],
-        committed_sidecar["metadata"],
+        "retrained invariant metadata",
+        {
+            key: value
+            for key, value in retrained_sidecar["metadata"].items()
+            if key not in volatile_metadata
+        },
+        {
+            key: value
+            for key, value in committed_sidecar["metadata"].items()
+            if key not in volatile_metadata
+        },
+    )
+    loss_replay = _compare_numeric_sequence(
+        "training losses",
+        [
+            retrained_sidecar["metadata"]["final_critic_loss"],
+            retrained_sidecar["metadata"]["final_generator_loss"],
+        ],
+        [
+            committed_sidecar["metadata"]["final_critic_loss"],
+            committed_sidecar["metadata"]["final_generator_loss"],
+        ],
+        tolerance=RETRAINED_LOSS_ATOL,
     )
     regenerated = interpolate_latent_path(
         retrained_checkpoint,
@@ -384,17 +494,52 @@ def verify_retraining(track_root: Path, output_dir: Path) -> dict[str, Any]:
             seed=committed_latent["seed"], frames=committed_latent["frames"]
         ),
     )
+    variable_semantics = {
+        "gan_checkpoint_sha256",
+        "files",
+        "forest_probabilities",
+        "jvp",
+    }
     _require_equal(
-        "retrained latent semantics",
+        "retrained invariant latent semantics",
         {
             key: value
             for key, value in regenerated.items()
-            if key not in {"gan_checkpoint_sha256", "files"}
+            if key not in variable_semantics
         },
         {
             key: value
             for key, value in committed_latent.items()
-            if key not in {"gan_checkpoint_sha256", "files"}
+            if key not in variable_semantics
+        },
+    )
+    probability_replay = _compare_numeric_sequence(
+        "forest probability curve",
+        regenerated["forest_probabilities"],
+        committed_latent["forest_probabilities"],
+        tolerance=RETRAINED_PROBABILITY_ATOL,
+    )
+    jvp_replay = _compare_numeric_sequence(
+        "JVP semantics",
+        [
+            regenerated["jvp"]["latent_path_length"],
+            regenerated["jvp"]["unit_path_direction_derivative"],
+        ],
+        [
+            committed_latent["jvp"]["latent_path_length"],
+            committed_latent["jvp"]["unit_path_direction_derivative"],
+        ],
+        tolerance=RETRAINED_JVP_ATOL,
+    )
+    _require_equal(
+        "retrained fixed JVP contract",
+        {
+            "location_alpha": regenerated["jvp"]["location_alpha"],
+            "unit_direction_norm": regenerated["jvp"]["unit_direction_norm"],
+        },
+        {
+            "location_alpha": committed_latent["jvp"]["location_alpha"],
+            "unit_direction_norm": committed_latent["jvp"]["unit_direction_norm"],
         },
     )
     image_replay = _compare_png_replay(
@@ -402,17 +547,23 @@ def verify_retraining(track_root: Path, output_dir: Path) -> dict[str, Any]:
         output_dir / "derived" / regenerated["files"]["contact_sheet"]["path"],
     )
     return {
-        "status": "state-metadata-semantics-identical",
+        "status": "metadata-and-bounded-numeric-semantics-verified",
         "committed_checkpoint_sha256": committed_sidecar["checkpoint_sha256"],
         "retrained_checkpoint_sha256": retrained_sidecar["checkpoint_sha256"],
-        "state_dict_sha256": result["state_dict_sha256"],
+        "committed_state_dict_sha256": committed_sidecar["state_dict_sha256"],
+        "retrained_state_dict_sha256": result["state_dict_sha256"],
+        "state_replay": state_replay,
+        "loss_replay": loss_replay,
+        "probability_replay": probability_replay,
+        "jvp_replay": jvp_replay,
         "epochs": 120,
         "device": "cpu",
         "latent_contact_sheet_replay": image_replay,
         "checkpoint_container_note": (
             "torch.save container bytes may differ; each file must match its own "
-            "sidecar; tensor state, metadata, and numeric semantics are exact while "
-            "the decoded contact sheet allows at most 2/255 channel error across CPU kernels"
+            "sidecar; immutable metadata is exact, parameters and derived numeric "
+            "semantics use documented CPU-kernel tolerances, and the decoded contact "
+            "sheet allows at most 2/255 channel error"
         ),
     }
 

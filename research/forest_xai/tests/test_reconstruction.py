@@ -23,6 +23,7 @@ from research.forest_xai.reconstruction import (
 )
 from research.forest_xai.scripts.verify_reconstruction import (
     _compare_array_replay,
+    _compare_model_state_replay,
     _compare_png_replay,
     verify_committed_reconstruction,
 )
@@ -132,6 +133,21 @@ class PostAwardReconstructionTests(unittest.TestCase):
                 np.save(handle, values, allow_pickle=False)
             with self.assertRaisesRegex(ValueError, "more than 1e-6"):
                 _compare_array_replay(source, changed)
+
+    def test_retrained_state_replay_rejects_material_parameter_drift(self) -> None:
+        expected = torch.nn.Linear(2, 2, bias=False)
+        actual = torch.nn.Linear(2, 2, bias=False)
+        actual.load_state_dict(expected.state_dict())
+        with torch.no_grad():
+            actual.weight[0, 0] += 1e-4
+        replay = _compare_model_state_replay(
+            {"generator": expected}, {"generator": actual}
+        )
+        self.assertAlmostEqual(replay["max_absolute_error"], 1e-4, places=7)
+        with torch.no_grad():
+            actual.weight[0, 0] += 1e-3
+        with self.assertRaisesRegex(ValueError, "more than 0.0005"):
+            _compare_model_state_replay({"generator": expected}, {"generator": actual})
 
     def test_committed_relief_drape_reproduces_and_declares_synthetic_height(
         self,

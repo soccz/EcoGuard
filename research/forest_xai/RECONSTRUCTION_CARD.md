@@ -111,15 +111,16 @@ SHA-256은 정확히 고정하되, CPU kernel에 따른 마지막 반올림·압
 python -m research.forest_xai.scripts.verify_reconstruction --retrain
 ```
 
-PyTorch checkpoint container byte는 tensor가 같아도 달라질 수 있으므로 full
-audit은 각 checkpoint file을 각 sidecar SHA에 대조하고, 재학습 동일성은
-tensor-state hash·metadata·exact numeric semantics와 bounded preview replay로
-판단합니다.
+PyTorch checkpoint container byte와 마지막 부동소수점 반올림은 CPU kernel에 따라
+달라질 수 있습니다. Full audit은 각 checkpoint file을 각 sidecar SHA에 대조하고,
+immutable metadata는 exact하게, 재학습 parameter는 절대오차 `5e-4`, 최종 loss는
+`1e-3`, 확률 곡선은 `5e-4`, JVP는 `1e-4`, preview RGB는
+2/255 이내로 판단합니다. 같은 환경에서 두 번 학습했을 때의 exact state hash
+결정성은 별도 unit test가 고정합니다.
 
 Full retrain의 기준 환경은 CI와 같은 Ubuntu x86_64·CPython 3.12·
 `torch 2.13.0+cpu`입니다. 다른 platform/build에서는 fast verifier를 사용할 수
-있지만, 부동소수점 backend와 `torch_version` metadata까지 같은 재학습 동일성을
-보장하지 않습니다.
+있지만, 위 full-audit tolerance와 `torch_version` metadata 일치를 보장하지 않습니다.
 
 ## 주장하지 않는 것
 

@@ -73,8 +73,11 @@ Reconstruction verifier도 committed GAN과 2.5D 산출물의 hash·claim bounda
 검사하고 interpolation/drape를 재생성합니다. Committed file SHA는 exact하게
 고정하고, float machine-array replay는 절대오차 1e-6, integer faces는 exact,
 latent contact sheet는 decode RGB 최대 2/255로 대조합니다. `--retrain`을 붙였을
-때만 tiny GAN CPU 학습을 반복해 tensor state·metadata·numeric semantics와 bounded
-preview를 대조합니다.
+때만 tiny GAN CPU 학습을 반복합니다. Immutable metadata는 exact, 재학습 parameter는
+절대오차 5e-4, 최종 loss는 1e-3, 확률 곡선은 5e-4, JVP는 1e-4, preview RGB는
+2/255 이내로 대조합니다.
+Committed checkpoint와 sidecar의 file/tensor SHA는 계속 exact하게 고정하며, 같은
+환경에서 두 번 학습한 exact state hash 결정성은 unit test가 별도로 검사합니다.
 
 ## 입력 변화와 동등 변형
 

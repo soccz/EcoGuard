@@ -147,9 +147,11 @@ array replay는 절대오차 `1e-6`, latent contact sheet는 decode한 RGB chann
 CPU 재학습까지 반복하려면 해당 verifier에 `--retrain`을 붙입니다.
 Public CNN은 80 epoch, tiny GAN은 120 epoch를 반복합니다. 자세한 설치·실행 경계는
 [`research/forest_xai/README.md`](research/forest_xai/README.md)에 있습니다.
-재학습 완전 동일성의 기준 환경은 CI와 같은 Ubuntu x86_64·CPython 3.12·
-`torch 2.13.0+cpu`입니다. 다른 플랫폼·PyTorch build에서는 fast verifier를 실행할
-수 있지만, 부동소수점·backend·version metadata까지 같은 full audit을 보장하지
+재학습 full audit의 기준 환경은 CI와 같은 Ubuntu x86_64·CPython 3.12·
+`torch 2.13.0+cpu`입니다. 같은 계약 안에서도 CPU kernel에 따른 마지막 반올림은
+가중치 절대오차 `5e-4`, 최종 loss `1e-3`, 확률 곡선 `5e-4`, JVP `1e-4`로
+제한하고 immutable metadata는 exact하게 비교합니다. 다른 플랫폼·PyTorch
+build에서는 fast verifier를 실행할 수 있지만 이 full-audit tolerance를 보장하지
 않습니다.
 
 ## 현재 v0.5 core가 실제로 검증하는 것
