@@ -1,13 +1,16 @@
 # Forest XAI optional research track
 
 This directory is deliberately separate from the dependency-free `ecoguard`
-runtime and wheel. It contains two research tracks whose inputs, tasks, metrics,
+runtime and wheel. It contains three research tracks whose inputs, tasks, metrics,
 and claims must remain separate:
 
 1. **Public single-date forest cover:** an attributed CC BY 4.0 Sentinel-2
    derivative, compact CNN, checkpoint, evaluation, and Grad-CAM artifacts.
 2. **Synthetic bi-temporal mechanics:** a before/after four-band change CNN plus
    local classifier-score JVP through a small encoder/generator latent space.
+3. **Post-award concept reconstruction:** a tiny GAN trained on the public
+   fixture, deterministic latent interpolation with a forest-score JVP, and a
+   2.5D drape over a synthetic height field.
 
 The public path is four-band image → forest/non-forest mask. It is not
 before/after change detection. See [DATA_CARD.md](DATA_CARD.md) for source and
@@ -27,7 +30,7 @@ The tiny fixture contains programmatically drawn rectangles and sensor-like
 noise. Its metrics prove that train/infer/evaluate and explanation code paths
 run; they are not satellite-accuracy claims.
 
-Neither track determines forest loss, causation, legality, EUDR compliance, or
+None of the three tracks determines forest loss, causation, legality, EUDR compliance, or
 an operational decision.
 
 The latent module is labeled **local JVP latent explanation**. It computes an
@@ -37,6 +40,14 @@ GAN, not a causal counterfactual, not a semantic factor, and not a reproduction
 of a named paper or external “HiGAN/HIGAN” implementation. That distinction is
 machine-readable in every explanation JSON.
 
+The third path is deliberately labeled **post-award reconstruction**. The
+competition presentation described attempts at GAN latent interpolation and a
+z/field visualization, but no competition-era GAN code, notebook, checkpoint,
+or reproducible generated artifact was found in the repository-wide audit. The
+current tiny GAN and relief code were written afterward to make those mechanics
+inspectable. They do not establish that this implementation existed during the
+competition. See [RECONSTRUCTION_CARD.md](RECONSTRUCTION_CARD.md).
+
 ## Environment
 
 Use a separate environment; these dependencies are not installed by the core
@@ -45,12 +56,18 @@ package:
 ```bash
 python3 -m venv .venv-forest-xai
 . .venv-forest-xai/bin/activate
+python -m pip install \
+  --index-url https://download.pytorch.org/whl/cpu \
+  "torch==2.13.0"
 python -m pip install -r research/forest_xai/requirements.txt
 ```
 
-`requirements.txt` pins the versions used for the committed CPU verification.
-PyTorch installation may require a platform-specific index; follow the official
-PyTorch installer if the generic wheel is not suitable for your machine.
+This is the reference full-audit environment used by CI: Ubuntu x86_64,
+CPython 3.12, and `torch 2.13.0+cpu`. `requirements.txt` pins the remaining
+versions and repeats the Torch version constraint. Compatible platforms can run
+the fast hash/inference verifiers, but `--retrain` intentionally requires exact
+version metadata and does not promise tensor/byte equality across operating
+systems, accelerators, or PyTorch builds.
 
 ## Verify the committed public forest-cover demo
 
@@ -110,6 +127,55 @@ The audit therefore requires the tensor-state SHA-256, embedded metadata, and
 metrics to match; it separately verifies each checkpoint file against its own
 sidecar SHA-256.
 
+## Verify the post-award reconstruction
+
+The reconstruction verifier validates the committed tiny-GAN checkpoint and
+metadata before `weights_only=True` loading, reproduces the deterministic
+8-frame latent contact sheet, forest-probability curve and exact JVP, and regenerates the 2.5D
+drape, height/probability arrays, 1,089-vertex/1,024-face mesh and its
+machine-readable claim boundary:
+
+```bash
+python -m research.forest_xai.scripts.verify_reconstruction
+```
+
+Repeat the CPU GAN training and compare tensor state and all derived artifacts
+only when a full audit is needed:
+
+```bash
+python -m research.forest_xai.scripts.verify_reconstruction --retrain
+```
+
+The equivalent individual commands are:
+
+```bash
+python -m research.forest_xai recon-train \
+  --fixture-root research/forest_xai/data/public_fixture \
+  --output-dir research/forest_xai/_runs/reconstruction \
+  --seed 20260812 --device cpu --epochs 120
+
+python -m research.forest_xai recon-interpolate \
+  --gan-checkpoint research/forest_xai/_runs/reconstruction/latent_gan.pt \
+  --classifier-checkpoint research/forest_xai/artifacts/public_demo/sentinel2_forest_cover.pt \
+  --output-dir research/forest_xai/_runs/reconstruction \
+  --seed 20260812 --frames 8 --device cpu
+
+python -m research.forest_xai recon-drape \
+  --fixture-root research/forest_xai/data/public_fixture \
+  --classifier-checkpoint research/forest_xai/artifacts/public_demo/sentinel2_forest_cover.pt \
+  --output-dir research/forest_xai/_runs/reconstruction \
+  --seed 20260812 --sample-index 3 --device cpu
+```
+
+| Latent path | 2.5D drape |
+|---|---|
+| ![Eight-frame latent interpolation contact sheet](artifacts/public_demo/reconstruction/latent_interpolation.png) | ![Synthetic-height drape](artifacts/public_demo/reconstruction/terrain_drape.png) |
+
+The GAN consumes public-derived training pixels, but it has no FID, external
+holdout or photorealism evaluation. The relief uses real fixture RGB and model
+probability over a **synthetic** bilinearly interpolated height field. It does
+not use a DEM and does not infer elevation or 3D geometry from satellite data.
+
 ## Reproduce the synthetic track
 
 From the repository root:
@@ -162,5 +228,7 @@ Tests cover fixture stability, tensor shapes and guards, both CNN surfaces,
 Grad-CAM bounds, JVP directionality, both checkpoint tamper guards, the synthetic
 train → evaluate → explain flow, and committed public fixture/model/artifact
 re-verification on CPU. Manifest duplicate keys and sidecar filename mismatch
-also fail closed. The committed `artifacts/public_demo/` files are an
+also fail closed. Reconstruction tests separately cover deterministic GAN
+training, safe hash-bound loading, latent/JVP regeneration, synthetic-height
+claim boundaries, drape regeneration and tamper rejection. The committed `artifacts/public_demo/` files are an
 explicit `.gitignore` allow-list; generated `_runs/` outputs remain ignored.

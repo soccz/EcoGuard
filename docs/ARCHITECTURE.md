@@ -52,7 +52,7 @@ parallel verification benchmarks
   benchmark JSON/GeoJSON + input/output SHA-256 manifest
 ```
 
-선택형 산림 연구는 core 밖에서 서로 다른 두 축으로 동작합니다.
+선택형 산림 연구는 core 밖에서 서로 다른 세 축으로 동작합니다.
 
 ```text
 public CC BY 4.0 Sentinel-2 derivative (single date)
@@ -72,11 +72,22 @@ programmatically generated before/after four-band pair
               │                     │
               ▼                     ▼
        segmentation Grad-CAM     local classifier-score JVP
+
+post-award presentation-concept reconstruction
+  public train chips → tiny generator + critic
+                         │
+             z0 → z1 interpolation → forest-score curve + exact JVP
+
+  public evaluation RGB + forest probability + synthetic coarse height
+                         │
+             x/y-grid bilinear height interpolation → 2.5D drape artifact
 ```
 
 첫 번째 축은 실제 pixel이지만 **단일시점 forest cover**입니다. 두 번째
-축은 before/after이지만 **합성 smoke test**입니다. 두 축을 합쳐 실제
-bi-temporal change, HiGAN, 발표 수치 `83.4% → 96.2%` 또는 위성→3D를 주장하지
+축은 before/after이지만 **합성 smoke test**입니다. 세 번째 축은 대회 당시
+코드의 복구본이 아니라 발표 아이디어를 공개 입력으로 새로 구현한 **수상 후
+재구성**입니다. 세 축을 합쳐 실제 bi-temporal change, HiGAN, 발표 수치
+`83.4% → 96.2%`, photorealism 또는 위성에서 고도·3D를 복원했다고 주장하지
 않습니다.
 
 ## Core stage contracts
@@ -100,6 +111,8 @@ bi-temporal change, HiGAN, 발표 수치 `83.4% → 96.2%` 또는 위성→3D를
 | public evaluation | 12 evaluation chips + committed checkpoint | forest-cover metrics JSON | scene overlap 0, threshold 0.55, committed metric 전체 일치 |
 | public explanation | evaluation sample `S2-EV-003` | RGB·reference·probability·Grad-CAM PNG + JSON | 4개 이미지를 재생성한 SHA-256이 committed manifest와 일치 |
 | synthetic change | generated before/after pair + change mask | checkpoint·metric·Grad-CAM·NPZ·JVP trace | synthetic warning, `not_a_gan`, `not_a_reproduction` 경계 유지 |
+| reconstruction GAN | public train split + deterministic CPU config | generator/critic checkpoint+sidecar, 8-frame contact sheet+JSON | file/tensor hash; post-award/not-HiGAN/not-photorealistic 경계; unit-path forest-score JVP |
+| reconstruction drape | public RGB·probability + deterministic synthetic height | 2.5D JSON/PNG + height/probability/vertices/faces NPY | bilinear interpolation·1089-vertex/1024-face mesh·output hash 재현; synthetic-height/not-satellite-derived-elevation 경계 |
 
 ## Adapter and service boundaries
 
@@ -207,10 +220,19 @@ direction and decodes a small step. This proves that the gradient and artifact
 paths are executable. It is not a GAN, a HiGAN reproduction, a causal
 counterfactual or a semantic latent factor.
 
-There is no height input or geometry-reconstruction stage. Current forest
-artifacts are 2D masks, PNG, GeoJSON and SVG. A future licensed DEM drape could
-be described as 2.5D visualization, but not as 3D reconstructed from these
-Sentinel-2 images.
+### Post-award reconstruction boundary
+
+The reconstruction trains a tiny generator and critic on the committed public
+training fixture, walks one deterministic latent path, and differentiates the
+committed forest-cover model's mean score along that path. It is new post-award
+code, not recovered competition code or a named HiGAN implementation. It has no
+photorealism or generative-quality evaluation.
+
+The relief path has a height input, but that input is a deterministic synthetic
+coarse field expanded by bilinear interpolation. It drapes real fixture RGB and
+model probability for a 2.5D visualization; it does not infer height or geometry
+from Sentinel-2. A future licensed DEM drape would still need to be described as
+2.5D visualization, not 3D reconstructed from these images.
 
 ## Deterministic build
 
@@ -237,9 +259,12 @@ contract:
 ```bash
 python -m unittest discover -s research/forest_xai/tests -v
 python -m research.forest_xai.scripts.verify_public_demo
+python -m research.forest_xai.scripts.verify_reconstruction
 ```
 
-Its 9 test methods, checkpoint, model metrics and explanation artifacts are not
+Its research test methods, checkpoints, model metrics and explanation/reconstruction artifacts are not
 added to the core's 174 test methods, wheel or golden-artifact counts. Appending
 `--retrain` to the public verifier additionally repeats the 80-epoch CPU
-training and compares tensor state, metadata and metrics.
+training and compares tensor state, metadata and metrics. Appending `--retrain`
+to the reconstruction verifier additionally repeats the tiny-GAN CPU training
+and compares its tensor state and derived artifacts.

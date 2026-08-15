@@ -1,11 +1,12 @@
 {
-  "attestation_version": "1.0",
-  "created_on": "2026-08-12",
+  "attestation_version": "1.1",
+  "created_on": "2026-08-13",
   "scope": "Team-held competition archive identifiers; source files remain private",
   "limitations": [
     "SHA-256 permits later controlled byte matching but does not independently prove authorship or creation time",
     "Filesystem modified_at values are descriptive metadata, not trusted timestamps",
-    "No private deck, participant data, production endpoint or original source file is published here"
+    "No private deck, participant data, production endpoint or original source file is published here",
+    "A label or metric rendered in a presentation asset proves that the screen existed, not that the named model or result was independently reproduced"
   ],
   "custodian_attestation": {
     "github_identity": "soccz",
@@ -35,6 +36,22 @@
       "filesystem_modified_at": "2026-07-21T18:04:11+09:00",
       "sha256": "0f8417c331919b9af1c9c758c556d995c45659b29b1e6a3474b0f4b13e427909",
       "public_mapping": "The public four-page case study and screenshots document the presentation story without publishing the full original deck or private media."
+    },
+    {
+      "archive_id": "forest-xai-comparison-panel-2026-06",
+      "artifact_class": "competition-era forest XAI presentation image",
+      "bytes": 508180,
+      "filesystem_modified_at": "2026-06-14T10:03:52+09:00",
+      "sha256": "250bae1597e01f0ba1dfa75715168eb3044fed29685e508846aa731b22e9ebd1",
+      "public_mapping": "This archived panel records that the presentation compared coarse Grad-CAM and a HIGAN-labeled interpretation concept. It is presentation provenance only, not evidence that a named HiGAN implementation or the displayed performance was reproduced."
+    },
+    {
+      "archive_id": "forest-pseudo-360-demo-2026-07",
+      "artifact_class": "competition-era standalone forest field-view demo",
+      "bytes": 22045252,
+      "filesystem_modified_at": "2026-07-13T14:52:14+09:00",
+      "sha256": "84c8813c793c11e75f2e5fffb26d1aa3637205f4ee5b8b9b48103a9b92eeb54f",
+      "public_mapping": "The current licensed pseudo-360 web demo preserves the interaction idea. The archived screen is not a satellite-derived elevation model or a photogrammetric reconstruction."
     }
   ]
 }

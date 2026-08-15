@@ -1,0 +1,41 @@
+{
+  "checkpoint_file": "latent_gan.pt",
+  "checkpoint_sha256": "3f1ba332dc8cd43445008fac715c30a77818c3640a75b2659e1ebc7417006332",
+  "metadata": {
+    "claim_boundary": {
+      "not_a_higan_reproduction": true,
+      "not_evidence_of_presentation_metrics": true,
+      "not_photorealistic": true,
+      "post_award_reconstruction": true,
+      "presentation_concept_only": true
+    },
+    "determinism": {
+      "cublas_workspace_config": ":4096:8",
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": true,
+      "deterministic_algorithms": true,
+      "seed": 20260812,
+      "torch_num_threads": 1
+    },
+    "final_critic_loss": 0.775737,
+    "final_generator_loss": 1.622545,
+    "parameter_count": 53749,
+    "resolved_device": "cpu",
+    "scope": "post_award_latent_and_relief_reconstruction",
+    "state_dict_sha256": "a29396193ec04c6c75d9dd165fc1a1988eb84b3169dabbabd2b70e477414c828",
+    "torch_version": "2.13.0+cpu",
+    "train_fixture_sha256": "81cb4b7b3322ff2529e88bac82e62840eb7fb22b5470c2d2ec28de967c5c9af4",
+    "training_config": {
+      "batch_size": 12,
+      "device": "cpu",
+      "epochs": 120,
+      "latent_dim": 16,
+      "learning_rate": 0.0002,
+      "seed": 20260812,
+      "width": 16
+    }
+  },
+  "schema_version": "forest-xai-latent-gan-metadata/1.0",
+  "scope": "post_award_latent_and_relief_reconstruction",
+  "state_dict_sha256": "a29396193ec04c6c75d9dd165fc1a1988eb84b3169dabbabd2b70e477414c828"
+}

@@ -1,6 +1,6 @@
 # 산림 benchmark와 선택형 Forest XAI
 
-이 저장소의 산림 증거는 입력·task·metric이 다른 세 개 코드 경로입니다.
+이 저장소의 산림 증거는 입력·task·metric이 다른 네 개 코드 경로입니다.
 한 경로의 수치를 다른 경로의 성능으로 읽지 않아야 합니다.
 
 | 증거 경로 | 입력 | 구현 | 증명하는 것 | 증명하지 않는 것 |
@@ -8,9 +8,10 @@
 | Core NDVI·geospatial | 6×6, 4×6 합성 band/reference | dependency-free NDVI, CRS·affine·QA·tile holdout, GeoJSON/SVG | metric·지리공간 contract의 결정론적 재현 | 실제 위성 정확도 |
 | Public forest cover | CC BY 4.0 Sentinel-2 4-band derivative, 단일시점 | CNN 학습·추론·평가, checkpoint, Grad-CAM | 실제 공개 pixel을 다루는 소형 capability fixture | 전후 변화·훼손, 외부 일반화 |
 | Synthetic change mechanics | 프로그램으로 만든 before/after 4-band pair | change CNN, Grad-CAM, local latent JVP | train→evaluate→explain 코드 경로 | 실제 위성 metric, GAN·HiGAN, 인과 설명 |
+| Post-award concept reconstruction | 공개 fixture로 새로 학습한 tiny GAN + 합성 높이장 | latent `z0 → z1` 보간·forest-score JVP, 2.5D RGB/probability drape | 발표 아이디어의 두 연산을 현재 코드로 실행·검증 | 당시 구현, HiGAN, photorealism, 실제 고도·3D |
 
 실제 bi-temporal 산림변화, 발표 수치 `83.4% → 96.2%`, HiGAN 재현,
-위성→3D pipeline은 세 경로 어느 것으로도 검증되지 않습니다.
+위성에서 고도·3D를 복원하는 pipeline은 네 경로 어느 것으로도 검증되지 않습니다.
 
 ## Core geospatial plumbing의 증명 범위
 
@@ -145,6 +146,9 @@ SHA-256·선택 row를 fixture manifest에 기록합니다.
 별도 환경에 고정 의존성을 설치한 뒤 다음을 실행합니다.
 
 ```bash
+python -m pip install \
+  --index-url https://download.pytorch.org/whl/cpu \
+  "torch==2.13.0"
 python -m pip install -r research/forest_xai/requirements.txt
 python -m unittest discover -s research/forest_xai/tests -v
 python -m research.forest_xai.scripts.verify_public_demo
@@ -200,6 +204,32 @@ JVP는 학습된 합성 classifier score의 한 국소 방향을 정확히 미�
 counterfactual이나 의미론적 latent factor도 아닙니다. 실제 공개 위성 평가에는
 이 경로의 metric을 사용하지 않습니다.
 
+## 수상 후 GAN latent·2.5D 개념 재구성
+
+대회 발표에는 GAN 계열 latent 보간과 z축을 활용한 현장형 표현을 시도했다는
+설명이 있었지만, 전수조사에서 당시 학습·추론 코드, notebook, checkpoint 또는
+동일 결과를 재생성할 artifact는 발견되지 않았습니다. 따라서 다음 경로는 당시
+구현을 복구한 것이 아니라, 두 아이디어의 기계적 핵심을 공개 입력으로 **수상 후
+새로 구현한 재구성**입니다.
+
+| 재구성 | 고정 입력 | 실행·산출물 | 경계 |
+|---|---|---|---|
+| Tiny GAN | public train split 24개 4-band 64×64 chip, seed·CPU config | generator/critic 학습, hash-pinned checkpoint+sidecar | 특정 HiGAN architecture/loss의 재현 아님; photorealism·품질 metric 없음 |
+| Latent path | 결정론적 `z0`, `z1`, committed GAN과 forest-cover CNN | `z0 → z1` 8-frame contact sheet, path length 4.24485588, alpha 0.5 단위방향 forest-score JVP 0.01209233, PNG+JSON | 단일 latent 경로의 국소 반응이며 semantic factor·인과 설명 아님 |
+| Relief drape | evaluation RGB·forest probability + 난수 seed로 만든 coarse height | vertical scale 1.0 bilinear height, 2.5D PNG와 height/probability `[64,64]`, vertices `[33,33,3]`, faces `[1024,4]` NPY | 높이는 합성값이며 DEM·stereo·LiDAR 또는 위성 추정 고도가 아님 |
+
+Committed 결과의 빠른 hash·재생성 검사는 다음 전용 verifier로 실행합니다.
+
+```bash
+python -m research.forest_xai.scripts.verify_reconstruction
+```
+
+GAN CPU 학습까지 반복하는 full audit은 verifier의 `--retrain` 옵션을 사용합니다.
+개별 명령과 정확한 schema, checkpoint, JVP, 2.5D 제한은
+[`RECONSTRUCTION_CARD.md`](../research/forest_xai/RECONSTRUCTION_CARD.md)를
+기준으로 합니다. 기존 합성 before/after 경로의 encoder/generator는 GAN이 아니며,
+이번 tiny GAN 재구성과도 별도입니다.
+
 ## Core의 실제 Sentinel/Landsat opt-in 경계
 
 `public_data_opt_in_manifest.json`에는 현재 공식 문서에서 확인한 discovery endpoint와 이용조건 링크만 있습니다.
@@ -231,10 +261,12 @@ counterfactual이나 의미론적 latent factor도 아닙니다. 실제 공개 �
 - 공개 CNN은 4 scene·36 chip에 한정되며 external·seasonal·geographic validation이 없습니다.
 - Grad-CAM은 모델 민감도이지 산림 변화 원인 또는 metric 개선의 증거가 아닙니다.
 - 실제 before/after scene pair·change label을 쓰는 bi-temporal 평가가 없습니다.
+- 수상 후 tiny GAN은 small capability reconstruction이며 생성 품질·일반화 평가가 없습니다.
+- 2.5D drape의 높이는 합성이며 실제 DEM 또는 위성에서 추정한 고도가 아닙니다.
 - NDVI threshold·CNN·XAI 어느 경로도 EUDR 규정 준수 판정이 아닙니다.
 - 발표의 `83.4% → 96.2%`를 같은 데이터·task·split으로 재현하는 코드와 가중치가 없습니다.
-- 특정 HiGAN/HIGAN 구현·논문 버전·학습 계약이 없으며 synthetic JVP와 동일하지 않습니다.
-- 고도 자료·다중시점·다시점 기하가 없으므로 위성→3D reconstruction을 구현하지 않습니다.
+- 특정 HiGAN/HIGAN 구현·논문 버전·학습 계약이 없으며 synthetic JVP나 수상 후 tiny GAN과 동일하지 않습니다.
+- 고도 자료·다중시점·다시점 기하가 없으므로 위성→3D reconstruction을 구현하지 않습니다. 합성 높이장 drape는 2.5D 시각화일 뿐입니다.
 
 실제 **산림변화** benchmark라는 주장은 공개 scene pair, 재배포 권한,
 독립 change reference, spatially separated evaluation, cloud·seasonality·registration

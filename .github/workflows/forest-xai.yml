@@ -82,3 +82,6 @@ jobs:
 
       - name: Verify committed public demo
         run: python -m research.forest_xai.scripts.verify_public_demo
+
+      - name: Verify and retrain post-award reconstruction
+        run: python -m research.forest_xai.scripts.verify_reconstruction --retrain

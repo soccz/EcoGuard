@@ -67,6 +67,21 @@ mask로 train→evaluate→explain 경로를 검사합니다. Local classifier-s
 작은 latent direction에 대한 국소 민감도입니다. GAN·HiGAN, 인과 counterfactual,
 의미론적 latent factor 또는 실제 위성 성능을 증명하지 않습니다.
 
+### 수상 후 GAN·2.5D 재구성은 당시 구현이나 실사화 증거가 아니다
+
+대회 발표에서 GAN latent 보간과 z축/현장형 표현을 시도했지만, 당시 GAN 코드,
+notebook, checkpoint와 재현 가능한 생성 artifact는 전수조사에서 발견되지
+않았습니다. 현재 `research/forest_xai`의 tiny GAN은 공개 fixture로 **수상 후
+새로 학습한 개념 재구성**입니다. 한 `z0 → z1` 경로와 forest-score JVP가
+실행된다는 것만 증명하며 HiGAN, 의미론적 latent, photorealism 또는 당시 성능을
+증명하지 않습니다.
+
+2.5D drape도 실제 RGB와 forest probability를 난수 seed로 만든 합성 높이장에
+얹은 것입니다. x/y 격자의 bilinear height interpolation은 기계적으로 재현되지만 그 높이는 Sentinel-2,
+DEM, stereo, LiDAR 또는 photogrammetry에서 얻은 값이 아닙니다. 상세 계약은
+[`RECONSTRUCTION_CARD.md`](../research/forest_xai/RECONSTRUCTION_CARD.md)에
+있습니다.
+
 ### 아직 공개 재현하지 못한 산림 주장
 
 - 라이선스·scene ID·시간·공간 분할이 고정된 실제 bi-temporal change benchmark
@@ -74,9 +89,9 @@ mask로 train→evaluate→explain 경로를 검사합니다. Local classifier-s
 - 발표 당시 `83.4% → 96.2%`를 같은 task·data·split·metric으로 다시 만드는 평가
 - 위성 영상에서 고도·기하를 복원하는 3D pipeline
 
-현재 산림 출력은 2D mask·PNG·GeoJSON·SVG입니다. 향후 라이선스가
-명확한 DEM 위에 분류 또는 heatmap을 drape하면 **2.5D 시각화**라고 부를 수는
-있지만, 위성 RGB 또는 Grad-CAM에서 높이를 복원했다고 부르면 안 됩니다.
+현재 추가된 합성 높이장 drape는 **2.5D 시각화**입니다. 향후 라이선스가
+명확한 DEM을 입력으로 바꾸더라도 그 범위는 DEM drape이며, 위성 RGB 또는
+Grad-CAM에서 높이를 복원했다고 부르면 안 됩니다.
 
 ### 보안·운영 통제는 범위 밖이다
 

@@ -10,6 +10,11 @@ All notable public reconstruction changes are recorded here. Competition-era pri
 - attributed public Sentinel-2 single-date forest-cover fixture, compact CNN,
   checkpoint, evaluation, model/data cards, and Grad-CAM artifacts
 - synthetic paired-image change CNN and exact local classifier-score JVP smoke test
+- post-award reconstruction of two presentation-era forest concepts: a small
+  public-fixture GAN with deterministic latent interpolation and forest-score
+  JVP, plus a 2.5D drape over a synthetic bilinearly interpolated height field
+- committed reconstruction checkpoint, metadata sidecar, interpolation/drape
+  artifacts, reconstruction card, and a separate hash-bound verifier
 - separate CPU research workflow and fast/full reproducibility verifiers
 - PyTorch 2.13 CPU checkpoint loading with `weights_only=True`, file/tensor hashes,
   exact metadata sidecars, and tamper regression tests
@@ -18,13 +23,17 @@ All notable public reconstruction changes are recorded here. Competition-era pri
 
 - core `make verify` now also lints and byte-compiles `research/forest_xai`
   (research tests, dependencies, metrics and artifacts stay outside core counts)
-- new `forest-xai-test` and `forest-xai-verify` Makefile targets for the
-  research track
+- research Makefile targets now separate test, public-model verification, and
+  post-award reconstruction verification from the core release gate
+- competition provenance now records the attempted GAN latent and z/field
+  visualization concepts without treating the post-award code as contemporary
+  evidence
 
 ### Boundaries
 
 - no claim of real bi-temporal forest-loss detection, HiGAN reproduction,
-  presentation-era score reproduction, or satellite-to-3D reconstruction
+  presentation-era score reproduction, photorealistic generation, or
+  satellite-derived elevation/3D reconstruction
 
 ## [0.5.0] - 2026-08-12
 

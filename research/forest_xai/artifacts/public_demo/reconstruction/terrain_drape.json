@@ -1,0 +1,83 @@
+{
+  "claim_boundary": {
+    "bilinear_height_interpolation": true,
+    "not_a_higan_reproduction": true,
+    "not_evidence_of_presentation_metrics": true,
+    "not_photorealistic": true,
+    "not_satellite_derived_elevation": true,
+    "post_award_reconstruction": true,
+    "presentation_concept_only": true,
+    "renders_committed_model_probability": true,
+    "synthetic_height_field": true
+  },
+  "classifier_checkpoint_sha256": "270fe3c7f857cfee541240ae8af09968e76b194c367539904c64f619953f168c",
+  "evaluation_fixture_sha256": "aff03196bf5ff076bd4a1c2754faef4b84b49cd450be4ba4b216ab5b3b9386ae",
+  "files": {
+    "drape": {
+      "path": "terrain_drape.png",
+      "sha256": "b266a35c5d08aa880c870fed5b2654bd1cda834bb9d1342b7a2801cd35777fd6"
+    },
+    "faces": {
+      "dtype": "int32",
+      "path": "terrain_faces.npy",
+      "sha256": "34061a49a1afb41db26d0991ac35c2a783aa36f4108c7f4c3f65b61b1b99a156",
+      "shape": [
+        1024,
+        4
+      ]
+    },
+    "height": {
+      "dtype": "float32",
+      "path": "terrain_height.npy",
+      "sha256": "4349c2ebc2b8a8d4fba61d362aa4458f709cdfb2e5b51766fad8e339072cdff5",
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "probability": {
+      "dtype": "float32",
+      "path": "terrain_probability.npy",
+      "sha256": "0d6da9661b9ff2179432fde5c75941edc25215b085608088cf5999943d24a7c3",
+      "shape": [
+        64,
+        64
+      ]
+    },
+    "vertices": {
+      "dtype": "float32",
+      "path": "terrain_vertices.npy",
+      "sha256": "f81d17331b10d5325546c163ed3ad4c259d0aeab66bf685284b3c33da90d9445",
+      "shape": [
+        33,
+        33,
+        3
+      ]
+    }
+  },
+  "height_generation": {
+    "coarse_shape": [
+      8,
+      8
+    ],
+    "distribution": "torch.randn with fixed CPU generator",
+    "normalization": "min-max to [0,1]",
+    "smoothing": "3x3 average pool, stride 1, padding 1",
+    "upsampling": "bilinear to 64x64, align_corners true"
+  },
+  "height_grid_size": 8,
+  "mean_forest_probability": 0.218031,
+  "mesh": {
+    "coordinates": "normalized image x/y plus normalized synthetic z",
+    "face_count": 1024,
+    "grid_size": 33,
+    "vertex_count": 1089
+  },
+  "method_label": "2.5D drape of real imagery and model probability over a synthetic bilinearly upsampled height field",
+  "sample_id": "S2-EV-003",
+  "sample_index": 3,
+  "schema_version": "forest-xai-relief-drape/1.0",
+  "scope": "post_award_latent_and_relief_reconstruction",
+  "seed": 20260812,
+  "vertical_scale": 1.0
+}

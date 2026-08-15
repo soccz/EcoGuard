@@ -1,0 +1,49 @@
+{
+  "alphas": [
+    0.0,
+    0.142857,
+    0.285714,
+    0.428571,
+    0.571429,
+    0.714286,
+    0.857143,
+    1.0
+  ],
+  "claim_boundary": {
+    "not_a_higan_reproduction": true,
+    "not_evidence_of_presentation_metrics": true,
+    "not_photorealistic": true,
+    "post_award_reconstruction": true,
+    "presentation_concept_only": true,
+    "real_public_satellite_training_pixels": true
+  },
+  "classifier_checkpoint_sha256": "270fe3c7f857cfee541240ae8af09968e76b194c367539904c64f619953f168c",
+  "files": {
+    "contact_sheet": {
+      "path": "latent_interpolation.png",
+      "sha256": "fe161c7622cc8bbd63446d7d2d6ccc36a55fdbc1b4fe2e40be90c265361575f2"
+    }
+  },
+  "forest_probabilities": [
+    0.038374,
+    0.011082,
+    0.003523,
+    0.004839,
+    0.012862,
+    0.048763,
+    0.153827,
+    0.297246
+  ],
+  "frames": 8,
+  "gan_checkpoint_sha256": "3f1ba332dc8cd43445008fac715c30a77818c3640a75b2659e1ebc7417006332",
+  "jvp": {
+    "latent_path_length": 4.24485588,
+    "location_alpha": 0.5,
+    "unit_direction_norm": 1.0,
+    "unit_path_direction_derivative": 0.01209233
+  },
+  "method_label": "latent z interpolation over a self-trained tiny GAN with an exact forest-score JVP probe",
+  "schema_version": "forest-xai-latent-interpolation/1.0",
+  "scope": "post_award_latent_and_relief_reconstruction",
+  "seed": 20260812
+}

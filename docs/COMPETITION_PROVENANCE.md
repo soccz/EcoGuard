@@ -14,12 +14,12 @@
 |---|---|---|---|
 | 문서 처리 | 합성 무역문서 생성기와 발표용 추출 화면 | OCR adapter contract, 원문 span/hash, 단위 정규화, 후보 선택 ledger와 benchmark | 특정 상용 OCR 엔진의 정확도 |
 | CBAM | CarbonCast 초기 Python 계산과 EcoGuard 발표 시나리오 | 품목×component DAG, direct/indirect 및 process/precursor 대사, 가격 민감도, provenance 재검증 | 법정 납부액 계산기 또는 EU 신고 인증 |
-| 산림 | 위성/XAI 및 현장형 시각화 발표 화면 | Core의 합성 red/NIR·geospatial 기준선; 선택형 공개 Sentinel-2 단일시점 forest-cover CNN·Grad-CAM; 합성 before/after CNN·JVP | 대회 화면의 모델·정확도, 실제 bi-temporal change, HiGAN, 위성→3D 또는 운영 pipeline |
+| 산림 | 위성/XAI 비교 패널과 pseudo-360 standalone 화면 | Core의 합성 red/NIR·geospatial 기준선; 선택형 공개 Sentinel-2 단일시점 forest-cover CNN·Grad-CAM; 합성 before/after CNN·JVP; 수상 후 tiny-GAN latent·2.5D mechanics 재구성 | 대회 화면의 모델·정확도, 실제 bi-temporal change, 특정 HiGAN, 위성에서 복원한 3D 또는 운영 pipeline |
 | 법률 | EU 조문 탐색·응답 흐름 | official identifier binding, citation retrieval, 기권, 고정·blind evaluation | 생성형 법률 답변이나 법률 자문 |
 
 ## 비공개 원본의 제한적 확인 가능성
 
-[`competition_archive_attestation.json`](../data/reference/competition_archive_attestation.json)은 팀 보관 자료 3개의 class, byte 수, SHA-256과 공개 구현의 대응 관계만 기록합니다. 원본은 참여자·제3자 권리와 비공개 구현을 보호하기 위해 저장소에 넣지 않습니다.
+[`competition_archive_attestation.json`](../data/reference/competition_archive_attestation.json)은 팀 보관 자료 5개의 class, byte 수, SHA-256과 공개 구현의 대응 관계만 기록합니다. 여기에는 2026-06 산림 XAI 비교 패널과 2026-07 pseudo-360 standalone 화면도 포함됩니다. 원본은 참여자·제3자 권리와 비공개 구현을 보호하기 위해 저장소에 넣지 않습니다.
 
 이 manifest가 입증하는 범위도 제한적입니다.
 
@@ -41,7 +41,30 @@
 | HiGAN/HIGAN 활용 | 특정 논문·공개 구현의 재현이 없음. Synthetic local JVP는 명시적으로 `not_a_gan`, `not_a_reproduction` | 정확한 논문·commit·architecture·loss·data·weight·evaluation 계약 |
 | Grad-CAM으로 개선 확인 | 현재 Grad-CAM은 한 모델의 국소 민감도 artifact일 뿐 metric 개선을 증명하지 않음 | 동일 데이터·split의 ablation과 부트스트랩 불확실성 |
 | 위성 영상의 산림변화 | 공개 실제 위성 경로는 단일시점 forest cover. Before/after 경로는 합성 | 라이선스가 명확한 실제 scene pair, co-registration, 독립 change label, 시공간 holdout |
-| 위성→3D | 현재 출력은 2D mask·PNG·GeoJSON·SVG. 고도 복원 코드가 없음 | DEM·stereo·LiDAR·photogrammetry 중 적합한 고도 근거, 기하 검증, 정확도 평가 |
+| 위성→3D | 수상 후 합성 높이 2.5D drape는 구현했지만 위성에서 고도를 복원하는 코드가 없음 | DEM·stereo·LiDAR·photogrammetry 중 적합한 고도 근거, 기하 검증, 정확도 평가 |
+
+### 당시 시도의 기록과 수상 후 재구성
+
+대회 산림 파트에서는 GAN 계열 잠재공간을 따라 장면을 보간하고, 화면의 z축을
+활용해 산림 검토 장면을 더 입체적으로 표현하는 방향을 **시도·발표했습니다**.
+팀 보관 attestation의 산림 XAI 비교 패널은 그 용어가 들어간 발표 화면이
+존재했다는 사실만, pseudo-360 standalone record는 사전 렌더링 파노라마를
+둘러보는 현장형 화면이 존재했다는 사실만 고정합니다. 두 hash record 모두 GAN
+모델이 실행됐거나 실제 위성 고도가 복원됐다는 증거는 아닙니다.
+
+전수조사에서는 대회 당시 GAN 학습·추론 코드, notebook, checkpoint 또는 동일
+결과를 다시 만들 수 있는 생성 artifact를 찾지 못했습니다. 따라서 이 저장소는
+그 작업을 당시 구현의 복구본으로 표시하지 않습니다. 대신
+`research/forest_xai`에 공개 fixture로 작은 GAN을 새로 학습해 `z0 → z1`
+interpolation과 forest-score JVP를 실행하고, 별도의 합성 높이장을 bilinear
+보간해 Sentinel-2 RGB와 산림 확률을 drape하는 2.5D 경로를 **수상 후 개념
+재구성**으로 둡니다. 입력·checkpoint·출력 hash와 제한은
+[`RECONSTRUCTION_CARD.md`](../research/forest_xai/RECONSTRUCTION_CARD.md)에
+고정합니다.
+
+이 재구성은 시도의 기술적 메커니즘을 현재 코드로 보여 주지만, 당시 HiGAN
+구현·학습 성과, `83.4% → 96.2%`, photorealism, 실제 전후 변화 탐지 또는
+위성영상에서의 고도·3D 복원을 소급해 증명하지 않습니다.
 
 선택형 공개 CNN·Grad-CAM은 발표 의도의 한 부분을 제3자가 실행할 수 있게
 새로 만든 후속 증거입니다. 대회 당시 모델이나 가중치의 복원본이 아니며,

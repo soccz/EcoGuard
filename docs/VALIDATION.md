@@ -6,7 +6,7 @@ replay에 더해, 의미 있는 입력 변경에는 결과가 변하고 순서·
 동등 입력에는 결과가 유지되는지도 구분합니다.
 
 Core v0.5는 dependency-free wheel·`tests/`의 **174개 test method**로 검증합니다.
-선택형 `research/forest_xai`는 PyTorch 전용 환경·9개 연구 테스트·별도 artifact를
+선택형 `research/forest_xai`는 PyTorch 전용 환경·별도 연구 테스트·artifact를
 사용합니다. 아래 두 검증표의 수치와 성공 기준은 합산하지 않습니다.
 
 ## Core v0.5 핵심 주장과 직접 증거
@@ -48,7 +48,8 @@ Core v0.5는 dependency-free wheel·`tests/`의 **174개 test method**로 검증
 ## 선택형 Forest XAI의 별도 증거
 
 이 표의 공개 위성 축은 **단일시점 forest-cover segmentation**입니다.
-합성 before/after 축은 모델·설명 코드의 smoke test입니다. 둘을 합쳐 실제
+합성 before/after 축은 모델·설명 코드의 smoke test이고, 수상 후 재구성 축은
+발표 아이디어의 GAN latent와 2.5D 연산을 현재 공개 계약으로 구현합니다. 셋을 합쳐 실제
 bi-temporal change model이라고 주장하지 않습니다.
 
 | 공개 주장 | 입력·고정 계약 | 직접 검증 | committed 산출물·결과 | 해석 경계 |
@@ -59,13 +60,18 @@ bi-temporal change model이라고 주장하지 않습니다.
 | Committed checkpoint CPU 재평가 | evaluation 12 chip·49,152 pixel | verifier가 추론·metric JSON을 새로 만들어 committed JSON 전체와 대조 | F1 0.947917, precision 0.979623, recall 0.918200, IoU 0.900991, pixel accuracy 0.947550; TP/FP/FN/TN 23,460/488/2,090/23,114 | 산림변화·훼손·현장 성능이 아닌 작은 forest-cover capability fixture |
 | Grad-CAM 재생성 | evaluation sample `S2-EV-003`, source reference mask로 target region 고정 | RGB·reference·probability·Grad-CAM을 재생성해 각 SHA-256 대조 | explanation JSON 1개 + PNG 4개; public demo 전체 9 file | 모델 민감도이지 인과·생태학적 근거·metric 개선 증거가 아님 |
 | 합성 change CNN·JVP mechanics | 고정 seed로 생성한 before/after 4-band rectangle/noise·change mask | 연구 테스트가 shape/range, train→evaluate→explain, Grad-CAM, JVP direction, checkpoint tamper guard를 검사 | generated checkpoint·metric·Grad-CAM·NPZ·JVP trace | 실제 위성 metric이 아니며 GAN·HiGAN·causal counterfactual이 아님 |
-| 명시적 claim boundary | public JSON은 single-date/real-public, synthetic JSON은 synthetic/not-a-GAN/not-a-reproduction을 고정 | 9개 연구 test method + public verifier | core 174개 test method·wheel·benchmark count에 포함하지 않음 | 실제 bi-temporal change, `83.4% → 96.2%`, HiGAN, 위성→3D는 미재현·미구현 |
+| 수상 후 tiny-GAN 재구성 | public train split, 고정 seed·CPU config, `z0`·`z1`, committed forest-cover CNN | checkpoint/sidecar file·tensor hash, latent frame 재생성, forest probability curve와 alpha 0.5 exact unit-path JVP 대조 | tiny generator/critic checkpoint, interpolation JSON·PNG; path length 4.24485588, derivative 0.01209233 | 당시 code가 아님; 특정 HiGAN·photorealism·생성 품질·발표 수치 증거가 아님 |
+| 수상 후 2.5D height-field 재구성 | evaluation RGB·forest probability + 결정론적 synthetic coarse height | x/y 격자 bilinear height interpolation, drape, height/probability와 1089-vertex/1024-face mesh를 재생성해 claim boundary·SHA 대조 | terrain JSON·PNG, `[64,64]` float32 height/probability, `[33,33,3]` float32 vertices, `[1024,4]` int32 faces | 합성 높이이며 DEM·stereo·LiDAR 또는 위성에서 복원한 3D가 아님 |
+| 명시적 claim boundary | public JSON은 single-date, synthetic change JSON은 not-a-GAN, reconstruction JSON은 post-award·not-HiGAN·not-photorealistic·synthetic-height를 고정 | 연구 test suite + public/reconstruction 전용 verifier | core 174개 test method·wheel·benchmark count에 포함하지 않음 | 실제 bi-temporal change, `83.4% → 96.2%`, HiGAN, satellite-derived elevation은 미재현 |
 
 연구 트랙의 fast verification은 committed checkpoint를 재학습하지 않고 추론·설명
 artifact를 재생성합니다. `--retrain`을 붙이면 80 epoch CPU 학습 후 tensor
 state·metadata·metric까지 추가로 비교합니다. PyTorch container byte는 동일한 tensor에서도
 달라질 수 있으므로, 재학습 audit은 새 checkpoint file의 byte를 committed checkpoint와
 강제하지 않고 각 sidecar의 file hash와 tensor-state hash를 따로 검사합니다.
+Reconstruction verifier도 committed GAN과 2.5D 산출물의 hash·claim boundary를
+검사하고 interpolation/drape를 재생성합니다. `--retrain`을 붙였을 때만 tiny GAN
+CPU 학습을 반복해 tensor state와 파생 artifact를 대조합니다.
 
 ## 입력 변화와 동등 변형
 
@@ -89,17 +95,23 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 ## 선택형 Forest XAI 실행
 
 ```bash
+python -m pip install \
+  --index-url https://download.pytorch.org/whl/cpu \
+  "torch==2.13.0"
 python -m pip install -r research/forest_xai/requirements.txt
 python -m unittest discover -s research/forest_xai/tests -v
 python -m research.forest_xai.scripts.verify_public_demo
+python -m research.forest_xai.scripts.verify_reconstruction
 ```
 
 전체 CPU 재학습 audit이 필요한 경우에만 다음을 별도로 실행합니다.
 
 ```bash
 python -m research.forest_xai.scripts.verify_public_demo --retrain
+python -m research.forest_xai.scripts.verify_reconstruction --retrain
 ```
 
 이 실행은 core wheel을 변경하거나 core 174개 test method에 연구 결과를
 더하지 않습니다. 세부 입력·model claim은 [data card](../research/forest_xai/DATA_CARD.md)와
-[model card](../research/forest_xai/MODEL_CARD.md)를 함께 읽어야 합니다.
+[model card](../research/forest_xai/MODEL_CARD.md),
+[reconstruction card](../research/forest_xai/RECONSTRUCTION_CARD.md)를 함께 읽어야 합니다.

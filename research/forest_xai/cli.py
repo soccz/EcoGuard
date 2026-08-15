@@ -14,13 +14,21 @@ from .public_training import (
     explain_public,
     train_public,
 )
+from .reconstruction import (
+    LatentGanConfig,
+    LatentInterpolationConfig,
+    ReliefDrapeConfig,
+    interpolate_latent_path,
+    render_relief_drape,
+    train_latent_gan,
+)
 from .training import TrainConfig, evaluate, train
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="python -m research.forest_xai",
-        description="Optional synthetic-only forest segmentation/XAI research track.",
+        description="Optional forest segmentation/XAI research track.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -93,6 +101,42 @@ def build_parser() -> argparse.ArgumentParser:
     public_explain.add_argument(
         "--device", choices=("cpu", "cuda", "auto"), default="cpu"
     )
+
+    recon_train = subparsers.add_parser(
+        "recon-train",
+        help="train the post-award latent GAN concept reconstruction",
+    )
+    recon_train.add_argument("--fixture-root", type=Path, required=True)
+    recon_train.add_argument("--output-dir", type=Path, required=True)
+    recon_train.add_argument("--seed", type=int, default=20260812)
+    recon_train.add_argument("--device", choices=("cpu", "cuda", "auto"), default="cpu")
+    recon_train.add_argument("--epochs", type=int, default=120)
+
+    recon_interpolate = subparsers.add_parser(
+        "recon-interpolate",
+        help="render a latent z interpolation contact sheet with an exact JVP probe",
+    )
+    recon_interpolate.add_argument("--gan-checkpoint", type=Path, required=True)
+    recon_interpolate.add_argument("--classifier-checkpoint", type=Path, required=True)
+    recon_interpolate.add_argument("--output-dir", type=Path, required=True)
+    recon_interpolate.add_argument("--seed", type=int, default=20260812)
+    recon_interpolate.add_argument("--frames", type=int, default=8)
+    recon_interpolate.add_argument(
+        "--device", choices=("cpu", "cuda", "auto"), default="cpu"
+    )
+
+    recon_drape = subparsers.add_parser(
+        "recon-drape",
+        help="render the synthetic-height 2.5D relief drape",
+    )
+    recon_drape.add_argument("--fixture-root", type=Path, required=True)
+    recon_drape.add_argument("--classifier-checkpoint", type=Path, required=True)
+    recon_drape.add_argument("--output-dir", type=Path, required=True)
+    recon_drape.add_argument("--seed", type=int, default=20260812)
+    recon_drape.add_argument("--sample-index", type=int, default=3)
+    recon_drape.add_argument("--height-grid-size", type=int, default=8)
+    recon_drape.add_argument("--vertical-scale", type=float, default=1.0)
+    recon_drape.add_argument("--device", choices=("cpu", "cuda", "auto"), default="cpu")
     return parser
 
 
@@ -136,6 +180,34 @@ def main(argv: Sequence[str] | None = None) -> int:
     elif args.command == "public-evaluate":
         result = evaluate_public(
             args.fixture_root, args.checkpoint, args.output, args.device
+        )
+    elif args.command == "recon-train":
+        result = train_latent_gan(
+            args.fixture_root,
+            args.output_dir,
+            LatentGanConfig(seed=args.seed, device=args.device, epochs=args.epochs),
+        )
+    elif args.command == "recon-interpolate":
+        result = interpolate_latent_path(
+            args.gan_checkpoint,
+            args.classifier_checkpoint,
+            args.output_dir,
+            LatentInterpolationConfig(
+                seed=args.seed, device=args.device, frames=args.frames
+            ),
+        )
+    elif args.command == "recon-drape":
+        result = render_relief_drape(
+            args.fixture_root,
+            args.classifier_checkpoint,
+            args.output_dir,
+            ReliefDrapeConfig(
+                seed=args.seed,
+                device=args.device,
+                sample_index=args.sample_index,
+                height_grid_size=args.height_grid_size,
+                vertical_scale=args.vertical_scale,
+            ),
         )
     else:
         result = explain_public(

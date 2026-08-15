@@ -3,6 +3,7 @@
 [![Python 3.11–3.14 verification](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml)
 [![Release v0.5.0](https://img.shields.io/badge/release-v0.5.0-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.5.0)
 [![CodeQL](https://github.com/soccz/EcoGuard/actions/workflows/codeql.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/codeql.yml)
+[![Forest XAI research](https://github.com/soccz/EcoGuard/actions/workflows/forest-xai.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/forest-xai.yml)
 
 **비정형 무역자료를 계산 가능한 값으로 바꾸는 것보다, 그 값이 어디에서 왔고 왜 선택됐는지 증명하는 일이 더 어려웠습니다.** EcoGuard는 이 증명 과정을 코드로 재구성한 무역금융 교육용 PoC입니다.
 
@@ -20,7 +21,7 @@
 |---|---|---|
 | **2026 대회 당시** | @soccz가 핵심 엔진을 설계·구현하고, 팀이 이를 발표용 서비스 흐름으로 구성해 시연 | 원본 서비스·전체 소스·실데이터·비공개 Demo는 포함하지 않음 |
 | **공개 v0.5 재현본** | OCR engine-output adapter, 정규화와 provenance, Legal retrieval·blind-style holdout, CBAM trace·규칙 coverage, 합성 NDVI·geospatial 평가를 dependency-free Python으로 재구성 | 합성 입력·고정 정책·정량 benchmark·golden artifact로 공개 기술 주장만 재현 |
-| **선택형 산림 연구 트랙** | 공개 Sentinel-2 단일시점 산림피복 CNN·Grad-CAM과 합성 전후영상 CNN·JVP를 core 밖에서 재현 | `research/forest_xai` 전용 의존성·테스트·artifact를 사용하며 v0.5 wheel 및 core 수치에 포함하지 않음 |
+| **선택형 산림 연구 트랙** | 공개 Sentinel-2 단일시점 CNN·Grad-CAM, 합성 전후영상 CNN·JVP, 발표 아이디어의 수상 후 GAN latent·2.5D 재구성을 core 밖에서 검증 | `research/forest_xai` 전용 의존성·테스트·artifact를 사용하며 v0.5 wheel 및 core 수치에 포함하지 않음 |
 
 즉, 이 저장소는 대회 당시 운영 백엔드의 그대로인 복원본이 아니라, 당시 @soccz가 담당한 핵심 개발을 **공개 가능한 입력과 더 엄격한 검증 계약으로 재구성한 기술 증거**입니다.
 
@@ -41,9 +42,12 @@ optional research/forest_xai (core wheel 밖)
     → forest-cover CNN → evaluation → Grad-CAM
   합성 before/after 4-band pair
     → change CNN → Grad-CAM + local latent JVP
+  수상 후 발표 개념 재구성
+    → public-fixture tiny GAN → z0→z1 frames + forest-score JVP
+    → synthetic height interpolation + RGB/probability 2.5D drape
 ```
 
-> Core는 OCR 이미지 인식 모델, 법률 LLM, 법정 CBAM 계산기 또는 운영 위성 모델을 주장하지 않습니다. 선택형 연구 트랙의 실제 위성 축도 **단일시점 산림피복 segmentation**일 뿐 실제 전후시점 산림변화 탐지가 아닙니다. HiGAN 재현, 발표 당시 `83.4% → 96.2%`, 위성영상에서 3D를 생성하는 pipeline은 구현·검증됐다고 주장하지 않습니다.
+> Core는 OCR 이미지 인식 모델, 법률 LLM, 법정 CBAM 계산기 또는 운영 위성 모델을 주장하지 않습니다. 선택형 연구 트랙의 실제 위성 축도 **단일시점 산림피복 segmentation**일 뿐 실제 전후시점 산림변화 탐지가 아닙니다. 수상 후 tiny GAN·합성 높이 2.5D 경로는 발표 아이디어의 재구성이지 당시 코드를 복구한 것이 아닙니다. HiGAN, 발표 당시 `83.4% → 96.2%`, photorealism, 위성영상에서 고도·3D를 복원하는 pipeline은 검증됐다고 주장하지 않습니다.
 
 ## 자료별 역할과 읽는 순서
 
@@ -120,20 +124,29 @@ python -m pip install -e '.[dev]'
 
 Core release suite에는 **174개 test method**가 있으며 이 수치는 `tests/`와
 dependency-free wheel의 계약만 가리킵니다. 선택형 산림 연구 트랙의 PyTorch
-의존성, 9개 연구 테스트, 모델 metric과 artifact는 이 숫자에 더하지 않습니다.
+의존성, 연구 테스트, 모델 metric과 artifact는 이 숫자에 더하지 않습니다.
 위 `v0.5.0` tag 명령은 core release를 고정합니다. 아래 명령은
 `research/forest_xai` 디렉터리가 있는 현재 소스 트리에서 별도 환경으로 실행합니다.
 
 ```bash
+python -m pip install \
+  --index-url https://download.pytorch.org/whl/cpu \
+  "torch==2.13.0"
 python -m pip install -r research/forest_xai/requirements.txt
 python -m unittest discover -s research/forest_xai/tests -v
 python -m research.forest_xai.scripts.verify_public_demo
+python -m research.forest_xai.scripts.verify_reconstruction
 ```
 
-마지막 명령은 학습을 다시 하지 않고 committed fixture·checkpoint hash를 검사한
-뒤 CPU 추론과 Grad-CAM 산출물을 다시 만들어 byte 계약을 대조합니다. 80 epoch
-CPU 재학습까지 반복하려면 `--retrain`을 붙입니다. 자세한 설치·실행 경계는
+두 verifier는 학습을 다시 하지 않고 committed fixture·checkpoint hash를 검사한
+뒤 public 추론·Grad-CAM과 reconstruction 산출물을 각각 다시 만들어 byte 계약을
+대조합니다. CPU 재학습까지 반복하려면 해당 verifier에 `--retrain`을 붙입니다.
+Public CNN은 80 epoch, tiny GAN은 120 epoch를 반복합니다. 자세한 설치·실행 경계는
 [`research/forest_xai/README.md`](research/forest_xai/README.md)에 있습니다.
+재학습 완전 동일성의 기준 환경은 CI와 같은 Ubuntu x86_64·CPython 3.12·
+`torch 2.13.0+cpu`입니다. 다른 플랫폼·PyTorch build에서는 fast verifier를 실행할
+수 있지만, 부동소수점·backend·version metadata까지 같은 full audit을 보장하지
+않습니다.
 
 ## 현재 v0.5 core가 실제로 검증하는 것
 
@@ -182,6 +195,7 @@ Legal의 1.0은 의도적으로 고정한 작은 회귀셋이 기대 citation을
 |---|---|---|---|
 | 실제 단일시점 산림피복 | CC BY 4.0 Sentinel-2 L2A B4/B3/B2/B8 derivative; train 24 chip·2 scene / evaluation 12 chip·2 scene, scene overlap 0 | `TinyForestCoverSegmenter`, checkpoint+sidecar, CPU 재평가, forest F1 0.947917·IoU 0.900991, reference-targeted Grad-CAM | 전후 변화, 산림훼손 원인·합법성, 외부 독립 benchmark, 현장 일반화 |
 | 합성 전후영상 smoke test | 프로그램으로 만든 before/after 4-band pair와 change mask | 작은 change CNN의 train/evaluate/explain, segmentation Grad-CAM, local classifier-score JVP, checkpoint tamper guard | 실제 위성 metric, GAN·HiGAN, 인과 counterfactual, semantic latent factor |
+| 발표 개념의 수상 후 재구성 | 공개 train chip으로 새로 학습한 tiny GAN, 결정론적 latent endpoint, 공개 evaluation RGB·산림 확률, 합성 높이장 | `z0 → z1` 8-frame contact sheet·forest-score JVP, hash-pinned checkpoint, x/y 격자의 bilinear height interpolation·2.5D drape | 대회 당시 코드, 특정 HiGAN, photorealism, 발표 수치, 실제 위성 고도·3D |
 
 아래는 evaluation sample `S2-EV-003`의 공개 artifact입니다. Grad-CAM은
 모델 민감도를 보여 줄 뿐, 분류 근거의 인과성이나 생태학적 타당성을
@@ -199,6 +213,19 @@ Legal의 1.0은 의도적으로 고정한 작은 회귀셋이 기대 citation을
     <td><img src="research/forest_xai/artifacts/public_demo/explanation/gradcam.png" alt="Reference-targeted Grad-CAM for S2-EV-003" width="260"></td>
   </tr>
 </table>
+
+발표 당시에는 GAN latent 보간과 z축/현장형 표현을 시도했지만, 전수조사에서
+당시 GAN 코드·notebook·checkpoint는 발견되지 않았습니다. 아래 artifact는 그
+사실을 소급해 꾸미는 대신, 공개 입력과 machine-readable 경계로 핵심 연산을
+수상 후 새로 구현한 결과입니다.
+
+| Tiny-GAN latent interpolation | Synthetic-height 2.5D drape |
+|---|---|
+| ![Eight-frame latent interpolation contact sheet](research/forest_xai/artifacts/public_demo/reconstruction/latent_interpolation.png) | ![2.5D drape over synthetic height](research/forest_xai/artifacts/public_demo/reconstruction/terrain_drape.png) |
+
+구조·checkpoint·JVP·2.5D 경계는
+[`RECONSTRUCTION_CARD.md`](research/forest_xai/RECONSTRUCTION_CARD.md)에
+고정했습니다. 이는 HiGAN 재현이나 실사 생성 품질의 증거가 아닙니다.
 
 F1 0.947917·IoU 0.900991은 네 개의 maintainer-selected source scene에서
 만든 작은 forest/non-forest **capability fixture**의 결과입니다. 발표 수치,
@@ -422,8 +449,8 @@ docs/                  # methodology, architecture, journey and limitations
 
 research/forest_xai/   # optional PyTorch track; core wheel 밖
 ├── data/public_fixture/       # attributed 24 train + 12 evaluation chips
-├── artifacts/public_demo/     # checkpoint, metrics and Grad-CAM evidence
-└── tests/                     # 9 research-only test methods
+├── artifacts/public_demo/     # CNN·Grad-CAM + post-award reconstruction evidence
+└── tests/                     # separately counted research-only tests
 ```
 
 ## 구현·시뮬레이션·제안 경계
@@ -431,9 +458,9 @@ research/forest_xai/   # optional PyTorch track; core wheel 밖
 | 상태 | 범위 |
 |---|---|
 | Core: implemented and tested | OCR output adapters/field evaluation, preprocessing/lineage, BM25F retrieval/holdout, component CBAM sensitivity and coverage map, synthetic NDVI/geospatial evaluation, local API, reports/manifests |
-| Optional research: implemented and separately tested | 공개 Sentinel-2 derivative의 단일시점 forest-cover CNN·evaluation·Grad-CAM |
+| Optional research: implemented and separately tested | 공개 Sentinel-2 derivative의 단일시점 forest-cover CNN·evaluation·Grad-CAM; 수상 후 tiny-GAN latent interpolation·forest-score JVP; 합성 높이 2.5D drape |
 | Simulated with synthetic inputs | OCR engine output, document confidence, 기업·거래·설비, 가격·집약도, raster CRS/time/QA, band/reference mask, before/after change CNN·local latent JVP |
-| Not implemented / proposed | OCR vision model, LLM answer generation, 전체 EU 법령 corpus, Hana 내부 연동, 법정 CBAM 의무 계산, 실제 bi-temporal 산림변화, HiGAN 재현, `83.4% → 96.2%` 재현, 위성→3D pipeline, 자동 금융 승인 |
+| Not implemented / proposed | OCR vision model, LLM answer generation, 전체 EU 법령 corpus, Hana 내부 연동, 법정 CBAM 의무 계산, 실제 bi-temporal 산림변화, HiGAN 재현, `83.4% → 96.2%` 재현, photorealistic GAN 검증, satellite-derived elevation/3D pipeline, 자동 금융 승인 |
 
 ## 프로젝트 과정과 공개 자료
 
@@ -450,6 +477,7 @@ research/forest_xai/   # optional PyTorch track; core wheel 밖
 - [선택형 Forest XAI 실행 가이드](research/forest_xai/README.md)
 - [공개 Sentinel-2 derivative 데이터 카드](research/forest_xai/DATA_CARD.md)
 - [단일시점 forest-cover CNN 모델 카드](research/forest_xai/MODEL_CARD.md)
+- [GAN latent·2.5D 수상 후 재구성 카드](research/forest_xai/RECONSTRUCTION_CARD.md)
 - [대회 보관 자료와 공개 재구성의 provenance](docs/COMPETITION_PROVENANCE.md)
 - [로컬 API와 운영 전 필수 경계](docs/OPERATIONS.md)
 - [변경 기록](CHANGELOG.md) · [기여 규칙](CONTRIBUTING.md) · [보안 정책](SECURITY.md)
