@@ -1,4 +1,7 @@
-.PHONY: test reproduce benchmark verify forest-xai-test forest-xai-verify forest-xai-public-verify forest-xai-reconstruction-verify clean-generated
+.PHONY: proof test reproduce benchmark verify forest-xai-test forest-xai-verify forest-xai-public-verify forest-xai-reconstruction-verify clean-generated
+
+proof:
+	python3 scripts/proof_summary.py --root .
 
 test:
 	PYTHONPATH=src python3 -m unittest discover -s tests -v

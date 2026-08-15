@@ -1,7 +1,7 @@
 # EcoGuard
 
 [![Python 3.11–3.14 verification](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml)
-[![Release v0.5.0](https://img.shields.io/badge/release-v0.5.0-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.5.0)
+[![Release v0.6.0](https://img.shields.io/badge/release-v0.6.0-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.6.0)
 [![CodeQL](https://github.com/soccz/EcoGuard/actions/workflows/codeql.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/codeql.yml)
 [![Forest XAI research](https://github.com/soccz/EcoGuard/actions/workflows/forest-xai.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/forest-xai.yml)
 
@@ -9,19 +9,53 @@
 
 2026 하나 청년 금융인재 양성 프로젝트에서 3인 Team UniHana가 준비·발표해 **대상(상장 표기: 금융감독원상)**을 받았습니다. [연합뉴스 보도](https://www.yna.co.kr/view/AKR20260724041100002)와 [하나금융그룹 제공 보도자료 게재본](https://www.hankyung.com/article/202607243395P)에 따르면 대상 팀에는 상장과 상금 1천만 원이 수여됐습니다. 대상은 세 사람이 함께 만든 팀 성과이며, 수상 결과를 아래 코드의 정확도 증거로 사용하지 않습니다.
 
+## 재현 범위부터 선택하기
+
+| 목적 | 고정할 범위 | 첫 명령 | 포함 관계 |
+|---|---|---|---|
+| 전체 포트폴리오를 인용·재현 | [**`v0.6.0` tag**](https://github.com/soccz/EcoGuard/releases/tag/v0.6.0) | 아래 [tag quickstart](#한-번에-재현하기), `make proof` | dependency-free core와 별도 `research/forest_xai`가 같은 tag tree에 있음. 연구 의존성·수치·artifact는 core wheel·core test count에서 제외 |
+| 역사적 core-only 기준선 확인 | [**`v0.5.0` tag**](https://github.com/soccz/EcoGuard/releases/tag/v0.5.0) | `git clone --branch v0.5.0 --depth 1 …` | Sentinel-2/Grad-CAM과 post-award GAN/2.5D 추가 전 core 릴리스 |
+| 릴리스 이후 개발 상태 검토 | **current `main` commit** | commit SHA 고정 후 `make proof` | 다음 변경이 먼저 들어올 수 있으므로 `v0.6.0`과 동일하다고 가정하지 않음 |
+
+동일 결과를 인용하려면 tag를, 최신 포트폴리오를 검토하려면 현재 commit SHA를
+함께 고정합니다. 질문별 읽기 경로는 [문서 지도](docs/README.md)에 모았습니다.
+
+## 60초 기술 증거표
+
+`make proof`는 네트워크나 모델 의존성 없이 committed artifact를 읽어 아래 대표값과
+SHA-256 연결을 검증합니다. `[PASS]`는 저장소의 제한된 공개 계약을 통과했다는 뜻이며
+운영 정확도·법률 적합성·대회 당시 구현을 대신 증명하지 않습니다.
+
+| 기술 주장 | 실행 코드 | 방어 테스트 | 직접 볼 artifact | 검증되는 범위와 경계 |
+|---|---|---|---|---|
+| OCR output → field provenance | [`ocr_adapter.py`](src/ecoguard/ocr_adapter.py), [`ingestion.py`](src/ecoguard/ingestion.py), [`preprocessing.py`](src/ecoguard/preprocessing.py) | [`test_ocr_adapter.py`](tests/test_ocr_adapter.py), [`test_ingestion.py`](tests/test_ingestion.py), [`test_preprocessing.py`](tests/test_preprocessing.py) | [`extracted_records.json`](artifacts/examples/extracted_records.json) → [`normalized_evidence.json`](artifacts/examples/normalized_evidence.json) | 7문서·37 line·30 candidate, raw line/character span/line·document hash와 `selected_from`; OCR engine 정확도 아님 |
+| CBAM 11-step DAG + 양축 대사 | [`cbam.py`](src/ecoguard/cbam.py) | [`test_cbam.py`](tests/test_cbam.py) | [`cbam_exposure.json`](artifacts/examples/cbam_exposure.json), [`artifact_manifest.json`](artifacts/examples/artifact_manifest.json) | 11개 topological step, `direct+indirect`와 `process+precursor`가 모두 1,111.36 tCO2e로 일치; 법정 인증서 의무액 아님 |
+| EUR-Lex citation + fail-closed abstention | [`legal.py`](src/ecoguard/legal.py), [`regulatory.py`](src/ecoguard/regulatory.py) | [`test_legal.py`](tests/test_legal.py), [`test_regulatory_coverage.py`](tests/test_regulatory_coverage.py) | [`legal_issue_citations.json`](artifacts/examples/legal_issue_citations.json), [`legal_blind_evaluation.json`](artifacts/benchmarks/legal_blind_evaluation.json) | 공식 CELEX/ELI binding, 12 negative의 기권·false support 0; maintainer-authored holdout이며 외부 blind·법률 자문 아님 |
+| 공개 Sentinel-2 + Grad-CAM | [`public_training.py`](research/forest_xai/public_training.py), [`explain.py`](research/forest_xai/explain.py) | [`test_public_demo.py`](research/forest_xai/tests/test_public_demo.py) | [`evaluation.json`](research/forest_xai/artifacts/public_demo/evaluation.json), [`gradcam.png`](research/forest_xai/artifacts/public_demo/explanation/gradcam.png) | 단일시점 forest-cover F1 0.947917·IoU 0.900991과 reference-targeted 민감도; 실제 bi-temporal change·원인 설명 아님 |
+| 수상 후 tiny GAN latent | [`reconstruction.py`](research/forest_xai/reconstruction.py) | [`test_reconstruction.py`](research/forest_xai/tests/test_reconstruction.py) | [`latent_interpolation.json`](research/forest_xai/artifacts/public_demo/reconstruction/latent_interpolation.json), [`latent_interpolation.png`](research/forest_xai/artifacts/public_demo/reconstruction/latent_interpolation.png) | 8-frame `z0→z1`, forest-score JVP 0.01209233; 대회 당시 코드·HiGAN·photorealism 증거 아님 |
+| 합성 높이 2.5D drape | [`reconstruction.py`](research/forest_xai/reconstruction.py) | [`test_reconstruction.py`](research/forest_xai/tests/test_reconstruction.py) | [`terrain_drape.json`](research/forest_xai/artifacts/public_demo/reconstruction/terrain_drape.json), [`terrain_drape.png`](research/forest_xai/artifacts/public_demo/reconstruction/terrain_drape.png) | bilinear 합성 높이, 1,089 vertex·1,024 face; Sentinel-2에서 얻은 고도나 satellite→3D reconstruction 아님 |
+
+### 실제 한 필드의 end-to-end proof
+
+![OCR line provenance에서 정규화, CBAM 11-step DAG와 artifact manifest까지 이어지는 실제 committed 값](docs/assets/core-proof-flow.svg)
+
+그림의 line·span·hash·수치와 두 output hash는 committed JSON에서 그대로 가져왔습니다.
+검증 구현과 tamper test는 [`scripts/proof_summary.py`](scripts/proof_summary.py)와
+[`tests/test_proof_summary.py`](tests/test_proof_summary.py)에서 확인할 수 있습니다.
+
 ## 이 저장소의 기술 저자와 공개 범위
 
-저장소 소유자 [**@soccz**](https://github.com/soccz)는 대회에서 **핵심 기술 엔진의 단독 개발 책임자**로 참여해 CBAM 계산·가격 민감도, 산림 변화 분석, 데이터 처리·검증 로직을 설계하고 구현했습니다. 현재 v0.5 공개본의 Python 패키지, schema, benchmark, 테스트와 재현 산출물도 이 개발 범위를 제3자가 검증할 수 있도록 @soccz가 정리한 것입니다.
+저장소 소유자 [**@soccz**](https://github.com/soccz)는 대회에서 **핵심 기술 엔진의 단독 개발 책임자**로 참여해 CBAM 계산·가격 민감도, 산림 변화 분석, 데이터 처리·검증 로직을 설계하고 구현했습니다. 공개 v0.6의 Python 패키지, schema, benchmark, 테스트와 재현 산출물도 이 개발 범위를 제3자가 검증할 수 있도록 @soccz가 정리한 것입니다.
 
 이 문장은 팀 전체 결과를 개인 성과로 바꾸려는 설명이 아닙니다. 대회 수상과 프로젝트 결과는 3인 팀의 공동 성과입니다. 다른 참여자의 세부 역할, 원본 Live Demo와 발표용 웹 구현은 이 기술 저장소의 공개·평가 범위에 넣지 않습니다.
 
-### 대회 당시 기술과 공개 v0.5의 차이
+### 대회 당시 기술과 공개 v0.6의 차이
 
 | 시점 | 실제 범위 | 이 저장소와의 관계 |
 |---|---|---|
 | **2026 대회 당시** | @soccz가 핵심 엔진을 설계·구현하고, 팀이 이를 발표용 서비스 흐름으로 구성해 시연 | 원본 서비스·전체 소스·실데이터·비공개 Demo는 포함하지 않음 |
-| **공개 v0.5 재현본** | OCR engine-output adapter, 정규화와 provenance, Legal retrieval·blind-style holdout, CBAM trace·규칙 coverage, 합성 NDVI·geospatial 평가를 dependency-free Python으로 재구성 | 합성 입력·고정 정책·정량 benchmark·golden artifact로 공개 기술 주장만 재현 |
-| **선택형 산림 연구 트랙** | 공개 Sentinel-2 단일시점 CNN·Grad-CAM, 합성 전후영상 CNN·JVP, 발표 아이디어의 수상 후 GAN latent·2.5D 재구성을 core 밖에서 검증 | `research/forest_xai` 전용 의존성·테스트·artifact를 사용하며 v0.5 wheel 및 core 수치에 포함하지 않음 |
+| **공개 v0.6 core** | OCR engine-output adapter, 정규화와 provenance, Legal retrieval·blind-style holdout, CBAM trace·규칙 coverage, 합성 NDVI·geospatial 평가를 dependency-free Python으로 재구성 | 합성 입력·고정 정책·정량 benchmark·golden artifact로 공개 기술 주장만 재현 |
+| **v0.6 선택형 산림 연구 트랙** | 공개 Sentinel-2 단일시점 CNN·Grad-CAM, 합성 전후영상 CNN·JVP, 발표 아이디어의 수상 후 GAN latent·2.5D 재구성을 core 밖에서 검증 | `research/forest_xai` 전용 의존성·테스트·artifact를 사용하며 core wheel 및 core 수치에 포함하지 않음 |
 
 즉, 이 저장소는 대회 당시 운영 백엔드의 그대로인 복원본이 아니라, 당시 @soccz가 담당한 핵심 개발을 **공개 가능한 입력과 더 엄격한 검증 계약으로 재구성한 기술 증거**입니다.
 
@@ -62,12 +96,12 @@ optional research/forest_xai (core wheel 밖)
 ## 한 번에 재현하기
 
 Python 3.11 이상과 표준 라이브러리만 있으면 런타임에 네트워크가 필요하지 않습니다.
-아래 명령은 검증된 `v0.5.0` 릴리스 태그를 고정합니다. `main`은 다음 변경이
+아래 명령은 검증된 `v0.6.0` 릴리스 태그를 고정합니다. `main`은 다음 변경이
 먼저 들어올 수 있는 개발 브랜치이므로 동일 결과를 인용하거나 검증할 때는 태그를
 사용합니다.
 
 ```bash
-git clone --branch v0.5.0 --depth 1 https://github.com/soccz/EcoGuard.git
+git clone --branch v0.6.0 --depth 1 https://github.com/soccz/EcoGuard.git
 cd EcoGuard
 python3 -m venv .venv
 source .venv/bin/activate
@@ -107,12 +141,15 @@ python -m ecoguard benchmark --root . --output artifacts/generated-benchmarks
 10. core 11개와 benchmark 6개 artifact의 byte-for-byte diff
 
 GitHub Actions에서도 같은 스크립트를 Python 3.11·3.12·3.13·3.14에서 실행합니다. 태그
-릴리스는 네 버전의 검증이 모두 성공한 뒤에만 생성됩니다. Release에는 wheel·PDF와
+릴리스는 네 버전의 core 검증과 Python 3.12 CPU 산림 연구 재학습이 모두 성공한 뒤에만
+생성됩니다. Release에는 wheel·PDF와
 `SHA256SUMS.txt`를 함께 싣고, GitHub artifact attestation으로 두 배포 자산의 build
 provenance를 서명합니다. 내려받은 wheel은 `gh attestation verify <wheel> -R
 soccz/EcoGuard`로 확인할 수 있습니다.
 
-`make test`, `make reproduce`, `make verify`도 같은 진입점을 제공합니다.
+`make proof`는 committed artifact만 읽는 빠른 offline 검증입니다.
+`make test`, `make reproduce`, `make verify`는 core의 실행·배포 검증 진입점을
+제공합니다.
 `make test`를 현재 환경에서 직접 실행하려면 먼저 개발 extra를 설치합니다.
 
 ```bash
@@ -122,11 +159,11 @@ python -m pip install -e '.[dev]'
 `make verify`는 격리된 임시
 환경에 고정된 개발 의존성을 스스로 설치합니다.
 
-Core release suite에는 **174개 test method**가 있으며 이 수치는 `tests/`와
-dependency-free wheel의 계약만 가리킵니다. 선택형 산림 연구 트랙의 PyTorch
-의존성, 연구 테스트, 모델 metric과 artifact는 이 숫자에 더하지 않습니다.
-위 `v0.5.0` tag 명령은 core release를 고정합니다. 아래 명령은
-`research/forest_xai` 디렉터리가 있는 현재 소스 트리에서 별도 환경으로 실행합니다.
+고정 `v0.6.0` tag의 core release suite에는 **180개 test method**가 있으며 이 수치는
+`tests/`와 dependency-free wheel의 계약만 가리킵니다. 선택형 산림 연구 트랙의
+23개 PyTorch 연구 테스트, 모델 metric과 artifact는 core 숫자에 더하지 않습니다.
+위 `v0.6.0` tag tree의 `research/forest_xai`는 아래 명령처럼 별도 환경에서
+실행합니다.
 
 ```bash
 python -m pip install \
@@ -140,10 +177,10 @@ python -m research.forest_xai.scripts.verify_reconstruction
 
 두 verifier는 학습을 다시 하지 않고 committed fixture·checkpoint·artifact hash를
 검사한 뒤 public 추론·Grad-CAM과 reconstruction 산출물을 다시 만듭니다. Public
-artifact의 committed hash는 정확히 고정하고 latent 수치·JVP와 정수 mesh face는
-exact 값으로 대조합니다. CPU kernel의 미세한 반올림 차이를 반영해 2.5D float
-array replay는 절대오차 `1e-6`, latent contact sheet는 decode한 RGB channel 오차를
-최대 2/255로 제한합니다.
+artifact hash와 immutable metadata, 정수 mesh face는 exact하게 대조합니다. Fast
+reconstruction replay의 probability curve는 절대오차 `5e-4`, JVP path
+length·derivative는 `1e-4`, 2.5D float array는 `1e-6`, latent contact sheet는
+decode한 RGB channel 오차를 최대 2/255로 제한합니다.
 CPU 재학습까지 반복하려면 해당 verifier에 `--retrain`을 붙입니다.
 Public CNN은 80 epoch, tiny GAN은 120 epoch를 반복합니다. 자세한 설치·실행 경계는
 [`research/forest_xai/README.md`](research/forest_xai/README.md)에 있습니다.
@@ -154,7 +191,7 @@ Public CNN은 80 epoch, tiny GAN은 120 epoch를 반복합니다. 자세한 설�
 build에서는 fast verifier를 실행할 수 있지만 이 full-audit tolerance를 보장하지
 않습니다.
 
-## 현재 v0.5 core가 실제로 검증하는 것
+## 현재 core가 실제로 검증하는 것
 
 | 단계 | 공개 입력 | 결정론적 출력과 검증 | 경계 |
 |---|---|---|---|
@@ -470,6 +507,7 @@ research/forest_xai/   # optional PyTorch track; core wheel 밖
 
 ## 프로젝트 과정과 공개 자료
 
+- [질문별 5분 문서 지도](docs/README.md)
 - [상세 프로젝트 보고서: 대회 준비·발표·회고](https://soccz.github.io/projects/ecoguard/)
 - [개발 과정: 기술보다 증명이 더 어려웠다](docs/DEVELOPMENT_JOURNEY.md)
 - [재현 방법론](docs/METHODOLOGY.md)

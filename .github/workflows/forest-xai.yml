@@ -13,6 +13,7 @@ name: Forest XAI research
       - "research/forest_xai/**"
       - ".github/workflows/forest-xai.yml"
       - "pyproject.toml"
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -81,7 +82,7 @@ jobs:
           python -m compileall -q research/forest_xai
 
       - name: Verify committed public demo
-        run: python -m research.forest_xai.scripts.verify_public_demo
+        run: python -m research.forest_xai.scripts.verify_public_demo --retrain
 
       - name: Verify and retrain post-award reconstruction
         run: python -m research.forest_xai.scripts.verify_reconstruction --retrain

@@ -126,7 +126,7 @@ Train tile의 예측은 출력에서 확인할 수 있지만 보고 metric에는
 
 ## 선택형 공개 Sentinel-2 forest-cover CNN
 
-`research/forest_xai` 경로는 core wheel·174개 테스트·artifact 수치에서
+`research/forest_xai` 경로는 core wheel·core 테스트·artifact 수치에서
 분리된 PyTorch 연구 트랙입니다. Bragagnolo 등의 [CC BY 4.0
 Sentinel-2 dataset](https://doi.org/10.5281/zenodo.4498086)에서 B4/B3/B2/B8
 4-band derivative를 만들어 단일시점 forest/non-forest segmentation을 수행합니다.

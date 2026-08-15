@@ -31,7 +31,7 @@
     },
     "legal_source_manifest": {
       "bytes": 1914,
-      "sha256": "b1f3b4588675fcbe804480bfb46ba90e58282ad196301ba28dddb3e19ae3f8dd"
+      "sha256": "05b7e5c6af029b9bae373b73647568f58e1868243d0bacb8ce7932032fe24f81"
     },
     "ocr_field_reference": {
       "bytes": 875,
@@ -45,23 +45,23 @@
   "outputs": {
     "cbam_rule_coverage_report": {
       "bytes": 2421,
-      "sha256": "979d178fad577dc97a1f282bfa12741e85d86fd954164cc239db3dadd0a0c7d7"
+      "sha256": "d003247ef13d74acbf63e42e09b2d8b113620bb9aed23cbaf2a9c3dfad600515"
     },
     "forest_geospatial_geojson": {
       "bytes": 27796,
-      "sha256": "53d7052312c67fbb5dd6692b0a973f40d5e3558dd84d22867d48feae4e530cce"
+      "sha256": "870a24829f18a4656a2e8ec380f3e1d6ba4a6c288f0a9848839b6ed3a7cad8cb"
     },
     "forest_geospatial_summary": {
       "bytes": 8448,
-      "sha256": "d58809977b4855387e3da7450f3292726f0d75671e7ce367ea03eba4b876d39d"
+      "sha256": "ea339bcccb7b338e1585695100b0ca2d3bfb1fa379e32d5b7b75b8bce9f60c2a"
     },
     "legal_blind_evaluation": {
       "bytes": 3034,
-      "sha256": "5a56172ed9254cc9a8f976ae7a85fb0c12b7f033c6971ec8067d46317f1f78b7"
+      "sha256": "d2d97be940e58070112821ba84dad59f75e1e82b002075692bbde1b592054cc7"
     },
     "ocr_field_benchmark": {
       "bytes": 3745,
-      "sha256": "25c81a7a6f7a84813dbd1f4515f0dc874f867c9a3078a910fef536e84ae35e0a"
+      "sha256": "146b20bd522cc0faeefba80f1b6abe8ae4358e0e810cf61003cc7c01bdf72a2c"
     }
   },
   "policy": {

@@ -4,6 +4,8 @@ All notable public reconstruction changes are recorded here. Competition-era pri
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-08-15
+
 ### Added
 
 - Optional `research/forest_xai` track, isolated from the dependency-free wheel
@@ -63,6 +65,7 @@ All notable public reconstruction changes are recorded here. Competition-era pri
 - Hardened numeric parsing, candidate completeness, source hashes and legal source binding.
 - Added component-level CBAM DAG and reference-mask forest evaluation.
 
+[0.6.0]: https://github.com/soccz/EcoGuard/releases/tag/v0.6.0
 [0.5.0]: https://github.com/soccz/EcoGuard/releases/tag/v0.5.0
 [0.4.1]: https://github.com/soccz/EcoGuard/releases/tag/v0.4.1
 [0.4.0]: https://github.com/soccz/EcoGuard/releases/tag/v0.4.0

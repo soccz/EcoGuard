@@ -53,6 +53,10 @@ def _compare_array_replay(reference: Path, candidate: Path) -> dict[str, Any]:
     actual = np.load(candidate, allow_pickle=False)
     _require_equal("replayed array shape", list(actual.shape), list(expected.shape))
     _require_equal("replayed array dtype", str(actual.dtype), str(expected.dtype))
+    if not np.isfinite(expected).all():
+        raise ValueError("non-finite reference replay array")
+    if not np.isfinite(actual).all():
+        raise ValueError("non-finite candidate replay array")
     if np.issubdtype(expected.dtype, np.integer):
         if not np.array_equal(actual, expected):
             raise ValueError("replayed integer array differs from the committed array")
@@ -98,6 +102,10 @@ def _compare_model_state_replay(
             )
             expected = expected_tensor.detach().cpu().numpy()
             actual = actual_tensor.detach().cpu().numpy()
+            if not np.isfinite(expected).all():
+                raise ValueError(
+                    f"non-finite committed tensor: {model_name}.{tensor_name}"
+                )
             if not np.isfinite(actual).all():
                 raise ValueError(
                     f"non-finite retrained tensor: {model_name}.{tensor_name}"
@@ -129,13 +137,17 @@ def _compare_numeric_sequence(
     *,
     tolerance: float,
 ) -> dict[str, Any]:
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise ValueError("numeric replay tolerance must be finite and positive")
     actual_values = np.asarray(actual, dtype=np.float64)
     expected_values = np.asarray(expected, dtype=np.float64)
     _require_equal(
         f"{label} shape", list(actual_values.shape), list(expected_values.shape)
     )
+    if not np.isfinite(expected_values).all():
+        raise ValueError(f"non-finite expected {label}")
     if not np.isfinite(actual_values).all():
-        raise ValueError(f"non-finite retrained {label}")
+        raise ValueError(f"non-finite actual {label}")
     difference = np.abs(actual_values - expected_values)
     max_error = float(difference.max(initial=0.0))
     if max_error > tolerance:
@@ -345,10 +357,54 @@ def verify_committed_reconstruction(
             generated_root,
             LatentInterpolationConfig(seed=latent["seed"], frames=latent["frames"]),
         )
+        variable_semantics = {"files", "forest_probabilities", "jvp"}
         _require_equal(
-            "regenerated latent semantics",
-            {key: value for key, value in generated_latent.items() if key != "files"},
-            {key: value for key, value in latent.items() if key != "files"},
+            "regenerated invariant latent semantics",
+            {
+                key: value
+                for key, value in generated_latent.items()
+                if key not in variable_semantics
+            },
+            {
+                key: value
+                for key, value in latent.items()
+                if key not in variable_semantics
+            },
+        )
+        latent_probability_replay = _compare_numeric_sequence(
+            "forest probability curve",
+            generated_latent["forest_probabilities"],
+            latent["forest_probabilities"],
+            tolerance=RETRAINED_PROBABILITY_ATOL,
+        )
+        latent_jvp_replay = _compare_numeric_sequence(
+            "JVP semantics",
+            [
+                generated_latent["jvp"]["latent_path_length"],
+                generated_latent["jvp"]["unit_path_direction_derivative"],
+            ],
+            [
+                latent["jvp"]["latent_path_length"],
+                latent["jvp"]["unit_path_direction_derivative"],
+            ],
+            tolerance=RETRAINED_JVP_ATOL,
+        )
+        numeric_jvp_fields = {
+            "latent_path_length",
+            "unit_path_direction_derivative",
+        }
+        _require_equal(
+            "regenerated fixed JVP contract",
+            {
+                key: value
+                for key, value in generated_latent["jvp"].items()
+                if key not in numeric_jvp_fields
+            },
+            {
+                key: value
+                for key, value in latent["jvp"].items()
+                if key not in numeric_jvp_fields
+            },
         )
         _require_equal(
             "regenerated contact-sheet path",
@@ -412,6 +468,8 @@ def verify_committed_reconstruction(
         "gan_state_dict_sha256": gan_sidecar["state_dict_sha256"],
         "latent_frames": latent["frames"],
         "unit_path_jvp": latent["jvp"]["unit_path_direction_derivative"],
+        "latent_probability_replay": latent_probability_replay,
+        "latent_jvp_replay": latent_jvp_replay,
         "latent_contact_sheet_replay": latent_image_replay,
         "terrain_sample_id": terrain["sample_id"],
         "terrain_files_verified": len(terrain["files"]),

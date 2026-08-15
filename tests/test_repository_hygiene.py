@@ -66,12 +66,28 @@ class RepositoryHygieneTests(unittest.TestCase):
             ".github/CODEOWNERS",
             ".github/dependabot.yml",
             ".github/workflows/codeql.yml",
+            ".github/workflows/forest-xai.yml",
             ".github/workflows/verify.yml",
         )
         self.assertEqual(
             [relative for relative in required if not (ROOT / relative).is_file()],
             [],
         )
+
+    def test_tag_release_waits_for_retrained_forest_research(self):
+        release_workflow = (ROOT / ".github/workflows/verify.yml").read_text(
+            encoding="utf-8"
+        )
+        research_workflow = (ROOT / ".github/workflows/forest-xai.yml").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("workflow_call:", research_workflow)
+        self.assertIn("uses: ./.github/workflows/forest-xai.yml", release_workflow)
+        release_job = release_workflow.split("\n  release:\n", maxsplit=1)[1]
+        self.assertRegex(release_job, r"needs:\n\s+- verify\n\s+- research")
+        self.assertIn("verify_public_demo --retrain", research_workflow)
+        self.assertIn("verify_reconstruction --retrain", research_workflow)
 
 
 if __name__ == "__main__":

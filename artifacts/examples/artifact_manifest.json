@@ -22,7 +22,7 @@
     },
     "legal_source_manifest": {
       "bytes": 1914,
-      "sha256": "b1f3b4588675fcbe804480bfb46ba90e58282ad196301ba28dddb3e19ae3f8dd"
+      "sha256": "05b7e5c6af029b9bae373b73647568f58e1868243d0bacb8ce7932032fe24f81"
     },
     "normalization_policy": {
       "bytes": 836,
@@ -36,23 +36,23 @@
   "outputs": {
     "cbam_exposure": {
       "bytes": 76338,
-      "sha256": "357d420c37a01ad04953761020ca67953f841f06bc48f21cc614d6e386ceddd5"
+      "sha256": "f1a710c21021b91c9cae690878ac840822420261bc6b4652a041028399306811"
     },
     "evidence_report_html": {
       "bytes": 35752,
-      "sha256": "8f6c849dbf9c1a8b8e32f3e9eef92a3c2279014b0ac1a47cfcac43621231203a"
+      "sha256": "4e3b79390d92492f8aa3ef453b17cdc5109abd390249b9fbc0d22c165c38d280"
     },
     "evidence_report_json": {
       "bytes": 818918,
-      "sha256": "8e953cadc79b9b0735c32db4ab795d83869a7aa972a91b6aa5fda77a596fc9d8"
+      "sha256": "1be513fb423835bbd327a4bcb8bf33a587b1519f7b3a6205118a253c0fd6388c"
     },
     "extracted_records": {
       "bytes": 28297,
-      "sha256": "128df39053592213aed8c58c5e81d1151c23ce0b8faf07527ecbdf7b37973222"
+      "sha256": "4932f018f340bf308d9a90b79d13f6b9099d16173d113ebe4a0dba20c888299e"
     },
     "forest_change": {
       "bytes": 12421,
-      "sha256": "312dca34014777ff55da7cde23e825166e0955ef2c75ea3c765bb358cfe5a136"
+      "sha256": "a564114ccb14598c2159dcb44c3112e0018715c6a5171e8e73a93f4947c760ff"
     },
     "forest_change_geojson": {
       "bytes": 34477,
@@ -64,18 +64,18 @@
     },
     "legal_issue_citations": {
       "bytes": 35565,
-      "sha256": "9486c487be283b3d92f0cd7e0b3e8722ecfa65d36ba934691f0cfbec682d34b4"
+      "sha256": "5c925f39707fe5661c1bb3e0dd0db8add3df87a9a861603c8ebc616392c4888d"
     },
     "legal_retrieval_evaluation": {
       "bytes": 527086,
-      "sha256": "70dad87acd648b6fd2a87561486e8532a03a5160758ee27e5a130301df5de977"
+      "sha256": "b97360c61b8589976eb765d7bc40cbefe107607bb7c310a293392aceabbae151"
     },
     "normalized_evidence": {
       "bytes": 89613,
-      "sha256": "72b09c765314ea7578e9df5c32a826098956e58c24c317622fed8aebb31bf205"
+      "sha256": "4dfe0a249c1628446da4791a07eef0f108c6ac1123e8f8f8f1bcaa1e5f8a4764"
     }
   },
-  "pipeline_version": "0.5.0",
+  "pipeline_version": "0.6.0",
   "schema_version": "artifact-manifest/1.0",
   "verification": "Re-run `python -m ecoguard reproduce` and compare SHA-256 values or execute `./scripts/verify_release.sh` for a wheel-installed exact diff."
 }

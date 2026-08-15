@@ -1,6 +1,6 @@
 # Architecture
 
-EcoGuard v0.5는 결과값보다 **evidence lineage와 계산 trace**를 먼저 설계합니다.
+EcoGuard v0.6.0은 결과값보다 **evidence lineage와 계산 trace**를 먼저 설계합니다.
 모든 운영 시스템 연동은 바깥 adapter로 두고, dependency-free wheel은 합성
 입력에서 시작하는 결정론적 core만 포함합니다. 실제 공개 Sentinel-2
 derivative를 쓰는 PyTorch 코드는 `research/forest_xai`에 분리해 wheel과 core
@@ -76,7 +76,7 @@ programmatically generated before/after four-band pair
 post-award presentation-concept reconstruction
   public train chips → tiny generator + critic
                          │
-             z0 → z1 interpolation → forest-score curve + exact JVP
+             z0 → z1 interpolation → forest-score curve + bounded JVP replay
 
   public evaluation RGB + forest probability + synthetic coarse height
                          │
@@ -111,8 +111,8 @@ post-award presentation-concept reconstruction
 | public evaluation | 12 evaluation chips + committed checkpoint | forest-cover metrics JSON | scene overlap 0, threshold 0.55, committed metric 전체 일치 |
 | public explanation | evaluation sample `S2-EV-003` | RGB·reference·probability·Grad-CAM PNG + JSON | 4개 이미지를 재생성한 SHA-256이 committed manifest와 일치 |
 | synthetic change | generated before/after pair + change mask | checkpoint·metric·Grad-CAM·NPZ·JVP trace | synthetic warning, `not_a_gan`, `not_a_reproduction` 경계 유지 |
-| reconstruction GAN | public train split + deterministic CPU config | generator/critic checkpoint+sidecar, 8-frame contact sheet+JSON | file/tensor hash; post-award/not-HiGAN/not-photorealistic 경계; unit-path forest-score JVP |
-| reconstruction drape | public RGB·probability + deterministic synthetic height | 2.5D JSON/PNG + height/probability/vertices/faces NPY | bilinear interpolation·1089-vertex/1024-face mesh·output hash 재현; synthetic-height/not-satellite-derived-elevation 경계 |
+| reconstruction GAN | public train split + deterministic CPU config | generator/critic checkpoint+sidecar, 8-frame contact sheet+JSON | immutable semantics·hash exact; probability curve ≤`5e-4`; latent path length·unit-path derivative ≤`1e-4`; decoded RGB ≤`2/255`; post-award/not-HiGAN/not-photorealistic 경계 |
+| reconstruction drape | public RGB·probability + deterministic synthetic height | 2.5D JSON/PNG + height/probability/vertices/faces NPY | bilinear interpolation·1089-vertex/1024-face mesh; float array ≤`1e-6`, integer face·hash exact; synthetic-height/not-satellite-derived-elevation 경계 |
 
 ## Adapter and service boundaries
 
@@ -262,11 +262,14 @@ python -m research.forest_xai.scripts.verify_public_demo
 python -m research.forest_xai.scripts.verify_reconstruction
 ```
 
-Its research test methods, checkpoints, model metrics and explanation/reconstruction artifacts are not
-added to the core's 174 test methods, wheel or golden-artifact counts. Appending
-`--retrain` to the public verifier additionally repeats the 80-epoch CPU
-training and compares tensor state, metadata and metrics. Appending `--retrain`
-to the reconstruction verifier additionally repeats the tiny-GAN CPU training
-and compares its invariant metadata exactly, parameters and derived numeric
-semantics within the documented CPU-kernel tolerances, and bounded decoded
-preview replay.
+Its research test methods, checkpoints, model metrics and explanation/reconstruction artifacts are kept
+separate from the core test-method, wheel and golden-artifact counts. The fast
+reconstruction verifier keeps immutable latent semantics and committed hashes
+exact, bounds the probability curve at `5e-4`, both latent path length and the
+unit-path derivative at `1e-4`, float terrain arrays at `1e-6`, and decoded RGB
+channels at `2/255`; integer faces remain exact. Appending `--retrain` to the
+public verifier additionally repeats the 80-epoch CPU training and compares
+tensor state, metadata and metrics. Appending `--retrain` to the reconstruction
+verifier additionally repeats the tiny-GAN CPU training and compares its
+invariant metadata exactly, parameters and derived numeric semantics within the
+documented CPU-kernel tolerances, and bounded decoded preview replay.

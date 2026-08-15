@@ -5,6 +5,7 @@ import json
 import shutil
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 from PIL import Image
@@ -22,6 +23,8 @@ from research.forest_xai.reconstruction import (
     train_latent_gan,
 )
 from research.forest_xai.scripts.verify_reconstruction import (
+    RETRAINED_JVP_ATOL,
+    RETRAINED_PROBABILITY_ATOL,
     _compare_array_replay,
     _compare_model_state_replay,
     _compare_numeric_sequence,
@@ -49,6 +52,11 @@ class PostAwardReconstructionTests(unittest.TestCase):
         self.assertLessEqual(
             result["latent_contact_sheet_replay"]["max_channel_error"], 2
         )
+        self.assertEqual(
+            result["latent_probability_replay"]["tolerance"],
+            RETRAINED_PROBABILITY_ATOL,
+        )
+        self.assertEqual(result["latent_jvp_replay"]["tolerance"], RETRAINED_JVP_ATOL)
         self.assertEqual(result["terrain_array_replay"]["faces"]["comparison"], "exact")
         for name in ("height", "probability", "vertices"):
             self.assertLessEqual(
@@ -93,14 +101,55 @@ class PostAwardReconstructionTests(unittest.TestCase):
                     seed=committed["seed"], frames=committed["frames"]
                 ),
             )
+            variable_semantics = {"files", "forest_probabilities", "jvp"}
             self.assertEqual(
+                {
+                    key: value
+                    for key, value in result.items()
+                    if key not in variable_semantics
+                },
+                {
+                    key: value
+                    for key, value in committed.items()
+                    if key not in variable_semantics
+                },
+            )
+            probability_replay = _compare_numeric_sequence(
+                "forest probability curve",
                 result["forest_probabilities"],
                 committed["forest_probabilities"],
+                tolerance=RETRAINED_PROBABILITY_ATOL,
             )
-            self.assertEqual(result["jvp"], committed["jvp"])
+            self.assertLessEqual(
+                probability_replay["max_absolute_error"],
+                RETRAINED_PROBABILITY_ATOL,
+            )
+            jvp_replay = _compare_numeric_sequence(
+                "JVP semantics",
+                [
+                    result["jvp"]["latent_path_length"],
+                    result["jvp"]["unit_path_direction_derivative"],
+                ],
+                [
+                    committed["jvp"]["latent_path_length"],
+                    committed["jvp"]["unit_path_direction_derivative"],
+                ],
+                tolerance=RETRAINED_JVP_ATOL,
+            )
+            self.assertLessEqual(jvp_replay["max_absolute_error"], RETRAINED_JVP_ATOL)
             self.assertEqual(
-                {key: value for key, value in result.items() if key != "files"},
-                {key: value for key, value in committed.items() if key != "files"},
+                {
+                    key: value
+                    for key, value in result["jvp"].items()
+                    if key
+                    not in {"latent_path_length", "unit_path_direction_derivative"}
+                },
+                {
+                    key: value
+                    for key, value in committed["jvp"].items()
+                    if key
+                    not in {"latent_path_length", "unit_path_direction_derivative"}
+                },
             )
             replay = _compare_png_replay(
                 RECONSTRUCTION / committed["files"]["contact_sheet"]["path"],
@@ -111,6 +160,47 @@ class PostAwardReconstructionTests(unittest.TestCase):
             committed["files"]["contact_sheet"]["sha256"],
             file_sha256(RECONSTRUCTION / "latent_interpolation.png"),
         )
+
+    def test_fast_replay_allows_negligible_probability_and_jvp_rounding(self) -> None:
+        committed = json.loads(
+            (RECONSTRUCTION / "latent_interpolation.json").read_text(encoding="utf-8")
+        )
+
+        def interpolate_with_rounding(*args, **kwargs):
+            result = interpolate_latent_path(*args, **kwargs)
+            result["forest_probabilities"][0] = (
+                committed["forest_probabilities"][0] + 1e-8
+            )
+            result["jvp"]["latent_path_length"] = (
+                committed["jvp"]["latent_path_length"] + 1e-8
+            )
+            result["jvp"]["unit_path_direction_derivative"] = (
+                committed["jvp"]["unit_path_direction_derivative"] - 1e-8
+            )
+            return result
+
+        with patch(
+            "research.forest_xai.reconstruction.interpolate_latent_path",
+            side_effect=interpolate_with_rounding,
+        ):
+            result = verify_committed_reconstruction(TRACK_ROOT)
+        self.assertEqual(
+            result["latent_probability_replay"]["max_absolute_error"], 1e-8
+        )
+        self.assertEqual(result["latent_jvp_replay"]["max_absolute_error"], 1e-8)
+
+    def test_fast_replay_keeps_immutable_latent_fields_exact(self) -> None:
+        def interpolate_with_changed_seed(*args, **kwargs):
+            result = interpolate_latent_path(*args, **kwargs)
+            result["seed"] += 1
+            return result
+
+        with patch(
+            "research.forest_xai.reconstruction.interpolate_latent_path",
+            side_effect=interpolate_with_changed_seed,
+        ):
+            with self.assertRaisesRegex(ValueError, "invariant latent semantics"):
+                verify_committed_reconstruction(TRACK_ROOT)
 
     def test_contact_sheet_replay_rejects_visible_pixel_drift(self) -> None:
         source = RECONSTRUCTION / "latent_interpolation.png"
@@ -135,6 +225,29 @@ class PostAwardReconstructionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "more than 1e-6"):
                 _compare_array_replay(source, changed)
 
+    def test_machine_array_replay_rejects_non_finite_values_on_either_side(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory(
+            prefix="forest-xai-array-finite-"
+        ) as temporary:
+            root = Path(temporary)
+            reference = root / "reference.npy"
+            candidate = root / "candidate.npy"
+            finite = np.array([0.25], dtype=np.float32)
+            for value in (float("nan"), float("inf")):
+                non_finite = np.array([value], dtype=np.float32)
+                with self.subTest(value=value, side="reference"):
+                    np.save(reference, non_finite, allow_pickle=False)
+                    np.save(candidate, finite, allow_pickle=False)
+                    with self.assertRaisesRegex(ValueError, "non-finite reference"):
+                        _compare_array_replay(reference, candidate)
+                with self.subTest(value=value, side="candidate"):
+                    np.save(reference, finite, allow_pickle=False)
+                    np.save(candidate, non_finite, allow_pickle=False)
+                    with self.assertRaisesRegex(ValueError, "non-finite candidate"):
+                        _compare_array_replay(reference, candidate)
+
     def test_retrained_state_replay_rejects_material_parameter_drift(self) -> None:
         expected = torch.nn.Linear(2, 2, bias=False)
         actual = torch.nn.Linear(2, 2, bias=False)
@@ -151,12 +264,39 @@ class PostAwardReconstructionTests(unittest.TestCase):
             _compare_model_state_replay({"generator": expected}, {"generator": actual})
 
     def test_numeric_replay_enforces_threshold_and_finite_values(self) -> None:
-        replay = _compare_numeric_sequence("probe", [0.000099], [0.0], tolerance=1e-4)
-        self.assertEqual(replay["max_absolute_error"], 0.000099)
+        tolerance = 1e-4
+        replay = _compare_numeric_sequence(
+            "probe", [0.99 * tolerance], [0.0], tolerance=tolerance
+        )
+        self.assertAlmostEqual(
+            replay["max_absolute_error"], 0.99 * tolerance, places=12
+        )
         with self.assertRaisesRegex(ValueError, "more than 0.0001"):
-            _compare_numeric_sequence("probe", [0.000101], [0.0], tolerance=1e-4)
-        with self.assertRaisesRegex(ValueError, "non-finite"):
-            _compare_numeric_sequence("probe", [float("nan")], [0.0], tolerance=1e-4)
+            _compare_numeric_sequence(
+                "probe", [1.01 * tolerance], [0.0], tolerance=tolerance
+            )
+        for value in (float("nan"), float("inf")):
+            with self.subTest(value=value, side="actual"):
+                with self.assertRaisesRegex(ValueError, "non-finite actual"):
+                    _compare_numeric_sequence(
+                        "probe", [value], [0.0], tolerance=tolerance
+                    )
+            with self.subTest(value=value, side="expected"):
+                with self.assertRaisesRegex(ValueError, "non-finite expected"):
+                    _compare_numeric_sequence(
+                        "probe", [0.0], [value], tolerance=tolerance
+                    )
+        for invalid_tolerance in (
+            0.0,
+            -tolerance,
+            float("nan"),
+            float("inf"),
+        ):
+            with self.subTest(tolerance=invalid_tolerance):
+                with self.assertRaisesRegex(ValueError, "finite and positive"):
+                    _compare_numeric_sequence(
+                        "probe", [0.0], [0.0], tolerance=invalid_tolerance
+                    )
 
     def test_committed_relief_drape_reproduces_and_declares_synthetic_height(
         self,

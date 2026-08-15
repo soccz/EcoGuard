@@ -5,11 +5,11 @@
 replay에 더해, 의미 있는 입력 변경에는 결과가 변하고 순서·표기만 다른
 동등 입력에는 결과가 유지되는지도 구분합니다.
 
-Core v0.5는 dependency-free wheel·`tests/`의 **174개 test method**로 검증합니다.
+Core v0.6.0은 dependency-free wheel과 `tests/`의 전체 test method로 검증합니다.
 선택형 `research/forest_xai`는 PyTorch 전용 환경·별도 연구 테스트·artifact를
 사용합니다. 아래 두 검증표의 수치와 성공 기준은 합산하지 않습니다.
 
-## Core v0.5 핵심 주장과 직접 증거
+## Core v0.6.0 핵심 주장과 직접 증거
 
 | 공개 주장 | 입력 | 실행 코드 | 직접 검증 테스트 | 확인할 산출물·근거 |
 |---|---|---|---|---|
@@ -60,9 +60,9 @@ bi-temporal change model이라고 주장하지 않습니다.
 | Committed checkpoint CPU 재평가 | evaluation 12 chip·49,152 pixel | verifier가 추론·metric JSON을 새로 만들어 committed JSON 전체와 대조 | F1 0.947917, precision 0.979623, recall 0.918200, IoU 0.900991, pixel accuracy 0.947550; TP/FP/FN/TN 23,460/488/2,090/23,114 | 산림변화·훼손·현장 성능이 아닌 작은 forest-cover capability fixture |
 | Grad-CAM 재생성 | evaluation sample `S2-EV-003`, source reference mask로 target region 고정 | RGB·reference·probability·Grad-CAM을 재생성해 각 SHA-256 대조 | explanation JSON 1개 + PNG 4개; public demo 전체 9 file | 모델 민감도이지 인과·생태학적 근거·metric 개선 증거가 아님 |
 | 합성 change CNN·JVP mechanics | 고정 seed로 생성한 before/after 4-band rectangle/noise·change mask | 연구 테스트가 shape/range, train→evaluate→explain, Grad-CAM, JVP direction, checkpoint tamper guard를 검사 | generated checkpoint·metric·Grad-CAM·NPZ·JVP trace | 실제 위성 metric이 아니며 GAN·HiGAN·causal counterfactual이 아님 |
-| 수상 후 tiny-GAN 재구성 | public train split, 고정 seed·CPU config, `z0`·`z1`, committed forest-cover CNN | checkpoint/sidecar file·tensor hash, exact forest probability curve·alpha 0.5 unit-path JVP, decode한 contact-sheet RGB의 최대 replay 오차 2/255 | tiny generator/critic checkpoint, interpolation JSON·PNG; committed PNG SHA exact, path length 4.24485588, derivative 0.01209233 | 당시 code가 아님; 특정 HiGAN·photorealism·생성 품질·발표 수치 증거가 아님 |
+| 수상 후 tiny-GAN 재구성 | public train split, 고정 seed·CPU config, `z0`·`z1`, committed forest-cover CNN | checkpoint/sidecar hash·immutable latent semantics exact, probability curve 절대오차 `5e-4`, latent path length·unit-path derivative 절대오차 `1e-4`, decode한 contact-sheet RGB 최대오차 `2/255` | tiny generator/critic checkpoint, interpolation JSON·PNG; committed PNG SHA exact, path length 4.24485588, derivative 0.01209233 | 당시 code가 아님; 특정 HiGAN·photorealism·생성 품질·발표 수치 증거가 아님 |
 | 수상 후 2.5D height-field 재구성 | evaluation RGB·forest probability + 결정론적 synthetic coarse height | x/y 격자 bilinear height interpolation, drape, height/probability와 1089-vertex/1024-face mesh를 재생성; committed SHA exact, float replay 절대오차 1e-6, integer faces exact | terrain JSON·PNG, `[64,64]` float32 height/probability, `[33,33,3]` float32 vertices, `[1024,4]` int32 faces | 합성 높이이며 DEM·stereo·LiDAR 또는 위성에서 복원한 3D가 아님 |
-| 명시적 claim boundary | public JSON은 single-date, synthetic change JSON은 not-a-GAN, reconstruction JSON은 post-award·not-HiGAN·not-photorealistic·synthetic-height를 고정 | 연구 test suite + public/reconstruction 전용 verifier | core 174개 test method·wheel·benchmark count에 포함하지 않음 | 실제 bi-temporal change, `83.4% → 96.2%`, HiGAN, satellite-derived elevation은 미재현 |
+| 명시적 claim boundary | public JSON은 single-date, synthetic change JSON은 not-a-GAN, reconstruction JSON은 post-award·not-HiGAN·not-photorealistic·synthetic-height를 고정 | 연구 test suite + public/reconstruction 전용 verifier | core test method·wheel·benchmark count에 포함하지 않음 | 실제 bi-temporal change, `83.4% → 96.2%`, HiGAN, satellite-derived elevation은 미재현 |
 
 연구 트랙의 fast verification은 committed checkpoint를 재학습하지 않고 추론·설명
 artifact를 재생성합니다. `--retrain`을 붙이면 80 epoch CPU 학습 후 tensor
@@ -70,12 +70,14 @@ state·metadata·metric까지 추가로 비교합니다. PyTorch container byte�
 달라질 수 있으므로, 재학습 audit은 새 checkpoint file의 byte를 committed checkpoint와
 강제하지 않고 각 sidecar의 file hash와 tensor-state hash를 따로 검사합니다.
 Reconstruction verifier도 committed GAN과 2.5D 산출물의 hash·claim boundary를
-검사하고 interpolation/drape를 재생성합니다. Committed file SHA는 exact하게
-고정하고, float machine-array replay는 절대오차 1e-6, integer faces는 exact,
-latent contact sheet는 decode RGB 최대 2/255로 대조합니다. `--retrain`을 붙였을
-때만 tiny GAN CPU 학습을 반복합니다. Immutable metadata는 exact, 재학습 parameter는
-절대오차 5e-4, 최종 loss는 1e-3, 확률 곡선은 5e-4, JVP는 1e-4, preview RGB는
-2/255 이내로 대조합니다.
+검사하고 interpolation/drape를 재생성합니다. Fast replay는 committed file SHA와
+immutable latent semantics를 exact하게 고정하고, 확률 곡선은 절대오차 `5e-4`,
+JVP의 `latent_path_length`와 `unit_path_direction_derivative`는 `1e-4`, float
+machine array는 `1e-6`, latent contact sheet의 decode RGB는 `2/255` 이내로
+대조하며 integer faces는 exact하게 비교합니다. `--retrain`을 붙였을 때만 tiny
+GAN CPU 학습을 반복합니다. Full audit은 immutable metadata exact에 더해 재학습
+parameter `5e-4`, 최종 loss `1e-3`을 적용하고, 확률 곡선·JVP·preview에는 같은
+replay tolerance를 적용합니다.
 Committed checkpoint와 sidecar의 file/tensor SHA는 계속 exact하게 고정하며, 같은
 환경에서 두 번 학습한 exact state hash 결정성은 unit test가 별도로 검사합니다.
 
@@ -89,7 +91,7 @@ Committed checkpoint와 sidecar의 file/tensor SHA는 계속 exact하게 고정�
 | Order/Unicode invariance: legal | corpus 순서 반전, full-width Unicode query | `test_legal.LegalRetrievalV2Tests.test_corpus_order_and_unicode_formatting_do_not_change_ranking` | corpus hash와 citation ranking 동일 |
 | Order/notation invariance: forest | CSV 행 순서 반전, `0.18`→`0.1800` | `test_forest.ForestV2Tests.test_input_row_order_does_not_change_any_output`; `test_forest.ForestV2Tests.test_equivalent_decimal_notation_does_not_change_outputs` | JSON result·GeoJSON·SVG 의미 결과 동일 |
 
-## Core v0.5 실행
+## Core v0.6.0 실행
 
 ```bash
 PYTHONPATH=src python3 -m unittest discover -s tests -v
@@ -117,7 +119,9 @@ python -m research.forest_xai.scripts.verify_public_demo --retrain
 python -m research.forest_xai.scripts.verify_reconstruction --retrain
 ```
 
-이 실행은 core wheel을 변경하거나 core 174개 test method에 연구 결과를
+`.github/workflows/forest-xai.yml`의 CPU research CI는 public CNN과 수상 후
+reconstruction verifier에 모두 `--retrain`을 붙여 이 full audit을 실행합니다.
+이 실행은 core wheel을 변경하거나 core test method에 연구 결과를
 더하지 않습니다. 세부 입력·model claim은 [data card](../research/forest_xai/DATA_CARD.md)와
 [model card](../research/forest_xai/MODEL_CARD.md),
 [reconstruction card](../research/forest_xai/RECONSTRUCTION_CARD.md)를 함께 읽어야 합니다.

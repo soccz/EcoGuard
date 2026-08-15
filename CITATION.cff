@@ -5,18 +5,20 @@ type: software
 authors:
   - name: "soccz"
     alias: "soccz"
-version: 0.5.0
-date-released: 2026-08-12
+version: 0.6.0
+date-released: 2026-08-15
 repository-code: "https://github.com/soccz/EcoGuard"
 url: "https://soccz.github.io/projects/ecoguard/"
 license: MIT
 abstract: >-
-  A reproducible synthetic evidence pipeline for OCR-after normalization,
-  legal citation retrieval, non-statutory CBAM technical inventory and forest
-  change evaluation.
+  A reproducible evidence pipeline for OCR-after normalization, legal citation
+  retrieval, non-statutory CBAM technical inventory, bounded forest analysis,
+  and an optional public Sentinel-2 research track.
 keywords:
   - CBAM
   - EUDR
   - evidence provenance
   - data quality
   - legal retrieval
+  - Sentinel-2
+  - reproducible research

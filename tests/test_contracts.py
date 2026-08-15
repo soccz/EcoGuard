@@ -28,7 +28,29 @@ class PublicContractTests(unittest.TestCase):
         self.assertEqual(project["project"].get("dependencies", []), [])
         self.assertEqual(project["project"]["requires-python"], ">=3.11")
 
+    def test_release_metadata_matches_package_version(self):
+        citation = (ROOT / "CITATION.cff").read_text(encoding="utf-8")
+        release_date = re.search(
+            r"^date-released: (\d{4}-\d{2}-\d{2})$", citation, re.MULTILINE
+        )
+        self.assertIsNotNone(release_date)
+        self.assertRegex(citation, rf"(?m)^version: {re.escape(__version__)}$")
+
+        changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+        self.assertIn(
+            f"## [{__version__}] - {release_date.group(1)}",
+            changelog,
+        )
+        self.assertIn(
+            f"[{__version__}]: "
+            f"https://github.com/soccz/EcoGuard/releases/tag/v{__version__}",
+            changelog,
+        )
+
     def test_public_json_schemas_are_valid_json_with_stable_ids(self):
+        release_root = (
+            f"https://raw.githubusercontent.com/soccz/EcoGuard/v{__version__}"
+        )
         schemas = sorted((ROOT / "schemas").glob("*.schema.json"))
         self.assertEqual(
             {path.name for path in schemas},
@@ -46,13 +68,21 @@ class PublicContractTests(unittest.TestCase):
                     payload["$schema"],
                     "https://json-schema.org/draft/2020-12/schema",
                 )
-                self.assertTrue(payload["$id"].endswith("/" + path.name))
-                self.assertTrue(
-                    payload["$id"].startswith(
-                        "https://raw.githubusercontent.com/soccz/EcoGuard/v0.5.0/schemas/"
-                    )
+                self.assertEqual(
+                    payload["$id"],
+                    f"{release_root}/schemas/{path.name}",
                 )
                 self.assertEqual(payload["type"], "object")
+
+        benchmark_schema = json.loads(
+            (ROOT / "data/benchmarks/forest/benchmark.schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(
+            benchmark_schema["$id"],
+            f"{release_root}/data/benchmarks/forest/benchmark.schema.json",
+        )
 
     def test_public_fixtures_validate_against_draft_2020_12_schemas(self):
         fixtures = {

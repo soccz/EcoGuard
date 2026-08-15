@@ -7,7 +7,8 @@
 GAN 학습·추론 코드, notebook, checkpoint 또는 같은 결과를 다시 만들 수 있는
 생성 artifact를 찾지 못했습니다.
 
-이 디렉터리의 구현은 그 공백을 당시 성과처럼 채우지 않습니다. 공개
+EcoGuard v0.6.0에서 공개한 이 디렉터리의 구현은 그 공백을 당시 성과처럼
+채우지 않습니다. 공개
 Sentinel-2 derivative fixture와 공개된 forest-cover CNN을 사용해 두 아이디어의
 기계적 핵심을 **수상 후 새로 작성하고 검증한 개념 재구성**입니다. 모든 JSON은
 `post_award_reconstruction`, `not_a_higan_reproduction`,
@@ -44,7 +45,7 @@ photorealism 검증이 없습니다. 특정 HiGAN 논문·architecture·loss·ch
 각 frame을 committed single-date forest-cover CNN에 넣어 mean forest
 probability를 기록합니다. Latent path length는 `4.24485588`이며,
 `location_alpha=0.5`에서 `z1-z0`의 단위 방향에 대한 forest-score
-Jacobian-vector product `0.01209233`을 정확히 계산합니다. JSON은
+Jacobian-vector product `0.01209233`을 계산해 기록합니다. JSON은
 `unit_direction_norm=1`과 `unit_path_direction_derivative`를 함께 기록해 전체
 endpoint displacement의 미분과 혼동하지 않게 합니다.
 
@@ -100,11 +101,14 @@ python -m research.forest_xai.scripts.verify_reconstruction
 Verifier는 committed checkpoint·sidecar·JSON·PNG·NPY의 hash와
 machine-readable claim boundary를 검사하고 latent interpolation/JVP와 2.5D
 drape·mesh arrays를 임시 디렉터리에 재생성해 대조합니다. Committed PNG 자체의
-SHA-256은 정확히 고정하되, CPU kernel에 따른 마지막 반올림·압축 byte 차이를
-실패로 오인하지 않도록 재생성 contact sheet는 decode한 RGB channel의 최대 오차를
-2/255로 제한합니다. Probability curve와 JVP, committed 2.5D file SHA는 exact
-계약을 유지합니다. 재생성한 float32 height·probability·vertex는 CPU backend
-차이를 고려해 절대오차 `1e-6` 이내로, integer face index는 exact하게 비교합니다.
+SHA-256은 정확히 고정합니다. Fast replay는 immutable latent semantics, JVP의
+비수치 계약과 artifact path를 exact하게, forest probability curve를 절대오차
+`5e-4` 이내로, JVP의
+`latent_path_length`와 `unit_path_direction_derivative`를 `1e-4` 이내로
+비교합니다. CPU kernel에 따른 마지막 반올림·압축 byte 차이는 재생성 contact
+sheet를 decode한 RGB channel 최대오차 `2/255`로 제한합니다. 재생성한 float32
+height·probability·vertex는 절대오차 `1e-6` 이내로, integer face index는
+exact하게 비교합니다.
 120-epoch CPU 학습까지 반복하려면 다음을 실행합니다.
 
 ```bash
@@ -114,7 +118,8 @@ python -m research.forest_xai.scripts.verify_reconstruction --retrain
 PyTorch checkpoint container byte와 마지막 부동소수점 반올림은 CPU kernel에 따라
 달라질 수 있습니다. Full audit은 각 checkpoint file을 각 sidecar SHA에 대조하고,
 immutable metadata는 exact하게, 재학습 parameter는 절대오차 `5e-4`, 최종 loss는
-`1e-3`, 확률 곡선은 `5e-4`, JVP는 `1e-4`, preview RGB는
+`1e-3`, 확률 곡선은 `5e-4`, JVP의 latent path length와
+`unit_path_direction_derivative`는 `1e-4`, preview RGB는
 2/255 이내로 판단합니다. 같은 환경에서 두 번 학습했을 때의 exact state hash
 결정성은 별도 unit test가 고정합니다.
 
