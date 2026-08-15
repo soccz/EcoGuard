@@ -268,8 +268,10 @@ reconstruction verifier keeps immutable latent semantics and committed hashes
 exact, bounds the probability curve at `5e-4`, both latent path length and the
 unit-path derivative at `1e-4`, float terrain arrays at `1e-6`, and decoded RGB
 channels at `2/255`; integer faces remain exact. Appending `--retrain` to the
-public verifier additionally repeats the 80-epoch CPU training and compares
-tensor state, metadata and metrics. Appending `--retrain` to the reconstruction
+public verifier additionally repeats the 80-epoch CPU training, keeps immutable
+metadata, threshold and evaluation populations exact, and bounds CPU-kernel
+parameter/probability replay at `5e-4`, loss/floating metrics at `5e-5`, and
+confusion-count drift at one pixel. Appending `--retrain` to the reconstruction
 verifier additionally repeats the tiny-GAN CPU training and compares its
 invariant metadata exactly, parameters and derived numeric semantics within the
 documented CPU-kernel tolerances, and bounded decoded preview replay.

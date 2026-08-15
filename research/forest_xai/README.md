@@ -67,7 +67,10 @@ CPython 3.12, and `torch 2.13.0+cpu`. `requirements.txt` pins the remaining
 versions and repeats the Torch version constraint. Compatible platforms can run
 the fast hash/inference verifiers, but `--retrain` intentionally requires exact
 version metadata. Even in the reference environment, CPU kernels may differ in
-their final floating-point rounding, so the GAN audit bounds parameter replay at
+their final floating-point rounding. The public CNN audit keeps immutable
+metadata, threshold, and positive/negative pixel populations exact; it bounds
+parameter and probability-map replay at `5e-4`, loss and floating metrics at
+`5e-5`, and each confusion count at one pixel. The GAN audit bounds parameter replay at
 `5e-4`, final losses at `1e-3`, the probability curve at `5e-4`, the JVP at
 `1e-4`, and decoded preview channels at 2/255. It does not promise tensor/byte
 equality across operating systems, accelerators, or PyTorch builds.
@@ -115,8 +118,9 @@ python -m research.forest_xai public-explain \
 ```
 
 Normal tests do not repeat the 80-epoch training. Run the explicit CPU audit when
-you need to prove that training returns the committed tensor state, metadata,
-and metrics:
+you need to prove that training returns the same immutable metadata, threshold,
+and evaluation populations, with parameters/probability maps within `5e-4`,
+loss/floating metrics within `5e-5`, and confusion counts within one pixel:
 
 ```bash
 python research/forest_xai/scripts/verify_public_demo.py --retrain
@@ -125,10 +129,12 @@ python research/forest_xai/scripts/verify_public_demo.py --retrain
 Use `--retrain-output <new-or-empty-directory>` with `--retrain` to retain that
 run instead of using a temporary directory.
 
-PyTorch checkpoint container bytes may differ across otherwise identical saves.
-The audit therefore requires the tensor-state SHA-256, embedded metadata, and
-metrics to match; it separately verifies each checkpoint file against its own
-sidecar SHA-256.
+PyTorch checkpoint container bytes and tensor-state SHA-256 may differ when CPU
+kernels round the final parameter bits differently. Each checkpoint and tensor
+state remains exactly hash-bound to its own sidecar; the cross-CPU retraining
+audit compares immutable metadata, threshold, and evaluation populations exactly
+and applies the documented narrow bounds to raw parameters and derived numeric
+semantics.
 
 ## Verify the post-award reconstruction
 

@@ -65,8 +65,10 @@ bi-temporal change model이라고 주장하지 않습니다.
 | 명시적 claim boundary | public JSON은 single-date, synthetic change JSON은 not-a-GAN, reconstruction JSON은 post-award·not-HiGAN·not-photorealistic·synthetic-height를 고정 | 연구 test suite + public/reconstruction 전용 verifier | core test method·wheel·benchmark count에 포함하지 않음 | 실제 bi-temporal change, `83.4% → 96.2%`, HiGAN, satellite-derived elevation은 미재현 |
 
 연구 트랙의 fast verification은 committed checkpoint를 재학습하지 않고 추론·설명
-artifact를 재생성합니다. `--retrain`을 붙이면 80 epoch CPU 학습 후 tensor
-state·metadata·metric까지 추가로 비교합니다. PyTorch container byte는 동일한 tensor에서도
+artifact를 재생성합니다. `--retrain`을 붙이면 80 epoch CPU 학습 후 immutable
+metadata·threshold·평가 모집단은 exact하게, CPU kernel별 tensor·확률 맵은
+`5e-4`, loss·float metric은 `5e-5`, confusion count는 각 1 pixel 안에서
+추가로 비교합니다. PyTorch container byte는 동일한 tensor에서도
 달라질 수 있으므로, 재학습 audit은 새 checkpoint file의 byte를 committed checkpoint와
 강제하지 않고 각 sidecar의 file hash와 tensor-state hash를 따로 검사합니다.
 Reconstruction verifier도 committed GAN과 2.5D 산출물의 hash·claim boundary를

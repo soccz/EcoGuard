@@ -32,6 +32,9 @@ All notable public reconstruction changes are recorded here. Competition-era pri
   evidence
 - development and research image dependencies now pin the first patched Black
   26.3.1 and Pillow 12.3.0 releases reported by GitHub security advisories
+- public-CNN full retraining now keeps invariant metadata, threshold and
+  evaluation populations exact while narrowly bounding measured CPU-kernel
+  drift in parameters, probabilities, loss, metrics and confusion counts
 
 ### Boundaries
 

@@ -161,7 +161,7 @@ python -m pip install -e '.[dev]'
 
 고정 `v0.6.0` tag의 core release suite에는 **180개 test method**가 있으며 이 수치는
 `tests/`와 dependency-free wheel의 계약만 가리킵니다. 선택형 산림 연구 트랙의
-23개 PyTorch 연구 테스트, 모델 metric과 artifact는 core 숫자에 더하지 않습니다.
+25개 PyTorch 연구 테스트, 모델 metric과 artifact는 core 숫자에 더하지 않습니다.
 위 `v0.6.0` tag tree의 `research/forest_xai`는 아래 명령처럼 별도 환경에서
 실행합니다.
 
@@ -185,9 +185,11 @@ CPU 재학습까지 반복하려면 해당 verifier에 `--retrain`을 붙입니�
 Public CNN은 80 epoch, tiny GAN은 120 epoch를 반복합니다. 자세한 설치·실행 경계는
 [`research/forest_xai/README.md`](research/forest_xai/README.md)에 있습니다.
 재학습 full audit의 기준 환경은 CI와 같은 Ubuntu x86_64·CPython 3.12·
-`torch 2.13.0+cpu`입니다. 같은 계약 안에서도 CPU kernel에 따른 마지막 반올림은
-가중치 절대오차 `5e-4`, 최종 loss `1e-3`, 확률 곡선 `5e-4`, JVP `1e-4`로
-제한하고 immutable metadata는 exact하게 비교합니다. 다른 플랫폼·PyTorch
+`torch 2.13.0+cpu`입니다. Public CNN은 immutable metadata와 threshold·평가 모집단을
+exact하게 고정하고, CPU kernel별 가중치·확률 맵은 `5e-4`, loss·float metric은
+`5e-5`, confusion count는 각 1 pixel 이내로 제한합니다. Tiny GAN은 가중치
+`5e-4`, 최종 loss `1e-3`, 확률 곡선 `5e-4`, JVP `1e-4` 경계를 사용합니다.
+다른 플랫폼·PyTorch
 build에서는 fast verifier를 실행할 수 있지만 이 full-audit tolerance를 보장하지
 않습니다.
 

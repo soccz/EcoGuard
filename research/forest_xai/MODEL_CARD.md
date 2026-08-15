@@ -149,11 +149,13 @@ loop:
 python research/forest_xai/scripts/verify_public_demo.py --retrain
 ```
 
-The retraining audit requires tensor-state SHA-256, metadata, and metrics to
-match. It does not require PyTorch's serialized container bytes to match because
-equivalent `torch.save` archives can carry different pickle/serialization
-records. Every generated checkpoint file is still checked against the SHA-256
-in its own sidecar.
+The retraining audit keeps immutable metadata, threshold, and positive/negative
+pixel populations exact. It bounds raw parameters and probability maps at
+`5e-4`, loss and floating metrics at `5e-5`, and each confusion count at one
+pixel. CPU kernels may round the final parameter bits differently, so the
+retrained tensor-state SHA-256 and serialized container bytes need not equal the
+committed values. Every generated checkpoint and tensor state is still checked
+against the SHA-256 values in its own sidecar.
 
 Committed checkpoint SHA-256:
 `270fe3c7f857cfee541240ae8af09968e76b194c367539904c64f619953f168c`.

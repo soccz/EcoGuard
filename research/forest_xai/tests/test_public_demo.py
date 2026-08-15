@@ -6,12 +6,21 @@ import shutil
 import tempfile
 import unittest
 
+import numpy as np
 import torch
+from torch import nn
 
 from research.forest_xai.public_training import load_public_checkpoint
 from research.forest_xai.public_data import load_public_forest_fixture
 from research.forest_xai.scripts.verify_public_demo import (
     EXPECTED_BOUNDARY,
+    RETRAINED_CONFUSION_ATOL,
+    RETRAINED_METRIC_ATOL,
+    RETRAINED_PARAMETER_ATOL,
+    RETRAINED_PROBABILITY_ATOL,
+    _compare_metric_replay,
+    _compare_model_state_replay,
+    _compare_numeric_replay,
     verify_committed_public_demo,
 )
 
@@ -20,6 +29,82 @@ PUBLIC_ARTIFACTS = TRACK_ROOT / "artifacts" / "public_demo"
 
 
 class PublicForestDemoVerificationTests(unittest.TestCase):
+    def test_retrained_state_replay_has_strict_finite_tolerance(self) -> None:
+        expected = nn.Linear(2, 1, bias=False)
+        actual = nn.Linear(2, 1, bias=False)
+        with torch.no_grad():
+            expected.weight.zero_()
+        actual.load_state_dict(expected.state_dict())
+        with torch.no_grad():
+            actual.weight[0, 0] += RETRAINED_PARAMETER_ATOL * 0.99
+        replay = _compare_model_state_replay(expected, actual)
+        self.assertLessEqual(replay["max_absolute_error"], RETRAINED_PARAMETER_ATOL)
+
+        with torch.no_grad():
+            actual.weight[0, 0] += RETRAINED_PARAMETER_ATOL * 0.02
+        with self.assertRaisesRegex(ValueError, "tensor state differs"):
+            _compare_model_state_replay(expected, actual)
+
+        with torch.no_grad():
+            actual.weight[0, 0] = float("nan")
+        with self.assertRaisesRegex(ValueError, "non-finite retrained tensor"):
+            _compare_model_state_replay(expected, actual)
+
+    def test_retrained_metric_and_probability_replay_bounds_are_strict(self) -> None:
+        expected = {
+            "f1": 0.9,
+            "iou": 0.82,
+            "mean_probability": 0.5,
+            "pixel_accuracy": 0.91,
+            "precision": 0.92,
+            "recall": 0.88,
+            "threshold": 0.55,
+            "tp": 90,
+            "fp": 8,
+            "fn": 12,
+            "tn": 110,
+        }
+        actual = dict(expected)
+        actual["f1"] += RETRAINED_METRIC_ATOL * 0.99
+        actual["tp"] -= RETRAINED_CONFUSION_ATOL
+        actual["fn"] += RETRAINED_CONFUSION_ATOL
+        replay = _compare_metric_replay("test", actual, expected)
+        self.assertEqual(replay["threshold"], "exact")
+
+        actual["f1"] = expected["f1"] + RETRAINED_METRIC_ATOL * 1.01
+        with self.assertRaisesRegex(ValueError, "floating metrics differs"):
+            _compare_metric_replay("test", actual, expected)
+
+        actual = dict(expected)
+        actual["tp"] -= RETRAINED_CONFUSION_ATOL + 1
+        actual["fn"] += RETRAINED_CONFUSION_ATOL + 1
+        with self.assertRaisesRegex(ValueError, "tp differs"):
+            _compare_metric_replay("test", actual, expected)
+
+        actual = dict(expected)
+        actual["threshold"] = 0.5
+        with self.assertRaisesRegex(ValueError, "threshold differs"):
+            _compare_metric_replay("test", actual, expected)
+
+        within = np.array([0.0, RETRAINED_PROBABILITY_ATOL * 0.99])
+        _compare_numeric_replay(
+            "probability", within, np.zeros(2), tolerance=RETRAINED_PROBABILITY_ATOL
+        )
+        with self.assertRaisesRegex(ValueError, "probability differs"):
+            _compare_numeric_replay(
+                "probability",
+                np.array([RETRAINED_PROBABILITY_ATOL * 1.01]),
+                np.zeros(1),
+                tolerance=RETRAINED_PROBABILITY_ATOL,
+            )
+        with self.assertRaisesRegex(ValueError, "non-finite retrained probability"):
+            _compare_numeric_replay(
+                "probability",
+                np.array([float("nan")]),
+                np.zeros(1),
+                tolerance=RETRAINED_PROBABILITY_ATOL,
+            )
+
     def test_committed_fixture_model_evaluation_and_explanations_verify(self) -> None:
         result = verify_committed_public_demo(TRACK_ROOT)
         self.assertEqual(result["status"], "verified")

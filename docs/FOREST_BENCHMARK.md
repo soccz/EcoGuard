@@ -162,8 +162,10 @@ python -m research.forest_xai.scripts.verify_public_demo
 4. RGB·reference·probability·Grad-CAM 재생성 및 SHA-256 일치
 5. single-date forest cover일 뿐이라는 machine-readable claim boundary
 
-80 epoch CPU 재학습으로 tensor state·metadata·metric까지 다시 확인하려면
-마지막 명령에 `--retrain`을 붙입니다. 소스·derivative 계약은
+80 epoch CPU 재학습으로 immutable metadata·threshold·평가 모집단을 exact하게,
+CPU kernel별 tensor·확률 맵을 `5e-4`, loss·float metric을 `5e-5`, confusion
+count를 각 1 pixel 안에서 다시 확인하려면 마지막 명령에 `--retrain`을 붙입니다.
+소스·derivative 계약은
 [`DATA_CARD.md`](../research/forest_xai/DATA_CARD.md), 모델·metric·위험은
 [`MODEL_CARD.md`](../research/forest_xai/MODEL_CARD.md)를 기준으로 합니다.
 

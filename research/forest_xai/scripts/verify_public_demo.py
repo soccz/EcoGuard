@@ -11,8 +11,15 @@ import sys
 import tempfile
 from typing import Any
 
+import numpy as np
+
 TRACK_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = TRACK_ROOT.parents[1]
+RETRAINED_PARAMETER_ATOL = 5e-4
+RETRAINED_LOSS_ATOL = 5e-5
+RETRAINED_METRIC_ATOL = 5e-5
+RETRAINED_PROBABILITY_ATOL = 5e-4
+RETRAINED_CONFUSION_ATOL = 1
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
@@ -29,6 +36,133 @@ EXPECTED_BOUNDARY = {
 def _require_equal(label: str, actual: Any, expected: Any) -> None:
     if actual != expected:
         raise ValueError(f"{label} differs from the committed contract")
+
+
+def _compare_model_state_replay(
+    expected_model: Any,
+    actual_model: Any,
+    *,
+    tolerance: float = RETRAINED_PARAMETER_ATOL,
+) -> dict[str, Any]:
+    """Compare one retrained model across deterministic CPU kernel variants."""
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise ValueError("model replay tolerance must be finite and positive")
+    expected_state = expected_model.state_dict()
+    actual_state = actual_model.state_dict()
+    _require_equal("retrained state keys", set(actual_state), set(expected_state))
+    max_error = 0.0
+    total_error = 0.0
+    element_count = 0
+    for tensor_name, expected_tensor in expected_state.items():
+        actual_tensor = actual_state[tensor_name]
+        _require_equal(
+            f"retrained {tensor_name} shape",
+            list(actual_tensor.shape),
+            list(expected_tensor.shape),
+        )
+        _require_equal(
+            f"retrained {tensor_name} dtype",
+            str(actual_tensor.dtype),
+            str(expected_tensor.dtype),
+        )
+        expected = expected_tensor.detach().cpu().numpy()
+        actual = actual_tensor.detach().cpu().numpy()
+        if not np.isfinite(expected).all():
+            raise ValueError(f"non-finite committed tensor: {tensor_name}")
+        if not np.isfinite(actual).all():
+            raise ValueError(f"non-finite retrained tensor: {tensor_name}")
+        difference = np.abs(actual.astype(np.float64) - expected.astype(np.float64))
+        max_error = max(max_error, float(difference.max(initial=0.0)))
+        total_error += float(difference.sum())
+        element_count += difference.size
+    if max_error > tolerance:
+        raise ValueError(f"retrained tensor state differs by more than {tolerance:g}")
+    return {
+        "comparison": f"absolute_tolerance_{tolerance:g}",
+        "tensor_count": len(expected_state),
+        "element_count": element_count,
+        "max_absolute_error": round(max_error, 12),
+        "mean_absolute_error": round(total_error / max(element_count, 1), 12),
+    }
+
+
+def _compare_numeric_replay(
+    label: str,
+    actual: Any,
+    expected: Any,
+    *,
+    tolerance: float,
+) -> dict[str, Any]:
+    if not np.isfinite(tolerance) or tolerance <= 0:
+        raise ValueError("numeric replay tolerance must be finite and positive")
+    actual_values = np.asarray(actual, dtype=np.float64)
+    expected_values = np.asarray(expected, dtype=np.float64)
+    _require_equal(
+        f"{label} shape", list(actual_values.shape), list(expected_values.shape)
+    )
+    if not np.isfinite(expected_values).all():
+        raise ValueError(f"non-finite committed {label}")
+    if not np.isfinite(actual_values).all():
+        raise ValueError(f"non-finite retrained {label}")
+    difference = np.abs(actual_values - expected_values)
+    max_error = float(difference.max(initial=0.0))
+    if max_error > tolerance:
+        raise ValueError(f"retrained {label} differs by more than {tolerance:g}")
+    return {
+        "tolerance": tolerance,
+        "max_absolute_error": round(max_error, 12),
+        "mean_absolute_error": round(float(difference.mean()), 12),
+    }
+
+
+def _compare_metric_replay(label: str, actual: Any, expected: Any) -> dict[str, Any]:
+    count_fields = ("tp", "fp", "fn", "tn")
+    numeric_fields = (
+        "f1",
+        "iou",
+        "mean_probability",
+        "pixel_accuracy",
+        "precision",
+        "recall",
+    )
+    required = {*count_fields, *numeric_fields, "threshold"}
+    if not isinstance(actual, dict) or not isinstance(expected, dict):
+        raise ValueError(f"{label} metrics must be objects")
+    _require_equal(f"{label} metric keys", set(actual), required)
+    _require_equal(f"committed {label} metric keys", set(expected), required)
+    _require_equal(f"{label} threshold", actual["threshold"], expected["threshold"])
+    count_errors: dict[str, int] = {}
+    for field in count_fields:
+        if type(actual[field]) is not int or type(expected[field]) is not int:
+            raise ValueError(f"{label} {field} must be an integer")
+        count_errors[field] = abs(actual[field] - expected[field])
+        if count_errors[field] > RETRAINED_CONFUSION_ATOL:
+            raise ValueError(
+                f"retrained {label} {field} differs by more than "
+                f"{RETRAINED_CONFUSION_ATOL}"
+            )
+    _require_equal(
+        f"{label} positive population",
+        actual["tp"] + actual["fn"],
+        expected["tp"] + expected["fn"],
+    )
+    _require_equal(
+        f"{label} negative population",
+        actual["fp"] + actual["tn"],
+        expected["fp"] + expected["tn"],
+    )
+    numeric = _compare_numeric_replay(
+        f"{label} floating metrics",
+        [actual[field] for field in numeric_fields],
+        [expected[field] for field in numeric_fields],
+        tolerance=RETRAINED_METRIC_ATOL,
+    )
+    return {
+        "floating_metrics": numeric,
+        "confusion_count_tolerance": RETRAINED_CONFUSION_ATOL,
+        "confusion_count_errors": count_errors,
+        "threshold": "exact",
+    }
 
 
 def _artifact_path(root: Path, relative: Any) -> Path:
@@ -219,9 +353,12 @@ def verify_committed_public_demo(track_root: Path = TRACK_ROOT) -> dict[str, Any
 
 
 def verify_retraining(track_root: Path, output_dir: Path) -> dict[str, Any]:
-    """Repeat CPU training and compare model state, metadata, and metrics."""
+    """Repeat CPU training and compare invariant and bounded semantics."""
+    import torch
+
     from research.forest_xai.determinism import resolve_device
     from research.forest_xai.jsonio import load_json_object
+    from research.forest_xai.public_data import load_public_forest_fixture
     from research.forest_xai.public_training import (
         PublicTrainConfig,
         evaluate_public,
@@ -231,36 +368,114 @@ def verify_retraining(track_root: Path, output_dir: Path) -> dict[str, Any]:
 
     if output_dir.exists() and (not output_dir.is_dir() or any(output_dir.iterdir())):
         raise ValueError("--retrain-output must be a new or empty directory")
+    fixture_root = track_root / "data" / "public_fixture"
     result = train_public(
-        track_root / "data" / "public_fixture",
+        fixture_root,
         output_dir,
         PublicTrainConfig(device="cpu"),
     )
     committed = load_json_object(
         track_root / "artifacts" / "public_demo" / "train_result.json"
     )
+    variable_result_fields = {
+        "checkpoint_sha256",
+        "state_dict_sha256",
+        "training_metrics",
+        "evaluation_metrics",
+    }
     _require_equal(
-        "80-epoch retraining result",
-        {key: value for key, value in result.items() if key != "checkpoint_sha256"},
-        {key: value for key, value in committed.items() if key != "checkpoint_sha256"},
+        "80-epoch retraining invariant result",
+        {
+            key: value
+            for key, value in result.items()
+            if key not in variable_result_fields
+        },
+        {
+            key: value
+            for key, value in committed.items()
+            if key not in variable_result_fields
+        },
+    )
+    training_metric_replay = _compare_metric_replay(
+        "training", result["training_metrics"], committed["training_metrics"]
+    )
+    evaluation_metric_replay = _compare_metric_replay(
+        "evaluation", result["evaluation_metrics"], committed["evaluation_metrics"]
     )
     retrained_checkpoint = output_dir / result["checkpoint"]
-    _, retrained_sidecar = load_public_checkpoint(
+    retrained_model, retrained_sidecar = load_public_checkpoint(
         retrained_checkpoint, resolve_device("cpu")
     )
-    committed_sidecar = load_json_object(
-        track_root
-        / "artifacts"
-        / "public_demo"
-        / "sentinel2_forest_cover.pt.metadata.json"
+    committed_checkpoint = (
+        track_root / "artifacts" / "public_demo" / "sentinel2_forest_cover.pt"
+    )
+    committed_model, committed_sidecar = load_public_checkpoint(
+        committed_checkpoint, resolve_device("cpu")
+    )
+    state_replay = _compare_model_state_replay(committed_model, retrained_model)
+    variable_metadata_fields = {
+        "state_dict_sha256",
+        "final_bce",
+        "training_metrics",
+        "evaluation_metrics",
+    }
+    _require_equal(
+        "80-epoch retraining invariant metadata",
+        {
+            key: value
+            for key, value in retrained_sidecar["metadata"].items()
+            if key not in variable_metadata_fields
+        },
+        {
+            key: value
+            for key, value in committed_sidecar["metadata"].items()
+            if key not in variable_metadata_fields
+        },
     )
     _require_equal(
-        "80-epoch retraining metadata",
-        retrained_sidecar["metadata"],
-        committed_sidecar["metadata"],
+        "retrained training metric echo",
+        retrained_sidecar["metadata"]["training_metrics"],
+        result["training_metrics"],
+    )
+    _require_equal(
+        "retrained evaluation metric echo",
+        retrained_sidecar["metadata"]["evaluation_metrics"],
+        result["evaluation_metrics"],
+    )
+    loss_replay = _compare_numeric_replay(
+        "final BCE",
+        retrained_sidecar["metadata"]["final_bce"],
+        committed_sidecar["metadata"]["final_bce"],
+        tolerance=RETRAINED_LOSS_ATOL,
+    )
+
+    training = load_public_forest_fixture(fixture_root, "train")
+    evaluation = load_public_forest_fixture(fixture_root, "evaluation")
+    mean = torch.tensor(committed_sidecar["metadata"]["normalization_mean"]).reshape(
+        1, 4, 1, 1
+    )
+    std = torch.tensor(committed_sidecar["metadata"]["normalization_std"]).reshape(
+        1, 4, 1, 1
+    )
+
+    def probability_map(model: Any, images: Any) -> np.ndarray:
+        with torch.no_grad():
+            return torch.sigmoid(model((images - mean) / std)).cpu().numpy()
+
+    training_probability_replay = _compare_numeric_replay(
+        "training probability map",
+        probability_map(retrained_model, training.images),
+        probability_map(committed_model, training.images),
+        tolerance=RETRAINED_PROBABILITY_ATOL,
+    )
+    evaluation_probability_replay = _compare_numeric_replay(
+        "evaluation probability map",
+        probability_map(retrained_model, evaluation.images),
+        probability_map(committed_model, evaluation.images),
+        tolerance=RETRAINED_PROBABILITY_ATOL,
     )
     retrained_evaluation = evaluate_public(
-        track_root / "data" / "public_fixture",
+        fixture_root,
         retrained_checkpoint,
         output_dir / "retrained_evaluation.json",
         "cpu",
@@ -269,28 +484,41 @@ def verify_retraining(track_root: Path, output_dir: Path) -> dict[str, Any]:
         track_root / "artifacts" / "public_demo" / "evaluation.json"
     )
     _require_equal(
-        "80-epoch retraining evaluation",
+        "retrained evaluation metric echo",
+        retrained_evaluation["metrics"],
+        result["evaluation_metrics"],
+    )
+    _require_equal(
+        "80-epoch retraining invariant evaluation",
         {
             key: value
             for key, value in retrained_evaluation.items()
-            if key != "checkpoint_sha256"
+            if key not in {"checkpoint_sha256", "metrics"}
         },
         {
             key: value
             for key, value in committed_evaluation.items()
-            if key != "checkpoint_sha256"
+            if key not in {"checkpoint_sha256", "metrics"}
         },
     )
     return {
-        "status": "state-metadata-metrics-identical",
+        "status": "immutable-metadata-and-bounded-numeric-semantics-verified",
         "committed_checkpoint_sha256": committed["checkpoint_sha256"],
         "retrained_checkpoint_sha256": result["checkpoint_sha256"],
-        "state_dict_sha256": result["state_dict_sha256"],
+        "committed_state_dict_sha256": committed["state_dict_sha256"],
+        "retrained_state_dict_sha256": result["state_dict_sha256"],
+        "state_replay": state_replay,
+        "loss_replay": loss_replay,
+        "training_metric_replay": training_metric_replay,
+        "evaluation_metric_replay": evaluation_metric_replay,
+        "training_probability_replay": training_probability_replay,
+        "evaluation_probability_replay": evaluation_probability_replay,
         "epochs": 80,
         "device": "cpu",
         "checkpoint_container_note": (
-            "torch.save container bytes may differ; each file is verified against its "
-            "own sidecar while tensor-state SHA, metadata, and metrics must match"
+            "each checkpoint and tensor state is hash-bound to its own sidecar; "
+            "immutable metadata is exact; parameters, loss, probabilities, and "
+            "derived metrics use documented measured tolerances across CPU kernels"
         ),
     }
 
