@@ -6,6 +6,7 @@ import shutil
 import tempfile
 import unittest
 
+import numpy as np
 from PIL import Image
 
 from research.forest_xai.checkpoint import file_sha256
@@ -21,6 +22,7 @@ from research.forest_xai.reconstruction import (
     train_latent_gan,
 )
 from research.forest_xai.scripts.verify_reconstruction import (
+    _compare_array_replay,
     _compare_png_replay,
     verify_committed_reconstruction,
 )
@@ -45,6 +47,11 @@ class PostAwardReconstructionTests(unittest.TestCase):
         self.assertLessEqual(
             result["latent_contact_sheet_replay"]["max_channel_error"], 2
         )
+        self.assertEqual(result["terrain_array_replay"]["faces"]["comparison"], "exact")
+        for name in ("height", "probability", "vertices"):
+            self.assertLessEqual(
+                result["terrain_array_replay"][name]["max_absolute_error"], 1e-6
+            )
 
     def test_latent_gan_training_is_deterministic_and_small(self) -> None:
         config = LatentGanConfig(epochs=4)
@@ -114,6 +121,17 @@ class PostAwardReconstructionTests(unittest.TestCase):
             values.save(changed)
             with self.assertRaisesRegex(ValueError, "more than 2/255"):
                 _compare_png_replay(source, changed)
+
+    def test_machine_array_replay_rejects_material_float_drift(self) -> None:
+        source = RECONSTRUCTION / "terrain_height.npy"
+        with tempfile.TemporaryDirectory(prefix="forest-xai-array-drift-") as temporary:
+            changed = Path(temporary) / "changed.npy"
+            values = np.load(source, allow_pickle=False).copy()
+            values.flat[0] += 1e-4
+            with changed.open("wb") as handle:
+                np.save(handle, values, allow_pickle=False)
+            with self.assertRaisesRegex(ValueError, "more than 1e-6"):
+                _compare_array_replay(source, changed)
 
     def test_committed_relief_drape_reproduces_and_declares_synthetic_height(
         self,

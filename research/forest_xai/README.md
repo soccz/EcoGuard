@@ -137,7 +137,8 @@ regenerates the 2.5D drape, height/probability arrays,
 committed PNG hash remains exact; replay compares decoded RGB pixels with a
 maximum 2/255 per-channel tolerance because CPU kernels can change a preview's
 rounding or compression bytes without changing the recorded probabilities or
-JVP:
+JVP. Committed NPY hashes also remain exact; regenerated float arrays use a
+1e-6 absolute tolerance and integer face indices must match exactly:
 
 ```bash
 python -m research.forest_xai.scripts.verify_reconstruction

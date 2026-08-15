@@ -43,6 +43,27 @@ def _compare_png_replay(reference: Path, candidate: Path) -> dict[str, Any]:
     return metrics
 
 
+def _compare_array_replay(reference: Path, candidate: Path) -> dict[str, Any]:
+    """Compare machine arrays exactly for integers and within 1e-6 for floats."""
+    expected = np.load(reference, allow_pickle=False)
+    actual = np.load(candidate, allow_pickle=False)
+    _require_equal("replayed array shape", list(actual.shape), list(expected.shape))
+    _require_equal("replayed array dtype", str(actual.dtype), str(expected.dtype))
+    if np.issubdtype(expected.dtype, np.integer):
+        if not np.array_equal(actual, expected):
+            raise ValueError("replayed integer array differs from the committed array")
+        return {"comparison": "exact", "max_absolute_error": 0}
+    difference = np.abs(actual.astype(np.float64) - expected.astype(np.float64))
+    metrics = {
+        "comparison": "absolute_tolerance_1e-6",
+        "max_absolute_error": round(float(difference.max(initial=0.0)), 12),
+        "mean_absolute_error": round(float(difference.mean()), 12),
+    }
+    if metrics["max_absolute_error"] > 1e-6:
+        raise ValueError("replayed float array differs by more than 1e-6")
+    return metrics
+
+
 def _artifact_path(root: Path, relative: Any) -> Path:
     if not isinstance(relative, str) or not relative or Path(relative).is_absolute():
         raise ValueError("reconstruction artifact path is invalid")
@@ -269,16 +290,37 @@ def verify_committed_reconstruction(
                 vertical_scale=terrain["vertical_scale"],
             ),
         )
-        _require_equal("regenerated terrain result", generated_terrain, terrain)
+        _require_equal(
+            "regenerated terrain semantics",
+            {key: value for key, value in generated_terrain.items() if key != "files"},
+            {key: value for key, value in terrain.items() if key != "files"},
+        )
         for name, entry in terrain["files"].items():
-            generated_path = _artifact_path(generated_root, entry["path"])
-            from research.forest_xai.checkpoint import file_sha256
-
             _require_equal(
-                f"regenerated {name} SHA",
-                file_sha256(generated_path),
-                entry["sha256"],
+                f"regenerated {name} path",
+                generated_terrain["files"][name]["path"],
+                entry["path"],
             )
+        from research.forest_xai.checkpoint import file_sha256
+
+        _require_equal(
+            "regenerated drape SHA",
+            file_sha256(
+                _artifact_path(
+                    generated_root, generated_terrain["files"]["drape"]["path"]
+                )
+            ),
+            terrain["files"]["drape"]["sha256"],
+        )
+        terrain_array_replay = {
+            name: _compare_array_replay(
+                _artifact_path(reconstruction_root, terrain["files"][name]["path"]),
+                _artifact_path(
+                    generated_root, generated_terrain["files"][name]["path"]
+                ),
+            )
+            for name in ("height", "probability", "vertices", "faces")
+        }
 
     return {
         "status": "verified",
@@ -290,6 +332,7 @@ def verify_committed_reconstruction(
         "latent_contact_sheet_replay": latent_image_replay,
         "terrain_sample_id": terrain["sample_id"],
         "terrain_files_verified": len(terrain["files"]),
+        "terrain_array_replay": terrain_array_replay,
         "mesh": terrain["mesh"],
         "claim_boundary": RECONSTRUCTION_CLAIM_BOUNDARY,
     }

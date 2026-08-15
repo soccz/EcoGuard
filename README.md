@@ -140,9 +140,10 @@ python -m research.forest_xai.scripts.verify_reconstruction
 
 두 verifier는 학습을 다시 하지 않고 committed fixture·checkpoint·artifact hash를
 검사한 뒤 public 추론·Grad-CAM과 reconstruction 산출물을 다시 만듭니다. Public
-artifact와 2.5D machine array는 byte 계약으로, latent 수치·JVP는 exact 값으로
-대조합니다. CPU kernel의 미세한 반올림 차이가 preview PNG의 압축 바이트를 바꿀 수
-있어 latent contact sheet는 decode한 RGB channel 오차를 최대 2/255로 제한합니다.
+artifact의 committed hash는 정확히 고정하고 latent 수치·JVP와 정수 mesh face는
+exact 값으로 대조합니다. CPU kernel의 미세한 반올림 차이를 반영해 2.5D float
+array replay는 절대오차 `1e-6`, latent contact sheet는 decode한 RGB channel 오차를
+최대 2/255로 제한합니다.
 CPU 재학습까지 반복하려면 해당 verifier에 `--retrain`을 붙입니다.
 Public CNN은 80 epoch, tiny GAN은 120 epoch를 반복합니다. 자세한 설치·실행 경계는
 [`research/forest_xai/README.md`](research/forest_xai/README.md)에 있습니다.
