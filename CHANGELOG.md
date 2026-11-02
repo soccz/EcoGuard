@@ -2,9 +2,9 @@
 
 All notable public reconstruction changes are recorded here. Competition-era private implementation is mapped separately in [COMPETITION_PROVENANCE.md](docs/COMPETITION_PROVENANCE.md).
 
-## [Unreleased]
+## [0.6.1] - 2026-11-02
 
-### Security — 2026-11-02
+### Security
 
 - Pin Pillow 13.0.0, Black 26.10.1 and setuptools 84.2.1 to address the
   dependency advisories reported against the previous development/research pins.
@@ -17,6 +17,14 @@ All notable public reconstruction changes are recorded here. Competition-era pri
 - Disable routine Dependabot version PRs for all three ecosystems; retain
   vulnerability alerts and the existing automatic-security-PR setting (disabled).
   Historical release tags are unchanged.
+
+### Changed
+
+- Publish the patched environment as a new immutable release and point new
+  installations to `v0.6.1` instead of requiring an unreleased `main` checkout.
+- Synchronize package/pipeline version, citation and schema IDs. Regenerate core
+  evidence metadata and its hashes for 0.6.1 without changing calculation results,
+  benchmark results or any research fixture, checkpoint or image.
 
 ## [0.6.0] - 2026-08-15
 
@@ -84,6 +92,7 @@ All notable public reconstruction changes are recorded here. Competition-era pri
 - Hardened numeric parsing, candidate completeness, source hashes and legal source binding.
 - Added component-level CBAM DAG and reference-mask forest evaluation.
 
+[0.6.1]: https://github.com/soccz/EcoGuard/releases/tag/v0.6.1
 [0.6.0]: https://github.com/soccz/EcoGuard/releases/tag/v0.6.0
 [0.5.0]: https://github.com/soccz/EcoGuard/releases/tag/v0.5.0
 [0.4.1]: https://github.com/soccz/EcoGuard/releases/tag/v0.4.1

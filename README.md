@@ -1,7 +1,7 @@
 # EcoGuard
 
 [![Python 3.11–3.14 verification](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/verify.yml)
-[![Release v0.6.0](https://img.shields.io/badge/release-v0.6.0-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.6.0)
+[![Release v0.6.1](https://img.shields.io/badge/release-v0.6.1-008b6d)](https://github.com/soccz/EcoGuard/releases/tag/v0.6.1)
 [![CodeQL](https://github.com/soccz/EcoGuard/actions/workflows/codeql.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/codeql.yml)
 [![Forest XAI research](https://github.com/soccz/EcoGuard/actions/workflows/forest-xai.yml/badge.svg)](https://github.com/soccz/EcoGuard/actions/workflows/forest-xai.yml)
 
@@ -11,16 +11,16 @@
 
 ## 재현 범위부터 선택하기
 
-**보안 환경 안내 · 2026-11-02:** 새 개발·연구 환경은 보안 의존성을 수정한
-현재 `main`을 사용하고 commit SHA를 기록하세요. 아래 `v0.6.0`은 당시 상태를
-인용·비교하는 원본 태그이며, 이후의 의존성 보안 수정이 소급 적용되지 않습니다.
+**보안 패치 릴리스 · 2026-11-02:** 새 개발·연구 환경은 아래 `v0.6.1`을
+사용하세요. 기존 계산 결과와 연구 모델·이미지는 유지하고 의존성을 수정했습니다.
+이전 `v0.6.0`은 역사적 비교용 태그이며 보안 수정이 소급 적용되지 않습니다.
 수정 범위와 버전은 [보안 정책](SECURITY.md#dependency-maintenance)에 적었습니다.
 
 | 목적 | 고정할 범위 | 첫 명령 | 포함 관계 |
 |---|---|---|---|
-| 전체 포트폴리오를 인용·재현 | [**`v0.6.0` tag**](https://github.com/soccz/EcoGuard/releases/tag/v0.6.0) | 아래 [tag quickstart](#한-번에-재현하기), `make proof` | dependency-free core와 별도 `research/forest_xai`가 같은 tag tree에 있음. 연구 의존성·수치·artifact는 core wheel·core test count에서 제외 |
+| 전체 포트폴리오를 인용·재현 | [**`v0.6.1` tag**](https://github.com/soccz/EcoGuard/releases/tag/v0.6.1) | 아래 [tag quickstart](#한-번에-재현하기), `make proof` | dependency-free core와 별도 `research/forest_xai`가 같은 tag tree에 있음. 연구 의존성·수치·artifact는 core wheel·core test count에서 제외 |
 | 역사적 core-only 기준선 확인 | [**`v0.5.0` tag**](https://github.com/soccz/EcoGuard/releases/tag/v0.5.0) | `git clone --branch v0.5.0 --depth 1 …` | Sentinel-2/Grad-CAM과 post-award GAN/2.5D 추가 전 core 릴리스 |
-| 릴리스 이후 개발 상태 검토 | **current `main` commit** | commit SHA 고정 후 `make proof` | 다음 변경이 먼저 들어올 수 있으므로 `v0.6.0`과 동일하다고 가정하지 않음 |
+| 릴리스 이후 개발 상태 검토 | **current `main` commit** | commit SHA 고정 후 `make proof` | 다음 변경이 먼저 들어올 수 있으므로 `v0.6.1`과 동일하다고 가정하지 않음 |
 
 동일 결과를 인용하려면 tag를, 최신 포트폴리오를 검토하려면 현재 commit SHA를
 함께 고정합니다. 질문별 읽기 경로는 [문서 지도](docs/README.md)에 모았습니다.
@@ -101,16 +101,15 @@ optional research/forest_xai (core wheel 밖)
 ## 한 번에 재현하기
 
 Python 3.11 이상과 표준 라이브러리만 있으면 런타임에 네트워크가 필요하지 않습니다.
-아래 명령은 검증된 `v0.6.0` 릴리스 태그를 고정합니다. `main`은 다음 변경이
+아래 명령은 검증된 `v0.6.1` 릴리스 태그를 고정합니다. `main`은 다음 변경이
 먼저 들어올 수 있는 개발 브랜치이므로 동일 결과를 인용하거나 검증할 때는 태그를
 사용합니다.
 
-새 개발·연구 환경에 보안 수정된 의존성을 적용하려면 아래 clone 명령의
-`--branch v0.6.0`을 `--branch main`으로 바꾸고, `git rev-parse HEAD`로 받은
-commit SHA를 함께 기록하세요. 이는 원본 태그와 다른 환경임을 명시하기 위한 구분입니다.
+`git rev-parse HEAD`로 받은 commit SHA를 함께 기록하면 사용한 소스까지
+확정할 수 있습니다. 이전 태그의 재현 환경과 새 보안 패치 환경은 구분합니다.
 
 ```bash
-git clone --branch v0.6.0 --depth 1 https://github.com/soccz/EcoGuard.git
+git clone --branch v0.6.1 --depth 1 https://github.com/soccz/EcoGuard.git
 cd EcoGuard
 python3 -m venv .venv
 source .venv/bin/activate
@@ -168,10 +167,10 @@ python -m pip install -e '.[dev]'
 `make verify`는 격리된 임시
 환경에 고정된 개발 의존성을 스스로 설치합니다.
 
-고정 `v0.6.0` tag의 core release suite에는 **180개 test method**가 있으며 이 수치는
+고정 `v0.6.1` tag의 core release suite에는 **180개 test method**가 있으며 이 수치는
 `tests/`와 dependency-free wheel의 계약만 가리킵니다. 선택형 산림 연구 트랙의
 25개 PyTorch 연구 테스트, 모델 metric과 artifact는 core 숫자에 더하지 않습니다.
-위 `v0.6.0` tag tree의 `research/forest_xai`는 아래 명령처럼 별도 환경에서
+위 `v0.6.1` tag tree의 `research/forest_xai`는 아래 명령처럼 별도 환경에서
 실행합니다.
 
 ```bash

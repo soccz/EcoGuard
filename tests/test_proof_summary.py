@@ -2,6 +2,7 @@ import copy
 import tempfile
 import unittest
 from pathlib import Path
+from xml.etree import ElementTree
 
 from scripts.proof_summary import (
     ProofError,
@@ -28,6 +29,18 @@ class ProofSummaryTests(unittest.TestCase):
         self.assertIn("not HiGAN", summary)
         self.assertEqual(proof["lineage"]["span"], "[13,26)")
         self.assertEqual(proof["cbam"]["total"], "1111.36")
+
+        # The README diagram displays the manifest hashes in four text lines.
+        # Keep the visible evidence synchronized when release metadata changes.
+        diagram = ElementTree.parse(ROOT / "docs/assets/core-proof-flow.svg")
+        visible_hashes = "".join(
+            node.text or ""
+            for node in diagram.iter("{http://www.w3.org/2000/svg}text")
+            if node.get("class") == "mono hash"
+        )
+        manifest = _load_json(ROOT / "artifacts/examples/artifact_manifest.json")
+        for artifact in ("normalized_evidence", "cbam_exposure"):
+            self.assertIn(manifest["outputs"][artifact]["sha256"], visible_hashes)
 
     def test_core_artifact_tampering_fails_closed(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -84,15 +84,15 @@
   <text x="954" y="151" class="sans step">04 · BIND</text>
   <text x="954" y="181" class="sans heading">Artifact manifest</text>
   <text x="954" y="220" class="sans small">normalized_evidence.json</text>
-  <text x="954" y="243" class="mono hash">4dfe0a249c1628446da4</text>
-  <text x="954" y="260" class="mono hash">791a07eef0f108c6ac11</text>
-  <text x="954" y="277" class="mono hash">23e8f8f8f1bcaa1e5f8a</text>
-  <text x="954" y="294" class="mono hash">4764</text>
+  <text x="954" y="243" class="mono hash">4857c354d0ef49deae6b</text>
+  <text x="954" y="260" class="mono hash">186ca949d31ea3009c0c</text>
+  <text x="954" y="277" class="mono hash">9f168715f7282c113c9f</text>
+  <text x="954" y="294" class="mono hash">c61d</text>
   <text x="954" y="330" class="sans small">cbam_exposure.json</text>
-  <text x="954" y="353" class="mono hash">f1a710c21021b91c9cae</text>
-  <text x="954" y="370" class="mono hash">690878ac840822420261</text>
-  <text x="954" y="387" class="mono hash">bc6b4652a04102839930</text>
-  <text x="954" y="404" class="mono hash">6811</text>
+  <text x="954" y="353" class="mono hash">acc671b431bf101cf13c</text>
+  <text x="954" y="370" class="mono hash">0c7baf1682df92c3856a</text>
+  <text x="954" y="387" class="mono hash">79921bc0ae6b228f3e6f</text>
+  <text x="954" y="404" class="mono hash">913e</text>
   <rect x="954" y="451" width="168" height="64" rx="10" fill="#edf7f4"/>
   <text x="968" y="476" class="sans badge">10 core outputs</text>
   <text x="968" y="499" class="sans badge">bytes + SHA-256 ✓</text>

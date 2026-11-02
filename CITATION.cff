@@ -5,8 +5,8 @@ type: software
 authors:
   - name: "soccz"
     alias: "soccz"
-version: 0.6.0
-date-released: 2026-08-15
+version: 0.6.1
+date-released: 2026-11-02
 repository-code: "https://github.com/soccz/EcoGuard"
 url: "https://soccz.github.io/projects/ecoguard/"
 license: MIT
