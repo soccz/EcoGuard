@@ -9,9 +9,10 @@ Only the newest tagged release receives security fixes. GitHub Releases and tags
 ## Dependency maintenance
 
 Routine Dependabot version-update PRs are disabled for all ecosystems to keep
-the verified environment stable. Vulnerability alerts and security updates stay
-enabled; a fixed version is not a promise that future vulnerabilities cannot
-be discovered. Security changes are reviewed and pinned explicitly, then checked
+the verified environment stable. Vulnerability alerts remain enabled. Automatic
+security-fix PR creation is a separate GitHub setting and is currently disabled;
+this policy does not enable it. A fixed version is not a promise that future
+vulnerabilities cannot be discovered. Security changes are reviewed and pinned explicitly, then checked
 by the core release gate and, where relevant, the research replay/retraining gates.
 
 The 2026-11-02 dependency fixes on `main` pin Pillow 13.0.0, Black 26.10.1 and

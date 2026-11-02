@@ -15,7 +15,8 @@ All notable public reconstruction changes are recorded here. Competition-era pri
   environment passes the 25 research tests and both full CPU retraining audits;
   local CNN/GAN parameter, probability and decoded-preview replay errors are zero.
 - Disable routine Dependabot version PRs for all three ecosystems; retain
-  vulnerability alerts and security updates. Historical release tags are unchanged.
+  vulnerability alerts and the existing automatic-security-PR setting (disabled).
+  Historical release tags are unchanged.
 
 ## [0.6.0] - 2026-08-15
 
