@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools==84.0.0"]
+requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -32,7 +32,7 @@ ecoguard-api = "ecoguard.api:main"
 
 [project.optional-dependencies]
 dev = [
-  "black==26.3.1",
+  "black==26.10.1",
   "coverage==7.15.4",
   "hypothesis==6.165.3",
   "jsonschema==4.26.0",
