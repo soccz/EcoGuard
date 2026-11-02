@@ -11,6 +11,11 @@
 
 ## 재현 범위부터 선택하기
 
+**보안 환경 안내 · 2026-11-02:** 새 개발·연구 환경은 보안 의존성을 수정한
+현재 `main`을 사용하고 commit SHA를 기록하세요. 아래 `v0.6.0`은 당시 상태를
+인용·비교하는 원본 태그이며, 이후의 의존성 보안 수정이 소급 적용되지 않습니다.
+수정 범위와 버전은 [보안 정책](SECURITY.md#dependency-maintenance)에 적었습니다.
+
 | 목적 | 고정할 범위 | 첫 명령 | 포함 관계 |
 |---|---|---|---|
 | 전체 포트폴리오를 인용·재현 | [**`v0.6.0` tag**](https://github.com/soccz/EcoGuard/releases/tag/v0.6.0) | 아래 [tag quickstart](#한-번에-재현하기), `make proof` | dependency-free core와 별도 `research/forest_xai`가 같은 tag tree에 있음. 연구 의존성·수치·artifact는 core wheel·core test count에서 제외 |
@@ -99,6 +104,10 @@ Python 3.11 이상과 표준 라이브러리만 있으면 런타임에 네트워
 아래 명령은 검증된 `v0.6.0` 릴리스 태그를 고정합니다. `main`은 다음 변경이
 먼저 들어올 수 있는 개발 브랜치이므로 동일 결과를 인용하거나 검증할 때는 태그를
 사용합니다.
+
+새 개발·연구 환경에 보안 수정된 의존성을 적용하려면 아래 clone 명령의
+`--branch v0.6.0`을 `--branch main`으로 바꾸고, `git rev-parse HEAD`로 받은
+commit SHA를 함께 기록하세요. 이는 원본 태그와 다른 환경임을 명시하기 위한 구분입니다.
 
 ```bash
 git clone --branch v0.6.0 --depth 1 https://github.com/soccz/EcoGuard.git

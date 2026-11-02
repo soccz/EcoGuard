@@ -53,6 +53,13 @@ competition. See [RECONSTRUCTION_CARD.md](RECONSTRUCTION_CARD.md).
 Use a separate environment; these dependencies are not installed by the core
 package:
 
+Use the patched `main` source and record its commit SHA for a new environment.
+As of 2026-11-02, its requirements pin Pillow 13.0.0 and setuptools 84.2.1;
+install the requirements after CPU Torch so an older setuptools from the Torch
+index is replaced. The historical `v0.6.0` requirements are not retroactively
+patched. Existing committed model/data/image artifacts remain unchanged and are
+verified with the patched environment.
+
 ```bash
 python3 -m venv .venv-forest-xai
 . .venv-forest-xai/bin/activate

@@ -4,6 +4,20 @@ All notable public reconstruction changes are recorded here. Competition-era pri
 
 ## [Unreleased]
 
+### Security — 2026-11-02
+
+- Pin Pillow 13.0.0, Black 26.10.1 and setuptools 84.2.1 to address the
+  dependency advisories reported against the previous development/research pins.
+- Pin setuptools in the research environment too: the CPU PyTorch index can
+  otherwise install an older transitive build tool. Keep the CI environment
+  assertions synchronized with these pins.
+- Preserve the committed fixtures, weights, metrics and images. The patched
+  environment passes the 25 research tests and both full CPU retraining audits;
+  local CNN/GAN parameter, probability and decoded-preview replay errors are zero.
+- Disable routine Dependabot version PRs for all three ecosystems; retain
+  vulnerability alerts and the existing automatic-security-PR setting (disabled).
+  Historical release tags are unchanged.
+
 ## [0.6.0] - 2026-08-15
 
 ### Added
