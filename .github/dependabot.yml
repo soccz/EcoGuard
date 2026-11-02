@@ -1,10 +1,13 @@
 version: 2
+# Preserve the current pinned release environment. Routine version-update PRs
+# are disabled for every ecosystem; review version changes manually when needed.
+# This does not disable Dependabot vulnerability alerts or security updates.
 updates:
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: monthly
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
   # Research pins are part of the committed byte-reproducibility contract
   # (Pillow encodes the committed PNGs, numpy/torch shape the fixture and
   # checkpoint bytes). Version bumps must be deliberate commits that retrain
@@ -19,4 +22,4 @@ updates:
     directory: /
     schedule:
       interval: monthly
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
