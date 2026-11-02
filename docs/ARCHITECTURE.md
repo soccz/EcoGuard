@@ -1,6 +1,6 @@
 # Architecture
 
-EcoGuard v0.6.0은 결과값보다 **evidence lineage와 계산 trace**를 먼저 설계합니다.
+EcoGuard v0.6.1은 결과값보다 **evidence lineage와 계산 trace**를 먼저 설계합니다.
 모든 운영 시스템 연동은 바깥 adapter로 두고, dependency-free wheel은 합성
 입력에서 시작하는 결정론적 core만 포함합니다. 실제 공개 Sentinel-2
 derivative를 쓰는 PyTorch 코드는 `research/forest_xai`에 분리해 wheel과 core

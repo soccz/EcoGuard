@@ -3,7 +3,7 @@
 이 문서는 질문별 시작점입니다. 검증된 릴리스와 현재 포트폴리오의 범위를 먼저
 나누면 나머지 문서를 훨씬 빠르게 읽을 수 있습니다.
 
-- **전체 고정 릴리스 재현:** [`v0.6.0` tag quickstart](../README.md#재현-범위부터-선택하기)는
+- **전체 고정 릴리스 재현:** [`v0.6.1` tag quickstart](../README.md#재현-범위부터-선택하기)는
   dependency-free core와 별도 Forest XAI 연구 트랙이 함께 있는 공개 tree를
   고정합니다. 연구 트랙은 core wheel·수치·test count에 포함되지 않습니다.
 - **역사적 core-only 기준선:** `v0.5.0` tag에는 Sentinel-2/Grad-CAM과 수상 후

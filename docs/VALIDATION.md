@@ -5,11 +5,11 @@
 replay에 더해, 의미 있는 입력 변경에는 결과가 변하고 순서·표기만 다른
 동등 입력에는 결과가 유지되는지도 구분합니다.
 
-Core v0.6.0은 dependency-free wheel과 `tests/`의 전체 test method로 검증합니다.
+Core v0.6.1은 dependency-free wheel과 `tests/`의 전체 test method로 검증합니다.
 선택형 `research/forest_xai`는 PyTorch 전용 환경·별도 연구 테스트·artifact를
 사용합니다. 아래 두 검증표의 수치와 성공 기준은 합산하지 않습니다.
 
-## Core v0.6.0 핵심 주장과 직접 증거
+## Core v0.6.1 핵심 주장과 직접 증거
 
 | 공개 주장 | 입력 | 실행 코드 | 직접 검증 테스트 | 확인할 산출물·근거 |
 |---|---|---|---|---|
@@ -93,7 +93,7 @@ Committed checkpoint와 sidecar의 file/tensor SHA는 계속 exact하게 고정�
 | Order/Unicode invariance: legal | corpus 순서 반전, full-width Unicode query | `test_legal.LegalRetrievalV2Tests.test_corpus_order_and_unicode_formatting_do_not_change_ranking` | corpus hash와 citation ranking 동일 |
 | Order/notation invariance: forest | CSV 행 순서 반전, `0.18`→`0.1800` | `test_forest.ForestV2Tests.test_input_row_order_does_not_change_any_output`; `test_forest.ForestV2Tests.test_equivalent_decimal_notation_does_not_change_outputs` | JSON result·GeoJSON·SVG 의미 결과 동일 |
 
-## Core v0.6.0 실행
+## Core v0.6.1 실행
 
 ```bash
 PYTHONPATH=src python3 -m unittest discover -s tests -v
